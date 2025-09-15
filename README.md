@@ -132,7 +132,7 @@ Ajouter une récompense :
 ## Mockups Visuels
 Un premier design en thème sombre moderne avec des accents de couleur vive a été réalisé.  
 
-![Mockups de l'application](A_set_of_four_mobile_app_interface_screens_for_"St.png)
+![Mockups de l'application](pic.png)
 
 ---
 
