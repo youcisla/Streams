@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import {
-  View,
-  TextInput,
-  Text,
-  StyleSheet,
-  ViewStyle,
-  TextStyle,
-  TextInputProps
+    StyleSheet,
+    Text,
+    TextInput,
+    TextInputProps,
+    TextStyle,
+    View,
+    ViewStyle
 } from 'react-native';
 import { theme } from '../theme';
 
@@ -37,8 +37,8 @@ export const Input: React.FC<InputProps> = ({
     styles.input,
     styles[variant],
     styles[`${size}Size`],
-    isFocused && styles.focused,
-    error && styles.error,
+    isFocused ? styles.focused : undefined,
+    error ? styles.error : undefined,
     style
   ];
 
@@ -55,7 +55,7 @@ export const Input: React.FC<InputProps> = ({
         {...props}
       />
       {(error || helperText) && (
-        <Text style={[styles.helperText, error && styles.errorText]}>
+        <Text style={[styles.helperText, error ? styles.errorText : undefined]}>
           {error || helperText}
         </Text>
       )}

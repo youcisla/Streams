@@ -78,7 +78,7 @@ model LinkedPlatformAccount {
   handle           String
   accessToken      String? // Encrypted
   refreshToken     String? // Encrypted
-  scopes           String[]
+  scopes           String? // JSON string of scopes array
   linkedAt         DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
@@ -150,7 +150,7 @@ model StatsSnapshot {
   id        String   @id @default(cuid())
   streamerId String
   platform  Platform
-  date      DateTime @db.Date
+  date      DateTime
   followers Int      @default(0)
   views     Int      @default(0)
   likes     Int      @default(0)

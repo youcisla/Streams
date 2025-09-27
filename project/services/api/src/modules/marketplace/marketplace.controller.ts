@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param, Query, Req, Headers, RawBody } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { MarketplaceService } from './marketplace.service';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { Public } from '../../common/decorators/public.decorator';
-import Stripe from 'stripe';
+import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, Query, RawBody, Req } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { config } from '@streamlink/config';
+import Stripe from 'stripe';
+import { Public } from '../../common/decorators/public.decorator';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { Role } from '../../prisma-client';
+import { MarketplaceService } from './marketplace.service';
 
 @ApiTags('marketplace')
 @Controller('marketplace')
@@ -13,7 +14,7 @@ export class MarketplaceController {
 
   constructor(private marketplaceService: MarketplaceService) {
     this.stripe = new Stripe(config.stripe.secretKey, {
-      apiVersion: '2024-06-20',
+      apiVersion: '2023-10-16',
     });
   }
 
@@ -27,7 +28,7 @@ export class MarketplaceController {
   }
 
   @ApiBearerAuth()
-  @Roles('STREAMER', 'BOTH')
+  @Roles(Role.STREAMER, Role.BOTH)
   @Post('products')
   @ApiOperation({ summary: 'Create a product' })
   @ApiResponse({ status: 201, description: 'Product created successfully' })
@@ -36,7 +37,7 @@ export class MarketplaceController {
   }
 
   @ApiBearerAuth()
-  @Roles('STREAMER', 'BOTH')
+  @Roles(Role.STREAMER, Role.BOTH)
   @Patch('products/:id')
   @ApiOperation({ summary: 'Update a product' })
   @ApiResponse({ status: 200, description: 'Product updated successfully' })
@@ -45,7 +46,7 @@ export class MarketplaceController {
   }
 
   @ApiBearerAuth()
-  @Roles('STREAMER', 'BOTH')
+  @Roles(Role.STREAMER, Role.BOTH)
   @Delete('products/:id')
   @ApiOperation({ summary: 'Delete a product' })
   @ApiResponse({ status: 200, description: 'Product deleted successfully' })

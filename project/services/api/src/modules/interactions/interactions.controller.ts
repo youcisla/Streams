@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Patch, Body, Param, Query, Req } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { InteractionsService } from './interactions.service';
+import { Body, Controller, Get, Param, Patch, Post, Query, Req } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { InteractionsService } from './interactions.service';
 
 @ApiTags('interactions')
 @ApiBearerAuth()

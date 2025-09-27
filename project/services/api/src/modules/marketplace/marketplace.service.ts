@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../../common/prisma/prisma.service';
-import Stripe from 'stripe';
 import { config } from '@streamlink/config';
+import Stripe from 'stripe';
+import { PrismaService } from '../../common/prisma/prisma.service';
 
 @Injectable()
 export class MarketplaceService {
@@ -9,7 +9,7 @@ export class MarketplaceService {
 
   constructor(private prisma: PrismaService) {
     this.stripe = new Stripe(config.stripe.secretKey, {
-      apiVersion: '2024-06-20',
+      apiVersion: '2023-10-16',
     });
   }
 

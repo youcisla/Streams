@@ -1,5 +1,5 @@
-import { PrismaClient, Role, Platform, ContentType, MiniGameType } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { ContentType, MiniGameType, Platform, PrismaClient, Role } from '../src/prisma-client';
 
 const prisma = new PrismaClient();
 

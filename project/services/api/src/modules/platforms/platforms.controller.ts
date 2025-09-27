@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Delete, Body, Param, Query, Req } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, Post, Query, Req } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Platform } from '../../prisma-client';
 import { PlatformsService } from './platforms.service';
-import { Platform } from '@prisma/client';
 
 @ApiTags('platforms')
 @ApiBearerAuth()
