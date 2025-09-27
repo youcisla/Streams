@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param, Query, Req } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { StreamersService } from './streamers.service';
-import { Roles } from '../../common/decorators/roles.decorator';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Public } from '../../common/decorators/public.decorator';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { Role } from '../../prisma-client';
+import { StreamersService } from './streamers.service';
 
 @ApiTags('streamers')
 @Controller('streamers')
@@ -18,7 +19,7 @@ export class StreamersController {
   }
 
   @ApiBearerAuth()
-  @Roles('STREAMER', 'BOTH')
+  @Roles(Role.STREAMER, Role.BOTH)
   @Get('dashboard')
   @ApiOperation({ summary: 'Get streamer dashboard stats' })
   @ApiResponse({ status: 200, description: 'Dashboard stats retrieved' })
@@ -27,7 +28,7 @@ export class StreamersController {
   }
 
   @ApiBearerAuth()
-  @Roles('STREAMER', 'BOTH')
+  @Roles(Role.STREAMER, Role.BOTH)
   @Get('rewards')
   @ApiOperation({ summary: 'Get streamer rewards' })
   @ApiResponse({ status: 200, description: 'Rewards retrieved' })
@@ -36,7 +37,7 @@ export class StreamersController {
   }
 
   @ApiBearerAuth()
-  @Roles('STREAMER', 'BOTH')
+  @Roles(Role.STREAMER, Role.BOTH)
   @Post('rewards')
   @ApiOperation({ summary: 'Create a new reward' })
   @ApiResponse({ status: 201, description: 'Reward created successfully' })
@@ -45,7 +46,7 @@ export class StreamersController {
   }
 
   @ApiBearerAuth()
-  @Roles('STREAMER', 'BOTH')
+  @Roles(Role.STREAMER, Role.BOTH)
   @Patch('rewards/:id')
   @ApiOperation({ summary: 'Update a reward' })
   @ApiResponse({ status: 200, description: 'Reward updated successfully' })
@@ -54,7 +55,7 @@ export class StreamersController {
   }
 
   @ApiBearerAuth()
-  @Roles('STREAMER', 'BOTH')
+  @Roles(Role.STREAMER, Role.BOTH)
   @Delete('rewards/:id')
   @ApiOperation({ summary: 'Delete a reward' })
   @ApiResponse({ status: 200, description: 'Reward deleted successfully' })
@@ -63,7 +64,7 @@ export class StreamersController {
   }
 
   @ApiBearerAuth()
-  @Roles('STREAMER', 'BOTH')
+  @Roles(Role.STREAMER, Role.BOTH)
   @Get('redemptions')
   @ApiOperation({ summary: 'Get reward redemptions' })
   @ApiResponse({ status: 200, description: 'Redemptions retrieved' })
@@ -72,7 +73,7 @@ export class StreamersController {
   }
 
   @ApiBearerAuth()
-  @Roles('STREAMER', 'BOTH')
+  @Roles(Role.STREAMER, Role.BOTH)
   @Patch('redemptions/:id')
   @ApiOperation({ summary: 'Update redemption status' })
   @ApiResponse({ status: 200, description: 'Redemption updated successfully' })

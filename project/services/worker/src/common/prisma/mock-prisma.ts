@@ -4,7 +4,8 @@
 export enum Role {
   VIEWER = 'VIEWER',
   STREAMER = 'STREAMER',
-  ADMIN = 'ADMIN'
+  ADMIN = 'ADMIN',
+  BOTH = 'BOTH'
 }
 
 export enum Platform {
@@ -40,13 +41,32 @@ export interface User {
 }
 
 export class PrismaClient {
-  user = {
-    findUnique: () => Promise.resolve(null),
-    findMany: () => Promise.resolve([]),
-    create: () => Promise.resolve({} as User),
-    update: () => Promise.resolve({} as User),
-    delete: () => Promise.resolve({} as User),
-  };
+  // Helper method to create mock CRUD operations for any model
+  private createMockModel<T = any>() {
+    return {
+      findUnique: (args?: any) => Promise.resolve(null),
+      findMany: (args?: any) => Promise.resolve([]),
+      create: (args?: any) => Promise.resolve({} as T),
+      update: (args?: any) => Promise.resolve({} as T),
+      delete: (args?: any) => Promise.resolve({} as T),
+      upsert: (args?: any) => Promise.resolve({} as T),
+    };
+  }
+
+  user = this.createMockModel<User>();
+  follow = this.createMockModel();
+  linkedPlatformAccount = this.createMockModel();
+  contentItem = this.createMockModel();
+  statsSnapshot = this.createMockModel();
+  liveStatus = this.createMockModel();
+  reward = this.createMockModel();
+  pointsTransaction = this.createMockModel();
+  redemption = this.createMockModel();
+  poll = this.createMockModel();
+  pollVote = this.createMockModel();
+  miniGame = this.createMockModel();
+  product = this.createMockModel();
+  order = this.createMockModel();
 
   constructor() {
     console.warn('Using mock Prisma client - database operations will not work');

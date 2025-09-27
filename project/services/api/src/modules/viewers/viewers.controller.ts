@@ -1,11 +1,12 @@
-import { Controller, Get, Post, Delete, Param, Req } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { ViewersService } from './viewers.service';
+import { Controller, Delete, Get, Param, Post, Req } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { Role } from '../../prisma-client';
+import { ViewersService } from './viewers.service';
 
 @ApiTags('viewers')
 @ApiBearerAuth()
-@Roles('VIEWER', 'BOTH')
+@Roles(Role.VIEWER, Role.BOTH)
 @Controller('viewers')
 export class ViewersController {
   constructor(private viewersService: ViewersService) {}

@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Param, Patch, Post, Query, Req } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { Role } from '../../prisma-client';
 import { InteractionsService } from './interactions.service';
 
 @ApiTags('interactions')
@@ -10,7 +11,7 @@ export class InteractionsController {
   constructor(private interactionsService: InteractionsService) {}
 
   // Polls
-  @Roles('STREAMER', 'BOTH')
+  @Roles(Role.STREAMER, Role.BOTH)
   @Post('polls')
   @ApiOperation({ summary: 'Create a poll' })
   @ApiResponse({ status: 201, description: 'Poll created successfully' })
@@ -37,7 +38,7 @@ export class InteractionsController {
     return this.interactionsService.votePoll(req.user.id, pollId, body.optionId);
   }
 
-  @Roles('STREAMER', 'BOTH')
+  @Roles(Role.STREAMER, Role.BOTH)
   @Patch('polls/:pollId/close')
   @ApiOperation({ summary: 'Close a poll' })
   @ApiResponse({ status: 200, description: 'Poll closed successfully' })
@@ -46,7 +47,7 @@ export class InteractionsController {
   }
 
   // Mini Games
-  @Roles('STREAMER', 'BOTH')
+  @Roles(Role.STREAMER, Role.BOTH)
   @Post('games')
   @ApiOperation({ summary: 'Create a mini game' })
   @ApiResponse({ status: 201, description: 'Game created successfully' })

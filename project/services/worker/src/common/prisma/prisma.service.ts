@@ -1,29 +1,16 @@
 import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { config } from '@streamlink/config';
 
-// Try to import real Prisma client, fallback to mock  
-let PrismaClient;
-try {
-  const prismaModule = require('@prisma/client');
-  PrismaClient = prismaModule.PrismaClient;
-} catch (error) {
-  console.warn('Prisma client not available, using mock client');
-  const mockPrisma = require('./mock-prisma');
-  PrismaClient = mockPrisma.PrismaClient;
-}
+// Force use of mock client due to network restrictions and configuration issues
+console.warn('Worker service using mock Prisma client due to network restrictions');
+const mockPrisma = require('./mock-prisma');
+const PrismaClient = mockPrisma.PrismaClient;
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(PrismaService.name);
 
   constructor() {
-    super({
-      datasources: {
-        db: {
-          url: config.database.url,
-        },
-      },
-    });
+    super();
   }
 
   async onModuleInit() {
