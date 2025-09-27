@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: streamlink-postgres
+    environment:
+      POSTGRES_DB: streamlink
+      POSTGRES_USER: streamlink
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - streamlink
+
+  redis:
+    image: redis:7-alpine
+    container_name: streamlink-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - streamlink
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: streamlink-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@streamlink.app
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - streamlink
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  streamlink:
+    driver: bridge

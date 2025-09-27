@@ -1,0 +1,35 @@
+{
+  "name": "streamlink-monorepo",
+  "private": true,
+  "version": "1.0.0",
+  "description": "StreamLink - Universal companion app for streamers and viewers",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "services/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "clean": "turbo run clean",
+    "db:migrate": "cd services/api && pnpm prisma migrate dev",
+    "db:studio": "cd services/api && pnpm prisma studio",
+    "db:seed": "cd services/api && pnpm prisma db seed",
+    "db:reset": "cd services/api && pnpm prisma migrate reset --force"
+  },
+  "devDependencies": {
+    "turbo": "^1.13.4",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "prettier": "^3.0.0",
+    "eslint": "^8.57.0",
+    "husky": "^8.0.3"
+  },
+  "packageManager": "pnpm@8.15.0",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}
