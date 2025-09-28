@@ -12,6 +12,23 @@ config.resolver.nodeModulesPaths = [
   path.resolve(workspaceRoot, 'node_modules'),
 ];
 
+// Disable hierarchical lookup to prevent version conflicts
 config.resolver.disableHierarchicalLookup = true;
+
+// Add better module resolution for monorepo
+config.resolver.platforms = ['native', 'android', 'ios', 'web'];
+config.resolver.alias = {
+  '@streamlink/ui': path.resolve(workspaceRoot, 'packages/ui/src'),
+  '@streamlink/config': path.resolve(workspaceRoot, 'packages/config/src'),
+};
+
+// Ensure proper handling of node_modules resolution
+config.resolver.resolverMainFields = ['react-native', 'browser', 'main'];
+
+// Block problematic metro-runtime versions to prevent conflicts
+config.resolver.blockList = [
+  /node_modules\/.*\/metro-runtime@0\.83\.1\/.*$/,
+  /.*\/metro-runtime\/src\/modules\/empty-module\.js$/,
+];
 
 module.exports = config;

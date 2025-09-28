@@ -31,28 +31,88 @@ importers:
     dependencies:
       '@expo/metro-runtime':
         specifier: ~6.1.2
-        version: 6.1.2(expo@54.0.10)(react-dom@19.1.0)(react-native@0.81.4)(react@19.1.0)
+        version: 6.1.2(expo@54.0.10)(react-dom@18.3.1)(react-native@0.81.4)(react@18.3.1)
       '@expo/vector-icons':
         specifier: ^15.0.2
-        version: 15.0.2(expo-font@14.0.8)(react-native@0.81.4)(react@19.1.0)
+        version: 15.0.2(expo-font@14.0.8)(react-native@0.81.4)(react@18.3.1)
       '@react-native-async-storage/async-storage':
         specifier: 2.2.0
         version: 2.2.0(react-native@0.81.4)
+      '@react-native/normalize-colors':
+        specifier: ^0.81.1
+        version: 0.81.1
+      '@react-native/virtualized-lists':
+        specifier: ^0.81.1
+        version: 0.81.1(@types/react@19.1.14)(react-native@0.81.4)(react@18.3.1)
+      '@react-navigation/bottom-tabs':
+        specifier: ^7.4.7
+        version: 7.4.7(@react-navigation/native@7.1.17)(react-native-safe-area-context@5.6.1)(react-native-screens@4.16.0)(react-native@0.81.4)(react@18.3.1)
+      '@react-navigation/core':
+        specifier: ^7.12.4
+        version: 7.12.4(react@18.3.1)
+      '@react-navigation/drawer':
+        specifier: ^7.5.8
+        version: 7.5.8(@react-navigation/native@7.1.17)(react-native-gesture-handler@2.28.0)(react-native-reanimated@4.1.2)(react-native-safe-area-context@5.6.1)(react-native-screens@4.16.0)(react-native@0.81.4)(react@18.3.1)
       '@react-navigation/native':
-        specifier: ^6.1.18
-        version: 6.1.18(react-native@0.81.4)(react@19.1.0)
+        specifier: ^7.1.8
+        version: 7.1.17(react-native@0.81.4)(react@18.3.1)
+      '@react-navigation/native-stack':
+        specifier: ^7.3.26
+        version: 7.3.26(@react-navigation/native@7.1.17)(react-native-safe-area-context@5.6.1)(react-native-screens@4.16.0)(react-native@0.81.4)(react@18.3.1)
       '@streamlink/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       '@tanstack/react-query':
         specifier: ^5.59.0
-        version: 5.90.2(react@19.1.0)
+        version: 5.90.2(react@18.3.1)
+      '@ungap/structured-clone':
+        specifier: ^1.3.0
+        version: 1.3.0
+      abort-controller:
+        specifier: ^3.0.0
+        version: 3.0.0
+      ansi-regex:
+        specifier: ^6.2.2
+        version: 6.2.2
+      ansi-styles:
+        specifier: ^6.2.3
+        version: 6.2.3
+      base64-js:
+        specifier: ^1.5.1
+        version: 1.5.1
+      buffer:
+        specifier: ^6.0.3
+        version: 6.0.3
+      color-convert:
+        specifier: ^3.1.2
+        version: 3.1.2
+      color-name:
+        specifier: ^2.0.2
+        version: 2.0.2
+      core-js:
+        specifier: ^3.45.1
+        version: 3.45.1
+      crypto-js:
+        specifier: ^4.2.0
+        version: 4.2.0
+      es6-symbol:
+        specifier: ^3.1.4
+        version: 3.1.4
+      escape-string-regexp:
+        specifier: ^5.0.0
+        version: 5.0.0
+      event-target-shim:
+        specifier: ^6.0.2
+        version: 6.0.2
       expo:
         specifier: ~54.0.10
-        version: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@19.1.0)
+        version: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@18.3.1)
+      expo-asset:
+        specifier: ^12.0.9
+        version: 12.0.9(expo@54.0.10)(react-native@0.81.4)(react@18.3.1)
       expo-auth-session:
         specifier: ~7.0.8
-        version: 7.0.8(expo@54.0.10)(react-native@0.81.4)(react@19.1.0)
+        version: 7.0.8(expo@54.0.10)(react-native@0.81.4)(react@18.3.1)
       expo-constants:
         specifier: ~18.0.9
         version: 18.0.9(expo@54.0.10)(react-native@0.81.4)
@@ -61,61 +121,160 @@ importers:
         version: 15.0.7(expo@54.0.10)
       expo-font:
         specifier: ~14.0.8
-        version: 14.0.8(expo@54.0.10)(react-native@0.81.4)(react@19.1.0)
+        version: 14.0.8(expo@54.0.10)(react-native@0.81.4)(react@18.3.1)
       expo-linking:
         specifier: ~8.0.8
-        version: 8.0.8(expo@54.0.10)(react-native@0.81.4)(react@19.1.0)
+        version: 8.0.8(expo@54.0.10)(react-native@0.81.4)(react@18.3.1)
       expo-modules-core:
         specifier: ~3.0.18
-        version: 3.0.18(react-native@0.81.4)(react@19.1.0)
+        version: 3.0.18(react-native@0.81.4)(react@18.3.1)
       expo-notifications:
         specifier: ~0.32.11
-        version: 0.32.11(expo@54.0.10)(react-native@0.81.4)(react@19.1.0)
+        version: 0.32.11(expo@54.0.10)(react-native@0.81.4)(react@18.3.1)
       expo-router:
         specifier: ~6.0.8
-        version: 6.0.8(@expo/metro-runtime@6.1.2)(@types/react@19.1.14)(expo-constants@18.0.9)(expo-linking@8.0.8)(expo@54.0.10)(react-dom@19.1.0)(react-native-safe-area-context@5.6.1)(react-native-screens@4.16.0)(react-native-web@0.21.1)(react-native@0.81.4)(react@19.1.0)
+        version: 6.0.8(@expo/metro-runtime@6.1.2)(@react-navigation/drawer@7.5.8)(@types/react@19.1.14)(expo-constants@18.0.9)(expo-linking@8.0.8)(expo@54.0.10)(react-dom@18.3.1)(react-native-gesture-handler@2.28.0)(react-native-reanimated@4.1.2)(react-native-safe-area-context@5.6.1)(react-native-screens@4.16.0)(react-native-web@0.21.1)(react-native@0.81.4)(react@18.3.1)
       expo-splash-screen:
         specifier: ~31.0.10
         version: 31.0.10(expo@54.0.10)
       expo-status-bar:
         specifier: ~3.0.8
-        version: 3.0.8(react-native@0.81.4)(react@19.1.0)
+        version: 3.0.8(react-native@0.81.4)(react@18.3.1)
       expo-web-browser:
         specifier: ~15.0.7
         version: 15.0.7(expo@54.0.10)(react-native@0.81.4)
+      fbjs:
+        specifier: ^3.0.5
+        version: 3.0.5
+      hoist-non-react-statics:
+        specifier: ^3.3.2
+        version: 3.3.2
+      invariant:
+        specifier: ^2.2.4
+        version: 2.2.4
+      memoize-one:
+        specifier: ^6.0.0
+        version: 6.0.0
+      metro-runtime:
+        specifier: ^0.83.2
+        version: 0.83.2
+      ms:
+        specifier: ^2.1.3
+        version: 2.1.3
+      nanoid:
+        specifier: ^5.1.6
+        version: 5.1.6
+      nullthrows:
+        specifier: ^1.1.1
+        version: 1.1.1
+      pretty-format:
+        specifier: ^30.2.0
+        version: 30.2.0
+      process:
+        specifier: ^0.11.10
+        version: 0.11.10
+      promise:
+        specifier: ^8.3.0
+        version: 8.3.0
       react:
-        specifier: 19.1.0
-        version: 19.1.0
+        specifier: 18.3.1
+        version: 18.3.1
       react-dom:
-        specifier: 19.1.0
-        version: 19.1.0(react@19.1.0)
+        specifier: 18.3.1
+        version: 18.3.1(react@18.3.1)
+      react-freeze:
+        specifier: ^1.0.4
+        version: 1.0.4(react@18.3.1)
+      react-is:
+        specifier: ^19.1.1
+        version: 19.1.1
       react-native:
         specifier: 0.81.4
-        version: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
+        version: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
+      react-native-gesture-handler:
+        specifier: ^2.28.0
+        version: 2.28.0(react-native@0.81.4)(react@18.3.1)
+      react-native-is-edge-to-edge:
+        specifier: ^1.2.1
+        version: 1.2.1(react-native@0.81.4)(react@18.3.1)
+      react-native-reanimated:
+        specifier: ^4.1.2
+        version: 4.1.2(@babel/core@7.28.4)(react-native-worklets@0.6.0)(react-native@0.81.4)(react@18.3.1)
       react-native-safe-area-context:
         specifier: ~5.6.0
-        version: 5.6.1(react-native@0.81.4)(react@19.1.0)
+        version: 5.6.1(react-native@0.81.4)(react@18.3.1)
       react-native-screens:
         specifier: ~4.16.0
-        version: 4.16.0(react-native@0.81.4)(react@19.1.0)
+        version: 4.16.0(react-native@0.81.4)(react@18.3.1)
       react-native-web:
-        specifier: ^0.21.0
-        version: 0.21.1(react-dom@19.1.0)(react@19.1.0)
+        specifier: ^0.21.1
+        version: 0.21.1(react-dom@18.3.1)(react@18.3.1)
+      react-reconciler:
+        specifier: ^0.32.0
+        version: 0.32.0(react@18.3.1)
+      react-refresh:
+        specifier: ^0.17.0
+        version: 0.17.0
       regenerator-runtime:
         specifier: ^0.14.1
         version: 0.14.1
+      scheduler:
+        specifier: ^0.26.0
+        version: 0.26.0
+      setimmediate:
+        specifier: ^1.0.5
+        version: 1.0.5
+      stacktrace-parser:
+        specifier: ^0.1.11
+        version: 0.1.11
+      text-encoding:
+        specifier: ^0.7.0
+        version: 0.7.0
+      tslib:
+        specifier: ^2.8.1
+        version: 2.8.1
+      url-polyfill:
+        specifier: ^1.1.14
+        version: 1.1.14
+      use-latest-callback:
+        specifier: ^0.2.4
+        version: 0.2.4(react@18.3.1)
+      use-subscription:
+        specifier: ^1.11.0
+        version: 1.11.0(react@18.3.1)
+      util:
+        specifier: ^0.12.5
+        version: 0.12.5
+      warn-once:
+        specifier: ^0.1.1
+        version: 0.1.1
+      web-streams-polyfill:
+        specifier: ^4.2.0
+        version: 4.2.0
+      whatwg-fetch:
+        specifier: ^3.6.20
+        version: 3.6.20
+      whatwg-url-without-unicode:
+        specifier: 8.0.0-3
+        version: 8.0.0-3
       zustand:
         specifier: ^5.0.0
-        version: 5.0.8(@types/react@19.1.14)(react@19.1.0)
+        version: 5.0.8(@types/react@19.1.14)(react@18.3.1)
     devDependencies:
       '@babel/core':
         specifier: ^7.25.0
         version: 7.28.4
+      '@babel/plugin-transform-nullish-coalescing-operator':
+        specifier: ^7.24.7
+        version: 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-optional-chaining':
+        specifier: ^7.24.8
+        version: 7.27.1(@babel/core@7.28.4)
       '@babel/preset-env':
         specifier: ^7.25.0
         version: 7.28.3(@babel/core@7.28.4)
       '@babel/runtime':
-        specifier: ^7.25.0
+        specifier: ^7.28.4
         version: 7.28.4
       '@types/jest':
         specifier: ^29.5.13
@@ -143,10 +302,13 @@ importers:
         version: 29.7.0(@types/node@20.19.17)(ts-node@10.9.2)
       jest-expo:
         specifier: ~54.0.0
-        version: 54.0.12(@babel/core@7.28.4)(expo@54.0.10)(jest@29.7.0)(react-dom@19.1.0)(react-native@0.81.4)(react@19.1.0)(webpack@5.101.3)
+        version: 54.0.12(@babel/core@7.28.4)(expo@54.0.10)(jest@29.7.0)(react-dom@18.3.1)(react-native@0.81.4)(react@18.3.1)(webpack@5.101.3)
+      react-devtools-core:
+        specifier: ^6.1.5
+        version: 6.1.5
       react-test-renderer:
         specifier: 18.3.1
-        version: 18.3.1(react@19.1.0)
+        version: 18.3.1(react@18.3.1)
       typescript:
         specifier: ~5.9.2
         version: 5.9.2
@@ -163,15 +325,15 @@ importers:
         specifier: ^18.3.1
         version: 18.3.1
       react-native:
-        specifier: ^0.74.0
-        version: 0.74.5(@babel/core@7.28.4)(@babel/preset-env@7.28.3)(@types/react@18.3.24)(react@18.3.1)
+        specifier: ^0.76.0
+        version: 0.76.0(@babel/core@7.28.4)(@babel/preset-env@7.28.3)(@types/react@18.3.0)(react@18.3.1)
     devDependencies:
       '@types/react':
         specifier: ^18.3.0
-        version: 18.3.24
+        version: 18.3.0
       '@types/react-native':
         specifier: ^0.73.0
-        version: 0.73.0(@babel/core@7.28.4)(@babel/preset-env@7.28.3)(@types/react@18.3.24)(react@18.3.1)
+        version: 0.73.0(@babel/core@7.28.4)(@babel/preset-env@7.28.3)(@types/react@18.3.0)(react@18.3.1)
       typescript:
         specifier: ^5.0.0
         version: 5.3.3
@@ -592,6 +754,7 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       '@babel/types': 7.28.4
+    dev: true
 
   /@babel/helper-globals@7.28.0:
     resolution: {integrity: sha512-+W6cISkXFa1jXsDEdYA8HeevQT/FULhxzR99pxphltZcVaugps53THCeiWA8SguxxpSp3gKPiuYfSWopkLQ4hw==}
@@ -787,6 +950,7 @@ packages:
       '@babel/plugin-syntax-async-generators': 7.8.4(@babel/core@7.28.4)
     transitivePeerDependencies:
       - supports-color
+    dev: true
 
   /@babel/plugin-proposal-class-properties@7.18.6(@babel/core@7.28.4):
     resolution: {integrity: sha512-cumfXOF0+nzZrrN8Rf0t7M+tF6sZc7vhQwYQck9q1/5w2OExlD+b4v4RpMJFaV1Z7WcDRgO6FqvxqxGlwo+RHQ==}
@@ -833,6 +997,7 @@ packages:
       '@babel/core': 7.28.4
       '@babel/helper-plugin-utils': 7.27.1
       '@babel/plugin-syntax-logical-assignment-operators': 7.10.4(@babel/core@7.28.4)
+    dev: true
 
   /@babel/plugin-proposal-nullish-coalescing-operator@7.18.6(@babel/core@7.28.4):
     resolution: {integrity: sha512-wQxQzxYeJqHcfppzBDnm1yAY0jSRkUXR2z8RePZYrKwMKgMlE8+Z6LUno+bd6LvbGh8Gltvy74+9pIYkr+XkKA==}
@@ -855,6 +1020,7 @@ packages:
       '@babel/core': 7.28.4
       '@babel/helper-plugin-utils': 7.27.1
       '@babel/plugin-syntax-numeric-separator': 7.10.4(@babel/core@7.28.4)
+    dev: true
 
   /@babel/plugin-proposal-object-rest-spread@7.20.7(@babel/core@7.28.4):
     resolution: {integrity: sha512-d2S98yCiLxDVmBmE8UjGcfPvNEUbA1U5q5WxaWFUGRzJSVAZqm5W6MbPct0jxnegUZ0niLeNX+IOzEs7wYg9Dg==}
@@ -869,6 +1035,7 @@ packages:
       '@babel/helper-plugin-utils': 7.27.1
       '@babel/plugin-syntax-object-rest-spread': 7.8.3(@babel/core@7.28.4)
       '@babel/plugin-transform-parameters': 7.27.7(@babel/core@7.28.4)
+    dev: true
 
   /@babel/plugin-proposal-optional-catch-binding@7.18.6(@babel/core@7.28.4):
     resolution: {integrity: sha512-Q40HEhs9DJQyaZfUjjn6vE8Cv4GmMHCYuMGIWUnlxH6400VGxOuwWsPt4FxXxJkC/5eOzgn0z21M9gMT4MOhbw==}
@@ -880,6 +1047,7 @@ packages:
       '@babel/core': 7.28.4
       '@babel/helper-plugin-utils': 7.27.1
       '@babel/plugin-syntax-optional-catch-binding': 7.8.3(@babel/core@7.28.4)
+    dev: true
 
   /@babel/plugin-proposal-optional-chaining@7.21.0(@babel/core@7.28.4):
     resolution: {integrity: sha512-p4zeefM72gpmEe2fkUr/OnOXpWEf8nAgk7ZYVqqfFiyIG7oFfVZcCrU64hWn5xp4tQ9LkV4bTIa5rD0KANpKNA==}
@@ -1939,6 +2107,12 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
+  /@egjs/hammerjs@2.0.17:
+    resolution: {integrity: sha512-XQsZgjm2EcVUiZQf11UBJQfmZeEmOW8DpI1gsFeln6w0ae0ii4dMQEQ0kjl6DspdWX1aGY1/loyXnP0JS06e/A==}
+    engines: {node: '>=0.8.0'}
+    dependencies:
+      '@types/hammerjs': 2.0.46
+
   /@emnapi/core@1.5.0:
     resolution: {integrity: sha512-sbP8GzB1WDzacS8fgNPpHlp6C9VZe+SJP3F90W9rLemaQj2PzIuTEl1qDOYQf58YIpyjViI24y9aPWCjEzY2cg==}
     requiresBuild: true
@@ -2116,8 +2290,8 @@ packages:
       connect: 3.7.0
       debug: 4.4.3
       env-editor: 0.4.2
-      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@19.1.0)
-      expo-router: 6.0.8(@expo/metro-runtime@6.1.2)(@types/react@19.1.14)(expo-constants@18.0.9)(expo-linking@8.0.8)(expo@54.0.10)(react-dom@19.1.0)(react-native-safe-area-context@5.6.1)(react-native-screens@4.16.0)(react-native-web@0.21.1)(react-native@0.81.4)(react@19.1.0)
+      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@18.3.1)
+      expo-router: 6.0.8(@expo/metro-runtime@6.1.2)(@react-navigation/drawer@7.5.8)(@types/react@19.1.14)(expo-constants@18.0.9)(expo-linking@8.0.8)(expo@54.0.10)(react-dom@18.3.1)(react-native-gesture-handler@2.28.0)(react-native-reanimated@4.1.2)(react-native-safe-area-context@5.6.1)(react-native-screens@4.16.0)(react-native-web@0.21.1)(react-native@0.81.4)(react@18.3.1)
       freeport-async: 2.0.0
       getenv: 2.0.0
       glob: 10.4.5
@@ -2132,7 +2306,7 @@ packages:
       progress: 2.0.3
       prompts: 2.4.2
       qrcode-terminal: 0.11.0
-      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
       require-from-string: 2.0.2
       requireg: 0.2.2
       resolve: 1.22.10
@@ -2213,7 +2387,7 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /@expo/devtools@0.1.7(react-native@0.81.4)(react@19.1.0):
+  /@expo/devtools@0.1.7(react-native@0.81.4)(react@18.3.1):
     resolution: {integrity: sha512-dfIa9qMyXN+0RfU6SN4rKeXZyzKWsnz6xBSDccjL4IRiE+fQ0t84zg0yxgN4t/WK2JU5v6v4fby7W7Crv9gJvA==}
     peerDependencies:
       react: '*'
@@ -2225,8 +2399,8 @@ packages:
         optional: true
     dependencies:
       chalk: 4.1.2
-      react: 19.1.0
-      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
+      react: 18.3.1
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
 
   /@expo/env@2.0.7:
     resolution: {integrity: sha512-BNETbLEohk3HQ2LxwwezpG8pq+h7Fs7/vAMP3eAtFT1BCpprLYoBBFZH7gW4aqGfqOcVP4Lc91j014verrYNGg==}
@@ -2313,7 +2487,7 @@ packages:
       debug: 4.4.3
       dotenv: 16.4.7
       dotenv-expand: 11.0.7
-      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@19.1.0)
+      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@18.3.1)
       getenv: 2.0.0
       glob: 10.4.5
       hermes-parser: 0.29.1
@@ -2327,7 +2501,7 @@ packages:
       - supports-color
       - utf-8-validate
 
-  /@expo/metro-runtime@6.1.2(expo@54.0.10)(react-dom@19.1.0)(react-native@0.81.4)(react@19.1.0):
+  /@expo/metro-runtime@6.1.2(expo@54.0.10)(react-dom@18.3.1)(react-native@0.81.4)(react@18.3.1):
     resolution: {integrity: sha512-nvM+Qv45QH7pmYvP8JB1G8JpScrWND3KrMA6ZKe62cwwNiX/BjHU28Ear0v/4bQWXlOY0mv6B8CDIm8JxXde9g==}
     peerDependencies:
       expo: '*'
@@ -2339,11 +2513,11 @@ packages:
         optional: true
     dependencies:
       anser: 1.4.10
-      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@19.1.0)
+      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@18.3.1)
       pretty-format: 29.7.0
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
-      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
       stacktrace-parser: 0.1.11
       whatwg-fetch: 3.6.20
 
@@ -2403,7 +2577,7 @@ packages:
       '@expo/json-file': 10.0.7
       '@react-native/normalize-colors': 0.81.4
       debug: 4.4.3
-      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@19.1.0)
+      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@18.3.1)
       resolve-from: 5.0.0
       semver: 7.7.2
       xml2js: 0.6.0
@@ -2434,16 +2608,16 @@ packages:
   /@expo/sudo-prompt@9.3.2:
     resolution: {integrity: sha512-HHQigo3rQWKMDzYDLkubN5WQOYXJJE2eNqIQC2axC2iO3mHdwnIR7FgZVvHWtBwAdzBgAP0ECp8KqS8TiMKvgw==}
 
-  /@expo/vector-icons@15.0.2(expo-font@14.0.8)(react-native@0.81.4)(react@19.1.0):
+  /@expo/vector-icons@15.0.2(expo-font@14.0.8)(react-native@0.81.4)(react@18.3.1):
     resolution: {integrity: sha512-IiBjg7ZikueuHNf40wSGCf0zS73a3guJLdZzKnDUxsauB8VWPLMeWnRIupc+7cFhLUkqyvyo0jLNlcxG5xPOuQ==}
     peerDependencies:
       expo-font: '>=14.0.4'
       react: '*'
       react-native: '*'
     dependencies:
-      expo-font: 14.0.8(expo@54.0.10)(react-native@0.81.4)(react@19.1.0)
-      react: 19.1.0
-      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
+      expo-font: 14.0.8(expo@54.0.10)(react-native@0.81.4)(react@18.3.1)
+      react: 18.3.1
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
 
   /@expo/ws-tunnel@1.0.6:
     resolution: {integrity: sha512-nDRbLmSrJar7abvUjp3smDwH8HcbZcoOEa5jVPUv9/9CajgmWw20JNRwTuBRzWIWIkEJDkz20GoNA+tSwUqk0Q==}
@@ -2459,11 +2633,13 @@ packages:
 
   /@hapi/hoek@9.3.0:
     resolution: {integrity: sha512-/c6rf4UJlmHlC9b5BaNvzAcFv7HZ2QHaV0D4/HNlBdvFnvQq8RI4kYdhyPCl7Xj+oWvTWQ8ujhqS53LIgAe6KQ==}
+    dev: true
 
   /@hapi/topo@5.1.0:
     resolution: {integrity: sha512-foQZKJig7Ob0BMAYBfcJk8d77QtOe7Wo4ox7ff1lQYoNNAb6jwcY1ncdoy2e9wQZzvNy7ODZCYJkK8kzmcAnAg==}
     dependencies:
       '@hapi/hoek': 9.3.0
+    dev: true
 
   /@humanfs/core@0.19.1:
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -2701,6 +2877,13 @@ packages:
     dependencies:
       '@sinclair/typebox': 0.27.8
 
+  /@jest/schemas@30.0.5:
+    resolution: {integrity: sha512-DmdYgtezMkh3cpU8/1uyXakv3tJRcmcXxBOcO0tbaozPwpmh4YMsnWrQm9ZmZMfa5ocbxzbFk6O4bDPEc/iAnA==}
+    engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
+    dependencies:
+      '@sinclair/typebox': 0.34.41
+    dev: false
+
   /@jest/source-map@29.6.3:
     resolution: {integrity: sha512-MHjT95QuipcPrpLM+8JMSzFx6eHp5Bm+4XeFDJlwsvVBjmKNiIAvasGK2fxz2WbGRlnvqehFbh07MMa7n3YJnw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
@@ -2761,6 +2944,7 @@ packages:
       '@types/node': 20.19.17
       '@types/yargs': 15.0.19
       chalk: 4.1.2
+    dev: true
 
   /@jest/types@29.6.3:
     resolution: {integrity: sha512-u3UPsIilWKOM3F9CXtrG8LEJmNxwoCQC/XVj4IKYXvvpx7QIi/Kg1LI5uDmDpKlac62NUtX7eLjRh+jVZcLOzw==}
@@ -3202,10 +3386,12 @@ packages:
     dependencies:
       '@nodelib/fs.stat': 2.0.5
       run-parallel: 1.2.0
+    dev: true
 
   /@nodelib/fs.stat@2.0.5:
     resolution: {integrity: sha512-RkhPPp2zrqDAQA/2jNhnztcPAlv64XdhIp7a7454A5ovI7Bukxgt7MX7udwAu3zg1DcpPU0rz3VV1SeaqvY4+A==}
     engines: {node: '>= 8'}
+    dev: true
 
   /@nodelib/fs.walk@1.2.8:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
@@ -3213,6 +3399,7 @@ packages:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.19.1
+    dev: true
 
   /@nolyfill/is-core-module@1.0.39:
     resolution: {integrity: sha512-nn5ozdjYQpUCZlWGuxcJY/KpxkWQs4DcbMCmKojjyrYDEAGy4Ce19NN4v5MduafTwJlbKc99UA8YhSVqq9yPZA==}
@@ -3290,7 +3477,7 @@ packages:
   /@radix-ui/primitive@1.1.3:
     resolution: {integrity: sha512-JTF99U/6XIjCBo0wqkU5sK10glYe27MRRsfwoiq5zzOEZLHU3A3KCMa5X/azekYRCJ0HlwI0crAXS/5dEHTzDg==}
 
-  /@radix-ui/react-collection@1.1.7(@types/react@19.1.14)(react-dom@19.1.0)(react@19.1.0):
+  /@radix-ui/react-collection@1.1.7(@types/react@19.1.14)(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-Fh9rGN0MoI4ZFUNyfFVNU4y9LUz93u9/0K+yLgA2bwRojxM8JU1DyvvMBabnZPBgMWREAJvU2jjVzq+LrFUglw==}
     peerDependencies:
       '@types/react': '*'
@@ -3303,15 +3490,15 @@ packages:
       '@types/react-dom':
         optional: true
     dependencies:
-      '@radix-ui/react-compose-refs': 1.1.2(@types/react@19.1.14)(react@19.1.0)
-      '@radix-ui/react-context': 1.1.2(@types/react@19.1.14)(react@19.1.0)
-      '@radix-ui/react-primitive': 2.1.3(@types/react@19.1.14)(react-dom@19.1.0)(react@19.1.0)
-      '@radix-ui/react-slot': 1.2.3(@types/react@19.1.14)(react@19.1.0)
+      '@radix-ui/react-compose-refs': 1.1.2(@types/react@19.1.14)(react@18.3.1)
+      '@radix-ui/react-context': 1.1.2(@types/react@19.1.14)(react@18.3.1)
+      '@radix-ui/react-primitive': 2.1.3(@types/react@19.1.14)(react-dom@18.3.1)(react@18.3.1)
+      '@radix-ui/react-slot': 1.2.3(@types/react@19.1.14)(react@18.3.1)
       '@types/react': 19.1.14
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
-  /@radix-ui/react-compose-refs@1.1.2(@types/react@19.1.14)(react@19.1.0):
+  /@radix-ui/react-compose-refs@1.1.2(@types/react@19.1.14)(react@18.3.1):
     resolution: {integrity: sha512-z4eqJvfiNnFMHIIvXP3CY57y2WJs5g2v3X0zm9mEJkrkNv4rDxu+sg9Jh8EkXyeqBkB7SOcboo9dMVqhyrACIg==}
     peerDependencies:
       '@types/react': '*'
@@ -3321,9 +3508,9 @@ packages:
         optional: true
     dependencies:
       '@types/react': 19.1.14
-      react: 19.1.0
+      react: 18.3.1
 
-  /@radix-ui/react-context@1.1.2(@types/react@19.1.14)(react@19.1.0):
+  /@radix-ui/react-context@1.1.2(@types/react@19.1.14)(react@18.3.1):
     resolution: {integrity: sha512-jCi/QKUM2r1Ju5a3J64TH2A5SpKAgh0LpknyqdQ4m6DCV0xJ2HG1xARRwNGPQfi1SLdLWZ1OJz6F4OMBBNiGJA==}
     peerDependencies:
       '@types/react': '*'
@@ -3333,9 +3520,9 @@ packages:
         optional: true
     dependencies:
       '@types/react': 19.1.14
-      react: 19.1.0
+      react: 18.3.1
 
-  /@radix-ui/react-dialog@1.1.15(@types/react@19.1.14)(react-dom@19.1.0)(react@19.1.0):
+  /@radix-ui/react-dialog@1.1.15(@types/react@19.1.14)(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-TCglVRtzlffRNxRMEyR36DGBLJpeusFcgMVD9PZEzAKnUs1lKCgX5u9BmC2Yg+LL9MgZDugFFs1Vl+Jp4t/PGw==}
     peerDependencies:
       '@types/react': '*'
@@ -3349,24 +3536,24 @@ packages:
         optional: true
     dependencies:
       '@radix-ui/primitive': 1.1.3
-      '@radix-ui/react-compose-refs': 1.1.2(@types/react@19.1.14)(react@19.1.0)
-      '@radix-ui/react-context': 1.1.2(@types/react@19.1.14)(react@19.1.0)
-      '@radix-ui/react-dismissable-layer': 1.1.11(@types/react@19.1.14)(react-dom@19.1.0)(react@19.1.0)
-      '@radix-ui/react-focus-guards': 1.1.3(@types/react@19.1.14)(react@19.1.0)
-      '@radix-ui/react-focus-scope': 1.1.7(@types/react@19.1.14)(react-dom@19.1.0)(react@19.1.0)
-      '@radix-ui/react-id': 1.1.1(@types/react@19.1.14)(react@19.1.0)
-      '@radix-ui/react-portal': 1.1.9(@types/react@19.1.14)(react-dom@19.1.0)(react@19.1.0)
-      '@radix-ui/react-presence': 1.1.5(@types/react@19.1.14)(react-dom@19.1.0)(react@19.1.0)
-      '@radix-ui/react-primitive': 2.1.3(@types/react@19.1.14)(react-dom@19.1.0)(react@19.1.0)
-      '@radix-ui/react-slot': 1.2.3(@types/react@19.1.14)(react@19.1.0)
-      '@radix-ui/react-use-controllable-state': 1.2.2(@types/react@19.1.14)(react@19.1.0)
+      '@radix-ui/react-compose-refs': 1.1.2(@types/react@19.1.14)(react@18.3.1)
+      '@radix-ui/react-context': 1.1.2(@types/react@19.1.14)(react@18.3.1)
+      '@radix-ui/react-dismissable-layer': 1.1.11(@types/react@19.1.14)(react-dom@18.3.1)(react@18.3.1)
+      '@radix-ui/react-focus-guards': 1.1.3(@types/react@19.1.14)(react@18.3.1)
+      '@radix-ui/react-focus-scope': 1.1.7(@types/react@19.1.14)(react-dom@18.3.1)(react@18.3.1)
+      '@radix-ui/react-id': 1.1.1(@types/react@19.1.14)(react@18.3.1)
+      '@radix-ui/react-portal': 1.1.9(@types/react@19.1.14)(react-dom@18.3.1)(react@18.3.1)
+      '@radix-ui/react-presence': 1.1.5(@types/react@19.1.14)(react-dom@18.3.1)(react@18.3.1)
+      '@radix-ui/react-primitive': 2.1.3(@types/react@19.1.14)(react-dom@18.3.1)(react@18.3.1)
+      '@radix-ui/react-slot': 1.2.3(@types/react@19.1.14)(react@18.3.1)
+      '@radix-ui/react-use-controllable-state': 1.2.2(@types/react@19.1.14)(react@18.3.1)
       '@types/react': 19.1.14
       aria-hidden: 1.2.6
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
-      react-remove-scroll: 2.7.1(@types/react@19.1.14)(react@19.1.0)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      react-remove-scroll: 2.7.1(@types/react@19.1.14)(react@18.3.1)
 
-  /@radix-ui/react-direction@1.1.1(@types/react@19.1.14)(react@19.1.0):
+  /@radix-ui/react-direction@1.1.1(@types/react@19.1.14)(react@18.3.1):
     resolution: {integrity: sha512-1UEWRX6jnOA2y4H5WczZ44gOOjTEmlqv1uNW4GAJEO5+bauCBhv8snY65Iw5/VOS/ghKN9gr2KjnLKxrsvoMVw==}
     peerDependencies:
       '@types/react': '*'
@@ -3376,9 +3563,9 @@ packages:
         optional: true
     dependencies:
       '@types/react': 19.1.14
-      react: 19.1.0
+      react: 18.3.1
 
-  /@radix-ui/react-dismissable-layer@1.1.11(@types/react@19.1.14)(react-dom@19.1.0)(react@19.1.0):
+  /@radix-ui/react-dismissable-layer@1.1.11(@types/react@19.1.14)(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-Nqcp+t5cTB8BinFkZgXiMJniQH0PsUt2k51FUhbdfeKvc4ACcG2uQniY/8+h1Yv6Kza4Q7lD7PQV0z0oicE0Mg==}
     peerDependencies:
       '@types/react': '*'
@@ -3392,15 +3579,15 @@ packages:
         optional: true
     dependencies:
       '@radix-ui/primitive': 1.1.3
-      '@radix-ui/react-compose-refs': 1.1.2(@types/react@19.1.14)(react@19.1.0)
-      '@radix-ui/react-primitive': 2.1.3(@types/react@19.1.14)(react-dom@19.1.0)(react@19.1.0)
-      '@radix-ui/react-use-callback-ref': 1.1.1(@types/react@19.1.14)(react@19.1.0)
-      '@radix-ui/react-use-escape-keydown': 1.1.1(@types/react@19.1.14)(react@19.1.0)
+      '@radix-ui/react-compose-refs': 1.1.2(@types/react@19.1.14)(react@18.3.1)
+      '@radix-ui/react-primitive': 2.1.3(@types/react@19.1.14)(react-dom@18.3.1)(react@18.3.1)
+      '@radix-ui/react-use-callback-ref': 1.1.1(@types/react@19.1.14)(react@18.3.1)
+      '@radix-ui/react-use-escape-keydown': 1.1.1(@types/react@19.1.14)(react@18.3.1)
       '@types/react': 19.1.14
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
-  /@radix-ui/react-focus-guards@1.1.3(@types/react@19.1.14)(react@19.1.0):
+  /@radix-ui/react-focus-guards@1.1.3(@types/react@19.1.14)(react@18.3.1):
     resolution: {integrity: sha512-0rFg/Rj2Q62NCm62jZw0QX7a3sz6QCQU0LpZdNrJX8byRGaGVTqbrW9jAoIAHyMQqsNpeZ81YgSizOt5WXq0Pw==}
     peerDependencies:
       '@types/react': '*'
@@ -3410,9 +3597,9 @@ packages:
         optional: true
     dependencies:
       '@types/react': 19.1.14
-      react: 19.1.0
+      react: 18.3.1
 
-  /@radix-ui/react-focus-scope@1.1.7(@types/react@19.1.14)(react-dom@19.1.0)(react@19.1.0):
+  /@radix-ui/react-focus-scope@1.1.7(@types/react@19.1.14)(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-t2ODlkXBQyn7jkl6TNaw/MtVEVvIGelJDCG41Okq/KwUsJBwQ4XVZsHAVUkK4mBv3ewiAS3PGuUWuY2BoK4ZUw==}
     peerDependencies:
       '@types/react': '*'
@@ -3425,14 +3612,14 @@ packages:
       '@types/react-dom':
         optional: true
     dependencies:
-      '@radix-ui/react-compose-refs': 1.1.2(@types/react@19.1.14)(react@19.1.0)
-      '@radix-ui/react-primitive': 2.1.3(@types/react@19.1.14)(react-dom@19.1.0)(react@19.1.0)
-      '@radix-ui/react-use-callback-ref': 1.1.1(@types/react@19.1.14)(react@19.1.0)
+      '@radix-ui/react-compose-refs': 1.1.2(@types/react@19.1.14)(react@18.3.1)
+      '@radix-ui/react-primitive': 2.1.3(@types/react@19.1.14)(react-dom@18.3.1)(react@18.3.1)
+      '@radix-ui/react-use-callback-ref': 1.1.1(@types/react@19.1.14)(react@18.3.1)
       '@types/react': 19.1.14
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
-  /@radix-ui/react-id@1.1.1(@types/react@19.1.14)(react@19.1.0):
+  /@radix-ui/react-id@1.1.1(@types/react@19.1.14)(react@18.3.1):
     resolution: {integrity: sha512-kGkGegYIdQsOb4XjsfM97rXsiHaBwco+hFI66oO4s9LU+PLAC5oJ7khdOVFxkhsmlbpUqDAvXw11CluXP+jkHg==}
     peerDependencies:
       '@types/react': '*'
@@ -3441,11 +3628,11 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@radix-ui/react-use-layout-effect': 1.1.1(@types/react@19.1.14)(react@19.1.0)
+      '@radix-ui/react-use-layout-effect': 1.1.1(@types/react@19.1.14)(react@18.3.1)
       '@types/react': 19.1.14
-      react: 19.1.0
+      react: 18.3.1
 
-  /@radix-ui/react-portal@1.1.9(@types/react@19.1.14)(react-dom@19.1.0)(react@19.1.0):
+  /@radix-ui/react-portal@1.1.9(@types/react@19.1.14)(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-bpIxvq03if6UNwXZ+HTK71JLh4APvnXntDc6XOX8UVq4XQOVl7lwok0AvIl+b8zgCw3fSaVTZMpAPPagXbKmHQ==}
     peerDependencies:
       '@types/react': '*'
@@ -3458,13 +3645,13 @@ packages:
       '@types/react-dom':
         optional: true
     dependencies:
-      '@radix-ui/react-primitive': 2.1.3(@types/react@19.1.14)(react-dom@19.1.0)(react@19.1.0)
-      '@radix-ui/react-use-layout-effect': 1.1.1(@types/react@19.1.14)(react@19.1.0)
+      '@radix-ui/react-primitive': 2.1.3(@types/react@19.1.14)(react-dom@18.3.1)(react@18.3.1)
+      '@radix-ui/react-use-layout-effect': 1.1.1(@types/react@19.1.14)(react@18.3.1)
       '@types/react': 19.1.14
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
-  /@radix-ui/react-presence@1.1.5(@types/react@19.1.14)(react-dom@19.1.0)(react@19.1.0):
+  /@radix-ui/react-presence@1.1.5(@types/react@19.1.14)(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-/jfEwNDdQVBCNvjkGit4h6pMOzq8bHkopq458dPt2lMjx+eBQUohZNG9A7DtO/O5ukSbxuaNGXMjHicgwy6rQQ==}
     peerDependencies:
       '@types/react': '*'
@@ -3477,13 +3664,13 @@ packages:
       '@types/react-dom':
         optional: true
     dependencies:
-      '@radix-ui/react-compose-refs': 1.1.2(@types/react@19.1.14)(react@19.1.0)
-      '@radix-ui/react-use-layout-effect': 1.1.1(@types/react@19.1.14)(react@19.1.0)
+      '@radix-ui/react-compose-refs': 1.1.2(@types/react@19.1.14)(react@18.3.1)
+      '@radix-ui/react-use-layout-effect': 1.1.1(@types/react@19.1.14)(react@18.3.1)
       '@types/react': 19.1.14
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
-  /@radix-ui/react-primitive@2.1.3(@types/react@19.1.14)(react-dom@19.1.0)(react@19.1.0):
+  /@radix-ui/react-primitive@2.1.3(@types/react@19.1.14)(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-m9gTwRkhy2lvCPe6QJp4d3G1TYEUHn/FzJUtq9MjH46an1wJU+GdoGC5VLof8RX8Ft/DlpshApkhswDLZzHIcQ==}
     peerDependencies:
       '@types/react': '*'
@@ -3496,12 +3683,12 @@ packages:
       '@types/react-dom':
         optional: true
     dependencies:
-      '@radix-ui/react-slot': 1.2.3(@types/react@19.1.14)(react@19.1.0)
+      '@radix-ui/react-slot': 1.2.3(@types/react@19.1.14)(react@18.3.1)
       '@types/react': 19.1.14
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
-  /@radix-ui/react-roving-focus@1.1.11(@types/react@19.1.14)(react-dom@19.1.0)(react@19.1.0):
+  /@radix-ui/react-roving-focus@1.1.11(@types/react@19.1.14)(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-7A6S9jSgm/S+7MdtNDSb+IU859vQqJ/QAtcYQcfFC6W8RS4IxIZDldLR0xqCFZ6DCyrQLjLPsxtTNch5jVA4lA==}
     peerDependencies:
       '@types/react': '*'
@@ -3515,19 +3702,19 @@ packages:
         optional: true
     dependencies:
       '@radix-ui/primitive': 1.1.3
-      '@radix-ui/react-collection': 1.1.7(@types/react@19.1.14)(react-dom@19.1.0)(react@19.1.0)
-      '@radix-ui/react-compose-refs': 1.1.2(@types/react@19.1.14)(react@19.1.0)
-      '@radix-ui/react-context': 1.1.2(@types/react@19.1.14)(react@19.1.0)
-      '@radix-ui/react-direction': 1.1.1(@types/react@19.1.14)(react@19.1.0)
-      '@radix-ui/react-id': 1.1.1(@types/react@19.1.14)(react@19.1.0)
-      '@radix-ui/react-primitive': 2.1.3(@types/react@19.1.14)(react-dom@19.1.0)(react@19.1.0)
-      '@radix-ui/react-use-callback-ref': 1.1.1(@types/react@19.1.14)(react@19.1.0)
-      '@radix-ui/react-use-controllable-state': 1.2.2(@types/react@19.1.14)(react@19.1.0)
+      '@radix-ui/react-collection': 1.1.7(@types/react@19.1.14)(react-dom@18.3.1)(react@18.3.1)
+      '@radix-ui/react-compose-refs': 1.1.2(@types/react@19.1.14)(react@18.3.1)
+      '@radix-ui/react-context': 1.1.2(@types/react@19.1.14)(react@18.3.1)
+      '@radix-ui/react-direction': 1.1.1(@types/react@19.1.14)(react@18.3.1)
+      '@radix-ui/react-id': 1.1.1(@types/react@19.1.14)(react@18.3.1)
+      '@radix-ui/react-primitive': 2.1.3(@types/react@19.1.14)(react-dom@18.3.1)(react@18.3.1)
+      '@radix-ui/react-use-callback-ref': 1.1.1(@types/react@19.1.14)(react@18.3.1)
+      '@radix-ui/react-use-controllable-state': 1.2.2(@types/react@19.1.14)(react@18.3.1)
       '@types/react': 19.1.14
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
-  /@radix-ui/react-slot@1.2.0(@types/react@19.1.14)(react@19.1.0):
+  /@radix-ui/react-slot@1.2.0(@types/react@19.1.14)(react@18.3.1):
     resolution: {integrity: sha512-ujc+V6r0HNDviYqIK3rW4ffgYiZ8g5DEHrGJVk4x7kTlLXRDILnKX9vAUYeIsLOoDpDJ0ujpqMkjH4w2ofuo6w==}
     peerDependencies:
       '@types/react': '*'
@@ -3536,11 +3723,11 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@radix-ui/react-compose-refs': 1.1.2(@types/react@19.1.14)(react@19.1.0)
+      '@radix-ui/react-compose-refs': 1.1.2(@types/react@19.1.14)(react@18.3.1)
       '@types/react': 19.1.14
-      react: 19.1.0
+      react: 18.3.1
 
-  /@radix-ui/react-slot@1.2.3(@types/react@19.1.14)(react@19.1.0):
+  /@radix-ui/react-slot@1.2.3(@types/react@19.1.14)(react@18.3.1):
     resolution: {integrity: sha512-aeNmHnBxbi2St0au6VBVC7JXFlhLlOnvIIlePNniyUNAClzmtAUEY8/pBiK3iHjufOlwA+c20/8jngo7xcrg8A==}
     peerDependencies:
       '@types/react': '*'
@@ -3549,11 +3736,11 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@radix-ui/react-compose-refs': 1.1.2(@types/react@19.1.14)(react@19.1.0)
+      '@radix-ui/react-compose-refs': 1.1.2(@types/react@19.1.14)(react@18.3.1)
       '@types/react': 19.1.14
-      react: 19.1.0
+      react: 18.3.1
 
-  /@radix-ui/react-tabs@1.1.13(@types/react@19.1.14)(react-dom@19.1.0)(react@19.1.0):
+  /@radix-ui/react-tabs@1.1.13(@types/react@19.1.14)(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-7xdcatg7/U+7+Udyoj2zodtI9H/IIopqo+YOIcZOq1nJwXWBZ9p8xiu5llXlekDbZkca79a/fozEYQXIA4sW6A==}
     peerDependencies:
       '@types/react': '*'
@@ -3567,18 +3754,18 @@ packages:
         optional: true
     dependencies:
       '@radix-ui/primitive': 1.1.3
-      '@radix-ui/react-context': 1.1.2(@types/react@19.1.14)(react@19.1.0)
-      '@radix-ui/react-direction': 1.1.1(@types/react@19.1.14)(react@19.1.0)
-      '@radix-ui/react-id': 1.1.1(@types/react@19.1.14)(react@19.1.0)
-      '@radix-ui/react-presence': 1.1.5(@types/react@19.1.14)(react-dom@19.1.0)(react@19.1.0)
-      '@radix-ui/react-primitive': 2.1.3(@types/react@19.1.14)(react-dom@19.1.0)(react@19.1.0)
-      '@radix-ui/react-roving-focus': 1.1.11(@types/react@19.1.14)(react-dom@19.1.0)(react@19.1.0)
-      '@radix-ui/react-use-controllable-state': 1.2.2(@types/react@19.1.14)(react@19.1.0)
+      '@radix-ui/react-context': 1.1.2(@types/react@19.1.14)(react@18.3.1)
+      '@radix-ui/react-direction': 1.1.1(@types/react@19.1.14)(react@18.3.1)
+      '@radix-ui/react-id': 1.1.1(@types/react@19.1.14)(react@18.3.1)
+      '@radix-ui/react-presence': 1.1.5(@types/react@19.1.14)(react-dom@18.3.1)(react@18.3.1)
+      '@radix-ui/react-primitive': 2.1.3(@types/react@19.1.14)(react-dom@18.3.1)(react@18.3.1)
+      '@radix-ui/react-roving-focus': 1.1.11(@types/react@19.1.14)(react-dom@18.3.1)(react@18.3.1)
+      '@radix-ui/react-use-controllable-state': 1.2.2(@types/react@19.1.14)(react@18.3.1)
       '@types/react': 19.1.14
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
-  /@radix-ui/react-use-callback-ref@1.1.1(@types/react@19.1.14)(react@19.1.0):
+  /@radix-ui/react-use-callback-ref@1.1.1(@types/react@19.1.14)(react@18.3.1):
     resolution: {integrity: sha512-FkBMwD+qbGQeMu1cOHnuGB6x4yzPjho8ap5WtbEJ26umhgqVXbhekKUQO+hZEL1vU92a3wHwdp0HAcqAUF5iDg==}
     peerDependencies:
       '@types/react': '*'
@@ -3588,9 +3775,9 @@ packages:
         optional: true
     dependencies:
       '@types/react': 19.1.14
-      react: 19.1.0
+      react: 18.3.1
 
-  /@radix-ui/react-use-controllable-state@1.2.2(@types/react@19.1.14)(react@19.1.0):
+  /@radix-ui/react-use-controllable-state@1.2.2(@types/react@19.1.14)(react@18.3.1):
     resolution: {integrity: sha512-BjasUjixPFdS+NKkypcyyN5Pmg83Olst0+c6vGov0diwTEo6mgdqVR6hxcEgFuh4QrAs7Rc+9KuGJ9TVCj0Zzg==}
     peerDependencies:
       '@types/react': '*'
@@ -3599,12 +3786,12 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@radix-ui/react-use-effect-event': 0.0.2(@types/react@19.1.14)(react@19.1.0)
-      '@radix-ui/react-use-layout-effect': 1.1.1(@types/react@19.1.14)(react@19.1.0)
+      '@radix-ui/react-use-effect-event': 0.0.2(@types/react@19.1.14)(react@18.3.1)
+      '@radix-ui/react-use-layout-effect': 1.1.1(@types/react@19.1.14)(react@18.3.1)
       '@types/react': 19.1.14
-      react: 19.1.0
+      react: 18.3.1
 
-  /@radix-ui/react-use-effect-event@0.0.2(@types/react@19.1.14)(react@19.1.0):
+  /@radix-ui/react-use-effect-event@0.0.2(@types/react@19.1.14)(react@18.3.1):
     resolution: {integrity: sha512-Qp8WbZOBe+blgpuUT+lw2xheLP8q0oatc9UpmiemEICxGvFLYmHm9QowVZGHtJlGbS6A6yJ3iViad/2cVjnOiA==}
     peerDependencies:
       '@types/react': '*'
@@ -3613,11 +3800,11 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@radix-ui/react-use-layout-effect': 1.1.1(@types/react@19.1.14)(react@19.1.0)
+      '@radix-ui/react-use-layout-effect': 1.1.1(@types/react@19.1.14)(react@18.3.1)
       '@types/react': 19.1.14
-      react: 19.1.0
+      react: 18.3.1
 
-  /@radix-ui/react-use-escape-keydown@1.1.1(@types/react@19.1.14)(react@19.1.0):
+  /@radix-ui/react-use-escape-keydown@1.1.1(@types/react@19.1.14)(react@18.3.1):
     resolution: {integrity: sha512-Il0+boE7w/XebUHyBjroE+DbByORGR9KKmITzbR7MyQ4akpORYP/ZmbhAr0DG7RmmBqoOnZdy2QlvajJ2QA59g==}
     peerDependencies:
       '@types/react': '*'
@@ -3626,11 +3813,11 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@radix-ui/react-use-callback-ref': 1.1.1(@types/react@19.1.14)(react@19.1.0)
+      '@radix-ui/react-use-callback-ref': 1.1.1(@types/react@19.1.14)(react@18.3.1)
       '@types/react': 19.1.14
-      react: 19.1.0
+      react: 18.3.1
 
-  /@radix-ui/react-use-layout-effect@1.1.1(@types/react@19.1.14)(react@19.1.0):
+  /@radix-ui/react-use-layout-effect@1.1.1(@types/react@19.1.14)(react@18.3.1):
     resolution: {integrity: sha512-RbJRS4UWQFkzHTTwVymMTUv8EqYhOp8dOOviLj2ugtTiXRaRQS7GLGxZTLL1jWhMeoSCf5zmcZkqTl9IiYfXcQ==}
     peerDependencies:
       '@types/react': '*'
@@ -3640,7 +3827,7 @@ packages:
         optional: true
     dependencies:
       '@types/react': 19.1.14
-      react: 19.1.0
+      react: 18.3.1
 
   /@react-native-async-storage/async-storage@2.2.0(react-native@0.81.4):
     resolution: {integrity: sha512-gvRvjR5JAaUZF8tv2Kcq/Gbt3JHwbKFYfmb445rhOj6NUMx3qPLixmDx5pZAyb9at1bYvJ4/eTUipU5aki45xw==}
@@ -3648,7 +3835,7 @@ packages:
       react-native: ^0.0.0-0 || >=0.65 <1.0
     dependencies:
       merge-options: 3.0.4
-      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
     dev: false
 
   /@react-native-community/cli-clean@13.6.9:
@@ -3660,6 +3847,7 @@ packages:
       fast-glob: 3.3.3
     transitivePeerDependencies:
       - encoding
+    dev: true
 
   /@react-native-community/cli-config@13.6.9:
     resolution: {integrity: sha512-rFfVBcNojcMm+KKHE/xqpqXg8HoKl4EC7bFHUrahMJ+y/tZll55+oX/PGG37rzB8QzP2UbMQ19DYQKC1G7kXeg==}
@@ -3672,6 +3860,7 @@ packages:
       joi: 17.13.3
     transitivePeerDependencies:
       - encoding
+    dev: true
 
   /@react-native-community/cli-debugger-ui@13.6.9:
     resolution: {integrity: sha512-TkN7IdFmGPPvTpAo3nCAH9uwGCPxWBEAwpqEZDrq0NWllI7Tdie8vDpGdrcuCcKalmhq6OYnkXzeBah7O1Ztpw==}
@@ -3679,6 +3868,7 @@ packages:
       serve-static: 1.16.2
     transitivePeerDependencies:
       - supports-color
+    dev: true
 
   /@react-native-community/cli-doctor@13.6.9:
     resolution: {integrity: sha512-5quFaLdWFQB+677GXh5dGU9I5eg2z6Vg4jOX9vKnc9IffwyIFAyJfCZHrxLSRPDGNXD7biDQUdoezXYGwb6P/A==}
@@ -3702,6 +3892,7 @@ packages:
       yaml: 2.8.1
     transitivePeerDependencies:
       - encoding
+    dev: true
 
   /@react-native-community/cli-hermes@13.6.9:
     resolution: {integrity: sha512-GvwiwgvFw4Ws+krg2+gYj8sR3g05evmNjAHkKIKMkDTJjZ8EdyxbkifRUs1ZCq3TMZy2oeblZBXCJVOH4W7ZbA==}
@@ -3712,6 +3903,7 @@ packages:
       hermes-profile-transformer: 0.0.6
     transitivePeerDependencies:
       - encoding
+    dev: true
 
   /@react-native-community/cli-platform-android@13.6.9:
     resolution: {integrity: sha512-9KsYGdr08QhdvT3Ht7e8phQB3gDX9Fs427NJe0xnoBh+PDPTI2BD5ks5ttsH8CzEw8/P6H8tJCHq6hf2nxd9cw==}
@@ -3724,6 +3916,7 @@ packages:
       logkitty: 0.7.1
     transitivePeerDependencies:
       - encoding
+    dev: true
 
   /@react-native-community/cli-platform-apple@13.6.9:
     resolution: {integrity: sha512-KoeIHfhxMhKXZPXmhQdl6EE+jGKWwoO9jUVWgBvibpVmsNjo7woaG/tfJMEWfWF3najX1EkQAoJWpCDBMYWtlA==}
@@ -3736,6 +3929,7 @@ packages:
       ora: 5.4.1
     transitivePeerDependencies:
       - encoding
+    dev: true
 
   /@react-native-community/cli-platform-ios@13.6.9:
     resolution: {integrity: sha512-CiUcHlGs8vE0CAB4oi1f+dzniqfGuhWPNrDvae2nm8dewlahTBwIcK5CawyGezjcJoeQhjBflh9vloska+nlnw==}
@@ -3743,6 +3937,7 @@ packages:
       '@react-native-community/cli-platform-apple': 13.6.9
     transitivePeerDependencies:
       - encoding
+    dev: true
 
   /@react-native-community/cli-server-api@13.6.9:
     resolution: {integrity: sha512-W8FSlCPWymO+tlQfM3E0JmM8Oei5HZsIk5S0COOl0MRi8h0NmHI4WSTF2GCfbFZkcr2VI/fRsocoN8Au4EZAug==}
@@ -3761,6 +3956,7 @@ packages:
       - encoding
       - supports-color
       - utf-8-validate
+    dev: true
 
   /@react-native-community/cli-tools@13.6.9:
     resolution: {integrity: sha512-OXaSjoN0mZVw3nrAwcY1PC0uMfyTd9fz7Cy06dh+EJc+h0wikABsVRzV8cIOPrVV+PPEEXE0DBrH20T2puZzgQ==}
@@ -3778,11 +3974,13 @@ packages:
       sudo-prompt: 9.2.1
     transitivePeerDependencies:
       - encoding
+    dev: true
 
   /@react-native-community/cli-types@13.6.9:
     resolution: {integrity: sha512-RLxDppvRxXfs3hxceW/mShi+6o5yS+kFPnPqZTaMKKR5aSg7LwDpLQW4K2D22irEG8e6RKDkZUeH9aL3vO2O0w==}
     dependencies:
       joi: 17.13.3
+    dev: true
 
   /@react-native-community/cli@13.6.9:
     resolution: {integrity: sha512-hFJL4cgLPxncJJd/epQ4dHnMg5Jy/7Q56jFvA3MHViuKpzzfTCJCB+pGY54maZbtym53UJON9WTGpM3S81UfjQ==}
@@ -3811,10 +4009,17 @@ packages:
       - encoding
       - supports-color
       - utf-8-validate
+    dev: true
 
   /@react-native/assets-registry@0.74.87:
     resolution: {integrity: sha512-1XmRhqQchN+pXPKEKYdpJlwESxVomJOxtEnIkbo7GAlaN2sym84fHEGDXAjLilih5GVPpcpSmFzTy8jx3LtaFg==}
     engines: {node: '>=18'}
+    dev: true
+
+  /@react-native/assets-registry@0.76.0:
+    resolution: {integrity: sha512-U8KLV+PC/cRIiDpb1VbeGuEfKq2riZZtNVLp1UOyKWfPbWWu8j6Fr95w7j+nglp41z70iBeF2OmCiVnRvtNklA==}
+    engines: {node: '>=18'}
+    dev: false
 
   /@react-native/assets-registry@0.81.4:
     resolution: {integrity: sha512-AMcDadefBIjD10BRqkWw+W/VdvXEomR6aEZ0fhQRAv7igrBzb4PTn4vHKYg+sUK0e3wa74kcMy2DLc/HtnGcMA==}
@@ -3828,6 +4033,17 @@ packages:
     transitivePeerDependencies:
       - '@babel/preset-env'
       - supports-color
+    dev: true
+
+  /@react-native/babel-plugin-codegen@0.76.0(@babel/preset-env@7.28.3):
+    resolution: {integrity: sha512-HOi45pqlZnCTeR4jJ/zK0FB12r08CI9O70uBjVUqmzvHIrWmL5FaEFp6BPVFOjjXtUsl3JZ2Mle7WpsAP2PQBA==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@react-native/codegen': 0.76.0(@babel/preset-env@7.28.3)
+    transitivePeerDependencies:
+      - '@babel/preset-env'
+      - supports-color
+    dev: false
 
   /@react-native/babel-plugin-codegen@0.81.4(@babel/core@7.28.4):
     resolution: {integrity: sha512-6ztXf2Tl2iWznyI/Da/N2Eqymt0Mnn69GCLnEFxFbNdk0HxHPZBNWU9shTXhsLWOL7HATSqwg/bB1+3kY1q+mA==}
@@ -3891,6 +4107,63 @@ packages:
     transitivePeerDependencies:
       - '@babel/preset-env'
       - supports-color
+    dev: true
+
+  /@react-native/babel-preset@0.76.0(@babel/core@7.28.4)(@babel/preset-env@7.28.3):
+    resolution: {integrity: sha512-HgQt4MyuWLcnrIglXn7GNPPVwtzZ4ffX+SUisdhmPtJCHuP8AOU3HsgOKLhqVfEGWTBlE4kbWoTmmLU87IJaOw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@babel/core': '*'
+    dependencies:
+      '@babel/core': 7.28.4
+      '@babel/plugin-proposal-export-default-from': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-syntax-dynamic-import': 7.8.3(@babel/core@7.28.4)
+      '@babel/plugin-syntax-export-default-from': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-syntax-nullish-coalescing-operator': 7.8.3(@babel/core@7.28.4)
+      '@babel/plugin-syntax-optional-chaining': 7.8.3(@babel/core@7.28.4)
+      '@babel/plugin-transform-arrow-functions': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-async-generator-functions': 7.28.0(@babel/core@7.28.4)
+      '@babel/plugin-transform-async-to-generator': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-block-scoping': 7.28.4(@babel/core@7.28.4)
+      '@babel/plugin-transform-class-properties': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-classes': 7.28.4(@babel/core@7.28.4)
+      '@babel/plugin-transform-computed-properties': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-destructuring': 7.28.0(@babel/core@7.28.4)
+      '@babel/plugin-transform-flow-strip-types': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-for-of': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-function-name': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-literals': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-logical-assignment-operators': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-modules-commonjs': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-named-capturing-groups-regex': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-nullish-coalescing-operator': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-numeric-separator': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-object-rest-spread': 7.28.4(@babel/core@7.28.4)
+      '@babel/plugin-transform-optional-catch-binding': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-optional-chaining': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-parameters': 7.27.7(@babel/core@7.28.4)
+      '@babel/plugin-transform-private-methods': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-private-property-in-object': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-react-display-name': 7.28.0(@babel/core@7.28.4)
+      '@babel/plugin-transform-react-jsx': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-react-jsx-source': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-regenerator': 7.28.4(@babel/core@7.28.4)
+      '@babel/plugin-transform-runtime': 7.28.3(@babel/core@7.28.4)
+      '@babel/plugin-transform-shorthand-properties': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-spread': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-sticky-regex': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-typescript': 7.28.0(@babel/core@7.28.4)
+      '@babel/plugin-transform-unicode-regex': 7.27.1(@babel/core@7.28.4)
+      '@babel/template': 7.27.2
+      '@react-native/babel-plugin-codegen': 0.76.0(@babel/preset-env@7.28.3)
+      babel-plugin-syntax-hermes-parser: 0.23.1
+      babel-plugin-transform-flow-enums: 0.0.2(@babel/core@7.28.4)
+      react-refresh: 0.14.2
+    transitivePeerDependencies:
+      - '@babel/preset-env'
+      - supports-color
+    dev: false
 
   /@react-native/babel-preset@0.81.4(@babel/core@7.28.4):
     resolution: {integrity: sha512-VYj0c/cTjQJn/RJ5G6P0L9wuYSbU9yGbPYDHCKstlQZQWkk+L9V8ZDbxdJBTIei9Xl3KPQ1odQ4QaeW+4v+AZg==}
@@ -3962,6 +4235,26 @@ packages:
       nullthrows: 1.1.1
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /@react-native/codegen@0.76.0(@babel/preset-env@7.28.3):
+    resolution: {integrity: sha512-x0zzK1rb7ZSIAeHRcRSjRo+VtLROjln1IKnQSPLEZEdyQfWNXqgiMk59E5hW7KE6I05upqfbf85PRAb5WndXdw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@babel/preset-env': ^7.1.6
+    dependencies:
+      '@babel/parser': 7.28.4
+      '@babel/preset-env': 7.28.3(@babel/core@7.28.4)
+      glob: 7.2.3
+      hermes-parser: 0.23.1
+      invariant: 2.2.4
+      jscodeshift: 0.14.0(@babel/preset-env@7.28.3)
+      mkdirp: 0.5.6
+      nullthrows: 1.1.1
+      yargs: 17.7.2
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
 
   /@react-native/codegen@0.81.4(@babel/core@7.28.4):
     resolution: {integrity: sha512-LWTGUTzFu+qOQnvkzBP52B90Ym3stZT8IFCzzUrppz8Iwglg83FCtDZAR4yLHI29VY/x/+pkcWAMCl3739XHdw==}
@@ -4000,6 +4293,35 @@ packages:
       - encoding
       - supports-color
       - utf-8-validate
+    dev: true
+
+  /@react-native/community-cli-plugin@0.76.0(@babel/core@7.28.4)(@babel/preset-env@7.28.3):
+    resolution: {integrity: sha512-JFU5kmo+lUf5vOsieJ/dGS71Z2+qV3leXbKW6p8cn5aVfupVmtz/uYcFVdGzEGIGJ3juorYOZjpG8Qz91FrUZw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@react-native-community/cli-server-api': '*'
+    peerDependenciesMeta:
+      '@react-native-community/cli-server-api':
+        optional: true
+    dependencies:
+      '@react-native/dev-middleware': 0.76.0
+      '@react-native/metro-babel-transformer': 0.76.0(@babel/core@7.28.4)(@babel/preset-env@7.28.3)
+      chalk: 4.1.2
+      execa: 5.1.1
+      invariant: 2.2.4
+      metro: 0.81.5
+      metro-config: 0.81.5
+      metro-core: 0.81.5
+      node-fetch: 2.7.0
+      readline: 1.3.0
+    transitivePeerDependencies:
+      - '@babel/core'
+      - '@babel/preset-env'
+      - bufferutil
+      - encoding
+      - supports-color
+      - utf-8-validate
+    dev: false
 
   /@react-native/community-cli-plugin@0.81.4:
     resolution: {integrity: sha512-8mpnvfcLcnVh+t1ok6V9eozWo8Ut+TZhz8ylJ6gF9d6q9EGDQX6s8jenan5Yv/pzN4vQEKI4ib2pTf/FELw+SA==}
@@ -4028,6 +4350,12 @@ packages:
   /@react-native/debugger-frontend@0.74.87:
     resolution: {integrity: sha512-MN95DJLYTv4EqJc+9JajA3AJZSBYJz2QEJ3uWlHrOky2vKrbbRVaW1ityTmaZa2OXIvNc6CZwSRSE7xCoHbXhQ==}
     engines: {node: '>=18'}
+    dev: true
+
+  /@react-native/debugger-frontend@0.76.0:
+    resolution: {integrity: sha512-v4J22ZN1/7BQYhYvnZYi2pzd87MmTCEnxtTiktaUOhmx3YSF47LGo1Q2UfUE5YOzoRftiJTXDKvzDbI/hqAzgg==}
+    engines: {node: '>=18'}
+    dev: false
 
   /@react-native/debugger-frontend@0.81.4:
     resolution: {integrity: sha512-SU05w1wD0nKdQFcuNC9D6De0ITnINCi8MEnx9RsTD2e4wN83ukoC7FpXaPCYyP6+VjFt5tUKDPgP1O7iaNXCqg==}
@@ -4055,6 +4383,28 @@ packages:
       - encoding
       - supports-color
       - utf-8-validate
+    dev: true
+
+  /@react-native/dev-middleware@0.76.0:
+    resolution: {integrity: sha512-XvSnCDwCghWCVNtGpoF30xgA1EzxvlGsEyhJCUe0uLMDaaVxr/ZkgD3nZ+/l4cEm1qlrlcAZoGctnUgrzHiTaA==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@isaacs/ttlcache': 1.4.1
+      '@react-native/debugger-frontend': 0.76.0
+      chrome-launcher: 0.15.2
+      chromium-edge-launcher: 0.2.0
+      connect: 3.7.0
+      debug: 2.6.9
+      nullthrows: 1.1.1
+      open: 7.4.2
+      selfsigned: 2.4.1
+      serve-static: 1.16.2
+      ws: 6.2.3
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
+    dev: false
 
   /@react-native/dev-middleware@0.81.4:
     resolution: {integrity: sha512-hu1Wu5R28FT7nHXs2wWXvQ++7W7zq5GPY83llajgPlYKznyPLAY/7bArc5rAzNB7b0kwnlaoPQKlvD/VP9LZug==}
@@ -4079,6 +4429,12 @@ packages:
   /@react-native/gradle-plugin@0.74.87:
     resolution: {integrity: sha512-T+VX0N1qP+U9V4oAtn7FTX7pfsoVkd1ocyw9swYXgJqU2fK7hC9famW7b3s3ZiufPGPr1VPJe2TVGtSopBjL6A==}
     engines: {node: '>=18'}
+    dev: true
+
+  /@react-native/gradle-plugin@0.76.0:
+    resolution: {integrity: sha512-MhsAahV/Ju0Md1x79ljaDsNzzFY02TsDqxSfOS8vc4trZuM0imFf7VEBitOydNDTf9NqzAqJ9p8j7OSuxUEvLg==}
+    engines: {node: '>=18'}
+    dev: false
 
   /@react-native/gradle-plugin@0.81.4:
     resolution: {integrity: sha512-T7fPcQvDDCSusZFVSg6H1oVDKb/NnVYLnsqkcHsAF2C2KGXyo3J7slH/tJAwNfj/7EOA2OgcWxfC1frgn9TQvw==}
@@ -4087,6 +4443,12 @@ packages:
   /@react-native/js-polyfills@0.74.87:
     resolution: {integrity: sha512-M5Evdn76CuVEF0GsaXiGi95CBZ4IWubHqwXxV9vG9CC9kq0PSkoM2Pn7Lx7dgyp4vT7ccJ8a3IwHbe+5KJRnpw==}
     engines: {node: '>=18'}
+    dev: true
+
+  /@react-native/js-polyfills@0.76.0:
+    resolution: {integrity: sha512-0UzEqvg85Bn0BpgNG80wzbiWvNypwdl64sbRs/sEvIDjzgq/tM+u3KoneSD5tP72BCydAqXFfepff3FZgImfbA==}
+    engines: {node: '>=18'}
+    dev: false
 
   /@react-native/js-polyfills@0.81.4:
     resolution: {integrity: sha512-sr42FaypKXJHMVHhgSbu2f/ZJfrLzgaoQ+HdpRvKEiEh2mhFf6XzZwecyLBvWqf2pMPZa+CpPfNPiejXjKEy8w==}
@@ -4105,14 +4467,42 @@ packages:
     transitivePeerDependencies:
       - '@babel/preset-env'
       - supports-color
+    dev: true
+
+  /@react-native/metro-babel-transformer@0.76.0(@babel/core@7.28.4)(@babel/preset-env@7.28.3):
+    resolution: {integrity: sha512-aq0MrjaOxDitSqQbttBcOt+5tjemCabhEX2gGthy8cNeZokBa2raoHQInDo9iBBN1ePKDCwKGypyC8zKA5dksQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@babel/core': '*'
+    dependencies:
+      '@babel/core': 7.28.4
+      '@react-native/babel-preset': 0.76.0(@babel/core@7.28.4)(@babel/preset-env@7.28.3)
+      hermes-parser: 0.23.1
+      nullthrows: 1.1.1
+    transitivePeerDependencies:
+      - '@babel/preset-env'
+      - supports-color
+    dev: false
 
   /@react-native/normalize-colors@0.74.87:
     resolution: {integrity: sha512-Xh7Nyk/MPefkb0Itl5Z+3oOobeG9lfLb7ZOY2DKpFnoCE1TzBmib9vMNdFaLdSxLIP+Ec6icgKtdzYg8QUPYzA==}
+    dev: true
+
+  /@react-native/normalize-colors@0.74.89:
+    resolution: {integrity: sha512-qoMMXddVKVhZ8PA1AbUCk83trpd6N+1nF2A6k1i6LsQObyS92fELuk8kU/lQs6M7BsMHwqyLCpQJ1uFgNvIQXg==}
+
+  /@react-native/normalize-colors@0.76.0:
+    resolution: {integrity: sha512-r+pjeIhzehb+bJUUUrztOQb+n6J9DeaLbF6waLgiHa5mFOiwP/4/iWS68inSZnnBtmXHkN2IYiMXzExx8hieWA==}
+    dev: false
+
+  /@react-native/normalize-colors@0.81.1:
+    resolution: {integrity: sha512-TsaeZlE8OYFy3PSWc+1VBmAzI2T3kInzqxmwXoGU4w1d4XFkQFg271Ja9GmDi9cqV3CnBfqoF9VPwRxVlc/l5g==}
+    dev: false
 
   /@react-native/normalize-colors@0.81.4:
     resolution: {integrity: sha512-9nRRHO1H+tcFqjb9gAM105Urtgcanbta2tuqCVY0NATHeFPDEAB7gPyiLxCHKMi1NbhP6TH0kxgSWXKZl1cyRg==}
 
-  /@react-native/virtualized-lists@0.74.87(@types/react@18.3.24)(react-native@0.74.5)(react@18.3.1):
+  /@react-native/virtualized-lists@0.74.87(@types/react@18.3.0)(react-native@0.74.5)(react@18.3.1):
     resolution: {integrity: sha512-lsGxoFMb0lyK/MiplNKJpD+A1EoEUumkLrCjH4Ht+ZlG8S0BfCxmskLZ6qXn3BiDSkLjfjI/qyZ3pnxNBvkXpQ==}
     engines: {node: '>=18'}
     peerDependencies:
@@ -4123,13 +4513,50 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@types/react': 18.3.24
+      '@types/react': 18.3.0
       invariant: 2.2.4
       nullthrows: 1.1.1
       react: 18.3.1
-      react-native: 0.74.5(@babel/core@7.28.4)(@babel/preset-env@7.28.3)(@types/react@18.3.24)(react@18.3.1)
+      react-native: 0.74.5(@babel/core@7.28.4)(@babel/preset-env@7.28.3)(@types/react@18.3.0)(react@18.3.1)
+    dev: true
 
-  /@react-native/virtualized-lists@0.81.4(@types/react@19.1.14)(react-native@0.81.4)(react@19.1.0):
+  /@react-native/virtualized-lists@0.76.0(@types/react@18.3.0)(react-native@0.76.0)(react@18.3.1):
+    resolution: {integrity: sha512-WT3Xi1+ikmWWdbrv3xnl8wYxobj1+N5JfiOQx7o/tiGUCx8m12pf5tlutXByH2m7X8bAZ+BBcRuu1vwt7XaRhQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@types/react': ^18.2.6
+      react: '*'
+      react-native: '*'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      '@types/react': 18.3.0
+      invariant: 2.2.4
+      nullthrows: 1.1.1
+      react: 18.3.1
+      react-native: 0.76.0(@babel/core@7.28.4)(@babel/preset-env@7.28.3)(@types/react@18.3.0)(react@18.3.1)
+    dev: false
+
+  /@react-native/virtualized-lists@0.81.1(@types/react@19.1.14)(react-native@0.81.4)(react@18.3.1):
+    resolution: {integrity: sha512-yG+zcMtyApW1yRwkNFvlXzEg3RIFdItuwr/zEvPCSdjaL+paX4rounpL0YX5kS9MsDIE5FXfcqINXg7L0xuwPg==}
+    engines: {node: '>= 20.19.4'}
+    peerDependencies:
+      '@types/react': ^19.1.0
+      react: '*'
+      react-native: '*'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      '@types/react': 19.1.14
+      invariant: 2.2.4
+      nullthrows: 1.1.1
+      react: 18.3.1
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
+    dev: false
+
+  /@react-native/virtualized-lists@0.81.4(@types/react@19.1.14)(react-native@0.81.4)(react@18.3.1):
     resolution: {integrity: sha512-hBM+rMyL6Wm1Q4f/WpqGsaCojKSNUBqAXLABNGoWm1vabZ7cSnARMxBvA/2vo3hLcoR4v7zDK8tkKm9+O0LjVA==}
     engines: {node: '>= 20.19.4'}
     peerDependencies:
@@ -4143,10 +4570,10 @@ packages:
       '@types/react': 19.1.14
       invariant: 2.2.4
       nullthrows: 1.1.1
-      react: 19.1.0
-      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
+      react: 18.3.1
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
 
-  /@react-navigation/bottom-tabs@7.4.7(@react-navigation/native@7.1.17)(react-native-safe-area-context@5.6.1)(react-native-screens@4.16.0)(react-native@0.81.4)(react@19.1.0):
+  /@react-navigation/bottom-tabs@7.4.7(@react-navigation/native@7.1.17)(react-native-safe-area-context@5.6.1)(react-native-screens@4.16.0)(react-native@0.81.4)(react@18.3.1):
     resolution: {integrity: sha512-SQ4KuYV9yr3SV/thefpLWhAD0CU2CrBMG1l0w/QKl3GYuGWdN5OQmdQdmaPZGtsjjVOb+N9Qo7Tf6210P4TlpA==}
     peerDependencies:
       '@react-navigation/native': ^7.1.17
@@ -4155,31 +4582,17 @@ packages:
       react-native-safe-area-context: '>= 4.0.0'
       react-native-screens: '>= 4.0.0'
     dependencies:
-      '@react-navigation/elements': 2.6.4(@react-navigation/native@7.1.17)(react-native-safe-area-context@5.6.1)(react-native@0.81.4)(react@19.1.0)
-      '@react-navigation/native': 7.1.17(react-native@0.81.4)(react@19.1.0)
+      '@react-navigation/elements': 2.6.4(@react-navigation/native@7.1.17)(react-native-safe-area-context@5.6.1)(react-native@0.81.4)(react@18.3.1)
+      '@react-navigation/native': 7.1.17(react-native@0.81.4)(react@18.3.1)
       color: 4.2.3
-      react: 19.1.0
-      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
-      react-native-safe-area-context: 5.6.1(react-native@0.81.4)(react@19.1.0)
-      react-native-screens: 4.16.0(react-native@0.81.4)(react@19.1.0)
+      react: 18.3.1
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
+      react-native-safe-area-context: 5.6.1(react-native@0.81.4)(react@18.3.1)
+      react-native-screens: 4.16.0(react-native@0.81.4)(react@18.3.1)
     transitivePeerDependencies:
       - '@react-native-masked-view/masked-view'
 
-  /@react-navigation/core@6.4.17(react@19.1.0):
-    resolution: {integrity: sha512-Nd76EpomzChWAosGqWOYE3ItayhDzIEzzZsT7PfGcRFDgW5miHV2t4MZcq9YIK4tzxZjVVpYbIynOOQQd1e0Cg==}
-    peerDependencies:
-      react: '*'
-    dependencies:
-      '@react-navigation/routers': 6.1.9
-      escape-string-regexp: 4.0.0
-      nanoid: 3.3.11
-      query-string: 7.1.3
-      react: 19.1.0
-      react-is: 16.13.1
-      use-latest-callback: 0.2.4(react@19.1.0)
-    dev: false
-
-  /@react-navigation/core@7.12.4(react@19.1.0):
+  /@react-navigation/core@7.12.4(react@18.3.1):
     resolution: {integrity: sha512-xLFho76FA7v500XID5z/8YfGTvjQPw7/fXsq4BIrVSqetNe/o/v+KAocEw4ots6kyv3XvSTyiWKh2g3pN6xZ9Q==}
     peerDependencies:
       react: '>= 18.2.0'
@@ -4188,12 +4601,37 @@ packages:
       escape-string-regexp: 4.0.0
       nanoid: 3.3.11
       query-string: 7.1.3
-      react: 19.1.0
+      react: 18.3.1
       react-is: 19.1.1
-      use-latest-callback: 0.2.4(react@19.1.0)
-      use-sync-external-store: 1.5.0(react@19.1.0)
+      use-latest-callback: 0.2.4(react@18.3.1)
+      use-sync-external-store: 1.5.0(react@18.3.1)
 
-  /@react-navigation/elements@2.6.4(@react-navigation/native@7.1.17)(react-native-safe-area-context@5.6.1)(react-native@0.81.4)(react@19.1.0):
+  /@react-navigation/drawer@7.5.8(@react-navigation/native@7.1.17)(react-native-gesture-handler@2.28.0)(react-native-reanimated@4.1.2)(react-native-safe-area-context@5.6.1)(react-native-screens@4.16.0)(react-native@0.81.4)(react@18.3.1):
+    resolution: {integrity: sha512-x3yWHxNxEv1e3w0e72WpEVUq1g8DYQOfZnbdCcuYbLZtp6Glyk0r2rkPzpddFOby3tp05KDgwZfAZKpr3j6+6w==}
+    peerDependencies:
+      '@react-navigation/native': ^7.1.17
+      react: '>= 18.2.0'
+      react-native: '*'
+      react-native-gesture-handler: '>= 2.0.0'
+      react-native-reanimated: '>= 2.0.0'
+      react-native-safe-area-context: '>= 4.0.0'
+      react-native-screens: '>= 4.0.0'
+    dependencies:
+      '@react-navigation/elements': 2.6.4(@react-navigation/native@7.1.17)(react-native-safe-area-context@5.6.1)(react-native@0.81.4)(react@18.3.1)
+      '@react-navigation/native': 7.1.17(react-native@0.81.4)(react@18.3.1)
+      color: 4.2.3
+      react: 18.3.1
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
+      react-native-drawer-layout: 4.1.13(react-native-gesture-handler@2.28.0)(react-native-reanimated@4.1.2)(react-native@0.81.4)(react@18.3.1)
+      react-native-gesture-handler: 2.28.0(react-native@0.81.4)(react@18.3.1)
+      react-native-reanimated: 4.1.2(@babel/core@7.28.4)(react-native-worklets@0.6.0)(react-native@0.81.4)(react@18.3.1)
+      react-native-safe-area-context: 5.6.1(react-native@0.81.4)(react@18.3.1)
+      react-native-screens: 4.16.0(react-native@0.81.4)(react@18.3.1)
+      use-latest-callback: 0.2.4(react@18.3.1)
+    transitivePeerDependencies:
+      - '@react-native-masked-view/masked-view'
+
+  /@react-navigation/elements@2.6.4(@react-navigation/native@7.1.17)(react-native-safe-area-context@5.6.1)(react-native@0.81.4)(react@18.3.1):
     resolution: {integrity: sha512-O3X9vWXOEhAO56zkQS7KaDzL8BvjlwZ0LGSteKpt1/k6w6HONG+2Wkblrb057iKmehTkEkQMzMLkXiuLmN5x9Q==}
     peerDependencies:
       '@react-native-masked-view/masked-view': '>= 0.2.0'
@@ -4205,15 +4643,15 @@ packages:
       '@react-native-masked-view/masked-view':
         optional: true
     dependencies:
-      '@react-navigation/native': 7.1.17(react-native@0.81.4)(react@19.1.0)
+      '@react-navigation/native': 7.1.17(react-native@0.81.4)(react@18.3.1)
       color: 4.2.3
-      react: 19.1.0
-      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
-      react-native-safe-area-context: 5.6.1(react-native@0.81.4)(react@19.1.0)
-      use-latest-callback: 0.2.4(react@19.1.0)
-      use-sync-external-store: 1.5.0(react@19.1.0)
+      react: 18.3.1
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
+      react-native-safe-area-context: 5.6.1(react-native@0.81.4)(react@18.3.1)
+      use-latest-callback: 0.2.4(react@18.3.1)
+      use-sync-external-store: 1.5.0(react@18.3.1)
 
-  /@react-navigation/native-stack@7.3.26(@react-navigation/native@7.1.17)(react-native-safe-area-context@5.6.1)(react-native-screens@4.16.0)(react-native@0.81.4)(react@19.1.0):
+  /@react-navigation/native-stack@7.3.26(@react-navigation/native@7.1.17)(react-native-safe-area-context@5.6.1)(react-native-screens@4.16.0)(react-native@0.81.4)(react@18.3.1):
     resolution: {integrity: sha512-EjaBWzLZ76HJGOOcWCFf+h/M+Zg7M1RalYioDOb6ZdXHz7AwYNidruT3OUAQgSzg3gVLqvu5OYO0jFsNDPCZxQ==}
     peerDependencies:
       '@react-navigation/native': ^7.1.17
@@ -4222,49 +4660,29 @@ packages:
       react-native-safe-area-context: '>= 4.0.0'
       react-native-screens: '>= 4.0.0'
     dependencies:
-      '@react-navigation/elements': 2.6.4(@react-navigation/native@7.1.17)(react-native-safe-area-context@5.6.1)(react-native@0.81.4)(react@19.1.0)
-      '@react-navigation/native': 7.1.17(react-native@0.81.4)(react@19.1.0)
-      react: 19.1.0
-      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
-      react-native-safe-area-context: 5.6.1(react-native@0.81.4)(react@19.1.0)
-      react-native-screens: 4.16.0(react-native@0.81.4)(react@19.1.0)
+      '@react-navigation/elements': 2.6.4(@react-navigation/native@7.1.17)(react-native-safe-area-context@5.6.1)(react-native@0.81.4)(react@18.3.1)
+      '@react-navigation/native': 7.1.17(react-native@0.81.4)(react@18.3.1)
+      react: 18.3.1
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
+      react-native-safe-area-context: 5.6.1(react-native@0.81.4)(react@18.3.1)
+      react-native-screens: 4.16.0(react-native@0.81.4)(react@18.3.1)
       warn-once: 0.1.1
     transitivePeerDependencies:
       - '@react-native-masked-view/masked-view'
 
-  /@react-navigation/native@6.1.18(react-native@0.81.4)(react@19.1.0):
-    resolution: {integrity: sha512-mIT9MiL/vMm4eirLcmw2h6h/Nm5FICtnYSdohq4vTLA2FF/6PNhByM7s8ffqoVfE5L0uAa6Xda1B7oddolUiGg==}
-    peerDependencies:
-      react: '*'
-      react-native: '*'
-    dependencies:
-      '@react-navigation/core': 6.4.17(react@19.1.0)
-      escape-string-regexp: 4.0.0
-      fast-deep-equal: 3.1.3
-      nanoid: 3.3.11
-      react: 19.1.0
-      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
-    dev: false
-
-  /@react-navigation/native@7.1.17(react-native@0.81.4)(react@19.1.0):
+  /@react-navigation/native@7.1.17(react-native@0.81.4)(react@18.3.1):
     resolution: {integrity: sha512-uEcYWi1NV+2Qe1oELfp9b5hTYekqWATv2cuwcOAg5EvsIsUPtzFrKIasgUXLBRGb9P7yR5ifoJ+ug4u6jdqSTQ==}
     peerDependencies:
       react: '>= 18.2.0'
       react-native: '*'
     dependencies:
-      '@react-navigation/core': 7.12.4(react@19.1.0)
+      '@react-navigation/core': 7.12.4(react@18.3.1)
       escape-string-regexp: 4.0.0
       fast-deep-equal: 3.1.3
       nanoid: 3.3.11
-      react: 19.1.0
-      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
-      use-latest-callback: 0.2.4(react@19.1.0)
-
-  /@react-navigation/routers@6.1.9:
-    resolution: {integrity: sha512-lTM8gSFHSfkJvQkxacGM6VJtBt61ip2XO54aNfswD+KMw6eeZ4oehl7m0me3CR9hnDE4+60iAZR8sAhvCiI3NA==}
-    dependencies:
-      nanoid: 3.3.11
-    dev: false
+      react: 18.3.1
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
+      use-latest-callback: 0.2.4(react@18.3.1)
 
   /@react-navigation/routers@7.5.1:
     resolution: {integrity: sha512-pxipMW/iEBSUrjxz2cDD7fNwkqR4xoi0E/PcfTQGCcdJwLoaxzab5kSadBLj1MTJyT0YRrOXL9umHpXtp+Dv4w==}
@@ -4332,6 +4750,7 @@ packages:
       rimraf: 3.0.2
     transitivePeerDependencies:
       - supports-color
+    dev: true
 
   /@rtsao/scc@1.1.0:
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
@@ -4341,15 +4760,22 @@ packages:
     resolution: {integrity: sha512-IqO/DUQHUkPeixNQ8n0JA6102hT9CmaljNTPmQ1u8MEhBo/R4Q8eKLN/vGZxuebwOroDB4cbpjheD4+/sKFK4Q==}
     dependencies:
       '@hapi/hoek': 9.3.0
+    dev: true
 
   /@sideway/formula@3.0.1:
     resolution: {integrity: sha512-/poHZJJVjx3L+zVD6g9KgHfYnb443oi7wLu/XKojDviHy6HOEOA6z1Trk5aR1dGcmPenJEgb2sK2I80LeS3MIg==}
+    dev: true
 
   /@sideway/pinpoint@2.0.0:
     resolution: {integrity: sha512-RNiOoTPkptFtSVzQevY/yWtZwf/RxyVnPy/OcA9HBM3MlGDnBEYL5B41H0MTn0Uec8Hi+2qUtTfG2WWZBmMejQ==}
+    dev: true
 
   /@sinclair/typebox@0.27.8:
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
+
+  /@sinclair/typebox@0.34.41:
+    resolution: {integrity: sha512-6gS8pZzSXdyRHTIqoqSVknxolr1kzfy4/CeDnrzsVz8TTIWUbOBr6gnzOmTYJ3eXQNh4IYHIGi5aIL7sOZ2G/g==}
+    dev: false
 
   /@sinonjs/commons@3.0.1:
     resolution: {integrity: sha512-K3mCHKQ9sVh8o1C9cxkwxaOmXoAMlDxC1mYyHrjqOWEcBjYr76t96zL2zlj5dUGZ3HSw240X1qgH3Mjf1yJWpQ==}
@@ -4365,13 +4791,13 @@ packages:
     resolution: {integrity: sha512-k/TcR3YalnzibscALLwxeiLUub6jN5EDLwKDiO7q5f4ICEoptJ+n9+7vcEFy5/x/i6Q+Lb/tXrsKCggf5uQJXQ==}
     dev: false
 
-  /@tanstack/react-query@5.90.2(react@19.1.0):
+  /@tanstack/react-query@5.90.2(react@18.3.1):
     resolution: {integrity: sha512-CLABiR+h5PYfOWr/z+vWFt5VsOA2ekQeRQBFSKlcoW6Ndx/f8rfyVmq4LbgOM4GG2qtxAxjLYLOpCNTYm4uKzw==}
     peerDependencies:
       react: ^18 || ^19
     dependencies:
       '@tanstack/query-core': 5.90.2
-      react: 19.1.0
+      react: 18.3.1
     dev: false
 
   /@tokenizer/inflate@0.2.7:
@@ -4516,6 +4942,9 @@ packages:
     dependencies:
       '@types/node': 20.19.17
 
+  /@types/hammerjs@2.0.46:
+    resolution: {integrity: sha512-ynRvcq6wvqexJ9brDMS4BnBLzmr0e14d6ZJTEShTBWKymQiHwlAyGu0ZPEFI2Fh1U53F7tN9ufClWM5KvqkKOw==}
+
   /@types/http-errors@2.0.5:
     resolution: {integrity: sha512-r8Tayk8HJnX0FztbZN7oVqGccWgw98T/0neJphO91KkmOzug1KkofZURD4UaD5uH8AqcFLfdPErnBod0u71/qg==}
     dev: true
@@ -4593,6 +5022,7 @@ packages:
     resolution: {integrity: sha512-gSjxjrnKXML/yo0BO099uPixMqfpJU0TKYjpfLU7TrtA2WWDki412Np/RSTPRil1saKBhvVVKzVx/p/6p94nVA==}
     dependencies:
       undici-types: 5.26.5
+    dev: true
 
   /@types/node@20.19.17:
     resolution: {integrity: sha512-gfehUI8N1z92kygssiuWvLiwcbOB3IRktR6hTDgJlXMYh5OvkPSRmgfoBUmfZt+vhwJtX7v1Yw4KvvAf7c5QKQ==}
@@ -4652,11 +5082,11 @@ packages:
     resolution: {integrity: sha512-hKormJbkJqzQGhziax5PItDUTMAM9uE2XXQmM37dyd4hVM+5aVl7oVxMVUiVQn2oCQFN/LKCZdvSM0pFRqbSmQ==}
     dev: true
 
-  /@types/react-native@0.73.0(@babel/core@7.28.4)(@babel/preset-env@7.28.3)(@types/react@18.3.24)(react@18.3.1):
+  /@types/react-native@0.73.0(@babel/core@7.28.4)(@babel/preset-env@7.28.3)(@types/react@18.3.0)(react@18.3.1):
     resolution: {integrity: sha512-6ZRPQrYM72qYKGWidEttRe6M5DZBEV5F+MHMHqd4TTYx0tfkcdrUFGdef6CCxY0jXU7wldvd/zA/b0A/kTeJmA==}
     deprecated: This is a stub types definition. react-native provides its own type definitions, so you do not need this installed.
     dependencies:
-      react-native: 0.74.5(@babel/core@7.28.4)(@babel/preset-env@7.28.3)(@types/react@18.3.24)(react@18.3.1)
+      react-native: 0.74.5(@babel/core@7.28.4)(@babel/preset-env@7.28.3)(@types/react@18.3.0)(react@18.3.1)
     transitivePeerDependencies:
       - '@babel/core'
       - '@babel/preset-env'
@@ -4674,11 +5104,18 @@ packages:
       '@types/react': 18.3.24
     dev: true
 
+  /@types/react@18.3.0:
+    resolution: {integrity: sha512-DiUcKjzE6soLyln8NNZmyhcQjVv+WsUIFSqetMN0p8927OztKT4VTfFTqsbAi5oAGIcgOmOajlfBqyptDDjZRw==}
+    dependencies:
+      '@types/prop-types': 15.7.15
+      csstype: 3.1.3
+
   /@types/react@18.3.24:
     resolution: {integrity: sha512-0dLEBsA1kI3OezMBF8nSsb7Nk19ZnsyE1LLhB8r27KbgU5H4pvuqZLdtE+aUkJVoXgTVuA+iLIwmZ0TuK4tx6A==}
     dependencies:
       '@types/prop-types': 15.7.15
       csstype: 3.1.3
+    dev: true
 
   /@types/react@19.1.14:
     resolution: {integrity: sha512-ukd93VGzaNPMAUPy0gRDSC57UuQbnH9Kussp7HBjM06YFi9uZTFhOvMSO2OKqXm1rSgzOE+pVx1k1PYHGwlc8Q==}
@@ -4737,6 +5174,7 @@ packages:
     resolution: {integrity: sha512-2XUaGVmyQjgyAZldf0D0c14vvo/yv0MhQBSTJcejMMaitsn3nxCB6TmH4G0ZQf+uxROOa9mpanoSm8h6SG/1ZA==}
     dependencies:
       '@types/yargs-parser': 21.0.3
+    dev: true
 
   /@types/yargs@17.0.33:
     resolution: {integrity: sha512-WpxBCKWPLr4xSsHgz511rFJAM+wS28w2zEO1QDNY5zM/S8ok70NNfztH0xwhqKyaK0OHCbN98LDAZuy1ctxDkA==}
@@ -5476,6 +5914,7 @@ packages:
       colorette: 1.4.0
       slice-ansi: 2.1.0
       strip-ansi: 5.2.0
+    dev: true
 
   /ansi-regex@4.1.1:
     resolution: {integrity: sha512-ILlv4k/3f6vfQ4OoP2AGvirOktlQ98ZEL1k9FaQjxa3L1abBgbuTDAdPOpvbGncC0BTVQrl+OM8xZGK6tWXt7g==}
@@ -5521,6 +5960,7 @@ packages:
 
   /appdirsjs@1.2.7:
     resolution: {integrity: sha512-Quji6+8kLBC3NnBeo14nPDq0+2jUs5s3/xEye+udFHumHhRk4M7aAMXp/PBJqkKYGuuyR9M/6Dq7d2AViiGmhw==}
+    dev: true
 
   /append-field@1.0.0:
     resolution: {integrity: sha512-klpgFSWLW1ZEs8svjfb7g4qWY0YS5imI82dTg+QahUvJ8YqAY0P10Uk8tTyh9ZGuYEZEMaeJYCF5BFuX552hsw==}
@@ -5684,6 +6124,7 @@ packages:
   /astral-regex@1.0.0:
     resolution: {integrity: sha512-+Ryf6g3BKoRc7jfp7ad8tM4TtMiaWvbF/1/sQcZPkkS7ag3D5nMBCe2UfOTONtAkaG0tO0ij3C5Lwmf1EiyjHg==}
     engines: {node: '>=4'}
+    dev: true
 
   /async-function@1.0.0:
     resolution: {integrity: sha512-hsU18Ae8CDTR6Kgu9DYf0EbCr/a5iGL0rytQDobUcdpYOKokk8LEjVphnXkDkgpi0wYVsqrXuP0bZxJaTqdgoA==}
@@ -5798,6 +6239,12 @@ packages:
   /babel-plugin-react-native-web@0.21.1:
     resolution: {integrity: sha512-7XywfJ5QIRMwjOL+pwJt2w47Jmi5fFLvK7/So4fV4jIN6PcRbylCp9/l3cJY4VJbSz3lnWTeHDTD1LKIc1C09Q==}
 
+  /babel-plugin-syntax-hermes-parser@0.23.1:
+    resolution: {integrity: sha512-uNLD0tk2tLUjGFdmCk+u/3FEw2o+BAwW4g+z2QVlxJrzZYOOPADroEcNtTPt5lNiScctaUmnsTkVEnOwZUOLhA==}
+    dependencies:
+      hermes-parser: 0.23.1
+    dev: false
+
   /babel-plugin-syntax-hermes-parser@0.29.1:
     resolution: {integrity: sha512-2WFYnoWGdmih1I1J5eIqxATOeycOqRwYxAQBu3cUu/rhwInwHUg7k60AFNbuGjSDL8tje5GDrAnxzRLcu2pYcA==}
     dependencies:
@@ -5866,7 +6313,7 @@ packages:
       babel-plugin-syntax-hermes-parser: 0.29.1
       babel-plugin-transform-flow-enums: 0.0.2(@babel/core@7.28.4)
       debug: 4.4.3
-      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@19.1.0)
+      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@18.3.1)
       react-refresh: 0.14.2
       resolve-from: 5.0.0
     transitivePeerDependencies:
@@ -5935,6 +6382,7 @@ packages:
       buffer: 5.7.1
       inherits: 2.0.4
       readable-stream: 3.6.2
+    dev: true
 
   /body-parser@1.20.3:
     resolution: {integrity: sha512-7rAxByjUMqQ3/bHJy7D6OGXvx/MMc4IqBn/X0fcM1QUcAItpZrBEYhWGem+tzXH90c+G01ypMcYJBO9Y30203g==}
@@ -6024,6 +6472,13 @@ packages:
     dependencies:
       base64-js: 1.5.1
       ieee754: 1.2.1
+
+  /buffer@6.0.3:
+    resolution: {integrity: sha512-FTiCpNxtwiZZHEZbcbTIcZjERVICn9yq/pDFkTl95/AxzD1naBctN7YO68riM/gLSDY7sdrMby8hofADYuuqOA==}
+    dependencies:
+      base64-js: 1.5.1
+      ieee754: 1.2.1
+    dev: false
 
   /bull@4.16.5:
     resolution: {integrity: sha512-lDsx2BzkKe7gkCYiT5Acj02DpTwDznl/VNN7Psn7M3USPG7Vs/BaClZJJTAG+ufAR9++N1/NiUTdaFBWDIl5TQ==}
@@ -6232,6 +6687,7 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       restore-cursor: 3.1.0
+    dev: true
 
   /cli-spinners@2.9.2:
     resolution: {integrity: sha512-ywqV+5MmyL4E7ybXgKys4DugZbX0FC6LnwrhjuykIjnK9k8OQacQ7axGKnjDXWNhns0xot3bZI5h55H8yo9cJg==}
@@ -6265,6 +6721,7 @@ packages:
       string-width: 4.2.3
       strip-ansi: 6.0.1
       wrap-ansi: 6.2.0
+    dev: true
 
   /cliui@8.0.1:
     resolution: {integrity: sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==}
@@ -6311,11 +6768,23 @@ packages:
     dependencies:
       color-name: 1.1.4
 
+  /color-convert@3.1.2:
+    resolution: {integrity: sha512-UNqkvCDXstVck3kdowtOTWROIJQwafjOfXSmddoDrXo4cewMKmusCeF22Q24zvjR8nwWib/3S/dfyzPItPEiJg==}
+    engines: {node: '>=14.6'}
+    dependencies:
+      color-name: 2.0.2
+    dev: false
+
   /color-name@1.1.3:
     resolution: {integrity: sha512-72fSenhMw2HZMTVHeCA9KCmpEIbzWiQsjN+BHcBbS9vr1mtt+vJjPdksIBNUmKAW8TFUDPJK5SUU3QhE9NEXDw==}
 
   /color-name@1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
+
+  /color-name@2.0.2:
+    resolution: {integrity: sha512-9vEt7gE16EW7Eu7pvZnR0abW9z6ufzhXxGXZEVU9IqPdlsUiMwJeJfRtq0zePUmnbHGT9zajca7mX8zgoayo4A==}
+    engines: {node: '>=12.20'}
+    dev: false
 
   /color-string@1.9.1:
     resolution: {integrity: sha512-shrVawQFojnZv6xM40anx4CkoDP+fZsw/ZerEMsW/pyzsRbElpsL/DBVW7q3ExxwusdNXI3lXpuhEZkzs8p5Eg==}
@@ -6337,6 +6806,7 @@ packages:
 
   /colorette@1.4.0:
     resolution: {integrity: sha512-Y2oEozpomLn7Q3HFP7dpww7AtMJplbM9lGZP6RDfHqmbeRjiwRg4n6VM6j4KLmRke85uWEI7JqF17f3pqdRA0g==}
+    dev: true
 
   /combined-stream@1.0.8:
     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
@@ -6346,6 +6816,7 @@ packages:
 
   /command-exists@1.2.9:
     resolution: {integrity: sha512-LTQ/SGc+s0Xc0Fu5WaKnR0YiygZkm9eKFvyS+fRsU7/ZWFF8ykFM6Pc9aCVf1+xasOOZpO3BAVgVrKvsqKHV7w==}
+    dev: true
 
   /commander@12.1.0:
     resolution: {integrity: sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==}
@@ -6365,6 +6836,7 @@ packages:
   /commander@9.5.0:
     resolution: {integrity: sha512-KRs7WVDKg86PWiuAqhDrAQnTXZKraVcCc6vFdL14qrZ/DcWwuRo7VoiYXalXO7S5GKpqYiVEwCbgFDfxNHKJBQ==}
     engines: {node: ^12.20.0 || >=14}
+    dev: true
 
   /comment-json@4.2.5:
     resolution: {integrity: sha512-bKw/r35jR3HGt5PEPm1ljsQQGyCrR8sFGNiN5L+ykDHdpO8Smxkrkla9Yi6NkQyUrb8V54PGhfMs6NrIwtxtdw==}
@@ -6463,8 +6935,14 @@ packages:
     dependencies:
       browserslist: 4.26.2
 
+  /core-js@3.45.1:
+    resolution: {integrity: sha512-L4NPsJlCfZsPeXukyzHFlg/i7IIVwHSItR0wg0FLNqYClJ4MQYTYLbC7EkjKYRLZF2iof2MUgN0EGy7MdQFChg==}
+    requiresBuild: true
+    dev: false
+
   /core-util-is@1.0.3:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
+    dev: true
 
   /cors@2.8.5:
     resolution: {integrity: sha512-KIHbLJqu73RGr/hnbrO9uBeixNGuvSQjul/jdFvS/KFSIH1hWVd1ng7zOHx+YrEfInLG7q4n6GHQ9cDtxv/P6g==}
@@ -6587,6 +7065,14 @@ packages:
   /csstype@3.1.3:
     resolution: {integrity: sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==}
 
+  /d@1.0.2:
+    resolution: {integrity: sha512-MOqHvMWF9/9MX6nza0KgvFH4HpMU0EF5uUDXqX/BtxtU8NfB0QzRtJ8Oe/6SuS4kbhyzVJwjd97EA4PKrzJ8bw==}
+    engines: {node: '>=0.12'}
+    dependencies:
+      es5-ext: 0.10.64
+      type: 2.7.3
+    dev: false
+
   /data-urls@3.0.2:
     resolution: {integrity: sha512-Jy/tj3ldjZJo63sVAvg6LHt2mHvl4V6AgRAmNDtLdm7faqtsx+aJG42rsyCo9JCoRVKwPFzKlIPx3DIibwSIaQ==}
     engines: {node: '>=12'}
@@ -6625,6 +7111,7 @@ packages:
 
   /dayjs@1.11.18:
     resolution: {integrity: sha512-zFBQ7WFRvVRhKcWoUh+ZA1g2HVgUbsZm9sbddh8EC5iv93sui8DVVz1Npvz+r6meo9VKfa8NyLWBsQK1VvIKPA==}
+    dev: true
 
   /debug@2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
@@ -6660,6 +7147,7 @@ packages:
   /decamelize@1.2.0:
     resolution: {integrity: sha512-z2S+W9X73hAUUki+N+9Za2lBlun89zigOyGrsax+KUQ6wKW4ZoWpEYBkGhQjwAjjDCkWxhY0VKEhk8wzY7F5cA==}
     engines: {node: '>=0.10.0'}
+    dev: true
 
   /decimal.js@10.6.0:
     resolution: {integrity: sha512-YpgQiITW3JXGntzdUmyUR1V812Hn8T1YVXhCu+wO3OpS4eU9l4YdD3qjyiKdV6mvV29zapkMeD390UVEf2lkUg==}
@@ -6725,6 +7213,7 @@ packages:
 
   /denodeify@1.2.1:
     resolution: {integrity: sha512-KNTihKNmQENUZeKu5fzfpzRqR5S2VMp4gl9RFHiWzj9DfvYQPMJ6XHKNaQxaGCXwPk6y9yme3aUoaiAe+KX+vg==}
+    dev: true
 
   /denque@2.1.0:
     resolution: {integrity: sha512-HVQE3AAb/pxF8fQAoiqpvg9i3evqug3hoiwakOyZAwJm+6vZehbkYXZ0l4JxS+I3QxM97v5aaRNhj8v5oBhekw==}
@@ -6880,6 +7369,7 @@ packages:
     resolution: {integrity: sha512-CO40UI41xDQzhLB1hWyqUKgFhs250pNcGbyGKe1l/e4FSaI/+YE4IMG76GDt0In67WLPACIITC+sOi08x4wIvg==}
     engines: {node: '>=4'}
     hasBin: true
+    dev: true
 
   /error-ex@1.3.4:
     resolution: {integrity: sha512-sqQamAnR14VgCr1A618A3sGrygcpK+HEbenA/HiEAkkUwcZIIB/tgWqHFxWgOyDh4nB4JCRimh79dR5Ywc9MDQ==}
@@ -6897,6 +7387,7 @@ packages:
     dependencies:
       accepts: 1.3.8
       escape-html: 1.0.3
+    dev: true
 
   /es-abstract@1.24.0:
     resolution: {integrity: sha512-WSzPgsdLtTcQwm4CROfS5ju2Wa1QQcVeT37jFjYzdFz1r9ahadC8B8/a4qxJxM+09F18iumCdRmlr96ZYkQvEg==}
@@ -7023,6 +7514,33 @@ packages:
       is-symbol: 1.1.1
     dev: true
 
+  /es5-ext@0.10.64:
+    resolution: {integrity: sha512-p2snDhiLaXe6dahss1LddxqEm+SkuDvV8dnIQG0MWjyHpcMNfXKPE+/Cc0y+PhxJX3A4xGNeFCj5oc0BUh6deg==}
+    engines: {node: '>=0.10'}
+    requiresBuild: true
+    dependencies:
+      es6-iterator: 2.0.3
+      es6-symbol: 3.1.4
+      esniff: 2.0.1
+      next-tick: 1.1.0
+    dev: false
+
+  /es6-iterator@2.0.3:
+    resolution: {integrity: sha512-zw4SRzoUkd+cl+ZoE15A9o1oQd920Bb0iOJMQkQhl3jNc03YqVjAhG7scf9C5KWRU/R13Orf588uCC6525o02g==}
+    dependencies:
+      d: 1.0.2
+      es5-ext: 0.10.64
+      es6-symbol: 3.1.4
+    dev: false
+
+  /es6-symbol@3.1.4:
+    resolution: {integrity: sha512-U9bFFjX8tFiATgtkJ1zg25+KviIXpgRvRHS8sau3GfhVzThRQrOeksPeT0BWW2MNZs1OEWJ1DPXOQMn0KKRkvg==}
+    engines: {node: '>=0.12'}
+    dependencies:
+      d: 1.0.2
+      ext: 1.7.0
+    dev: false
+
   /escalade@3.2.0:
     resolution: {integrity: sha512-WUj2qlxaQtO4g6Pq5c29GTcWGDyd8itL8zTlipgECz3JesAiiOKotd8JU6otB3PACgG6xkJUyVhboMS+bje/jA==}
     engines: {node: '>=6'}
@@ -7041,6 +7559,11 @@ packages:
   /escape-string-regexp@4.0.0:
     resolution: {integrity: sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==}
     engines: {node: '>=10'}
+
+  /escape-string-regexp@5.0.0:
+    resolution: {integrity: sha512-/veY75JbMK4j1yjvuUxuVsiS/hr/4iHs9FTT6cgTexxdE0Ly/glccBAkloH/DofkjRbZU3bnoj38mOmhkZ0lHw==}
+    engines: {node: '>=12'}
+    dev: false
 
   /escodegen@2.1.0:
     resolution: {integrity: sha512-2NlIDTwUWJN0mRPQOdtQBzbUHvdGY2P1VXSyU83Q3xKxM7WHX2Ql8dKq782Q9TgQUNOLEzEYu9bzLNj1q88I5w==}
@@ -7389,6 +7912,16 @@ packages:
       - supports-color
     dev: true
 
+  /esniff@2.0.1:
+    resolution: {integrity: sha512-kTUIGKQ/mDPFoJ0oVfcmyJn4iBDRptjNVIzwIFR7tqWXdVI9xfA2RMwY/gbSpJG3lkdWNEjLap/NqVHZiJsdfg==}
+    engines: {node: '>=0.10'}
+    dependencies:
+      d: 1.0.2
+      es5-ext: 0.10.64
+      event-emitter: 0.3.5
+      type: 2.7.3
+    dev: false
+
   /espree@10.4.0:
     resolution: {integrity: sha512-j6PAQ2uUr79PZhBjP5C5fhl8e39FmRnOjsD5lGnWrFU8i2G776tBK7+nP8KuQUTTyAZUwfQqXAgrVH5MbH9CYQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -7444,9 +7977,21 @@ packages:
     resolution: {integrity: sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg==}
     engines: {node: '>= 0.6'}
 
+  /event-emitter@0.3.5:
+    resolution: {integrity: sha512-D9rRn9y7kLPnJ+hMq7S/nhvoKwwvVJahBi2BPmx3bvbsEdK3W9ii8cBSGjP+72/LnM4n6fo3+dkCX5FeTQruXA==}
+    dependencies:
+      d: 1.0.2
+      es5-ext: 0.10.64
+    dev: false
+
   /event-target-shim@5.0.1:
     resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}
     engines: {node: '>=6'}
+
+  /event-target-shim@6.0.2:
+    resolution: {integrity: sha512-8q3LsZjRezbFZ2PN+uP+Q7pnHUMmAOziU2vA2OwoFaKIXxlxl38IylhSSgUorWu/rf4er67w0ikBqjBFk/pomA==}
+    engines: {node: '>=10.13.0'}
+    dev: false
 
   /events@3.3.0:
     resolution: {integrity: sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==}
@@ -7491,10 +8036,10 @@ packages:
     peerDependencies:
       expo: '*'
     dependencies:
-      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@19.1.0)
+      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@18.3.1)
     dev: false
 
-  /expo-asset@12.0.9(expo@54.0.10)(react-native@0.81.4)(react@19.1.0):
+  /expo-asset@12.0.9(expo@54.0.10)(react-native@0.81.4)(react@18.3.1):
     resolution: {integrity: sha512-vrdRoyhGhBmd0nJcssTSk1Ypx3Mbn/eXaaBCQVkL0MJ8IOZpAObAjfD5CTy8+8RofcHEQdh3wwZVCs7crvfOeg==}
     peerDependencies:
       expo: '*'
@@ -7502,14 +8047,14 @@ packages:
       react-native: '*'
     dependencies:
       '@expo/image-utils': 0.8.7
-      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@19.1.0)
+      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@18.3.1)
       expo-constants: 18.0.9(expo@54.0.10)(react-native@0.81.4)
-      react: 19.1.0
-      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
+      react: 18.3.1
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
     transitivePeerDependencies:
       - supports-color
 
-  /expo-auth-session@7.0.8(expo@54.0.10)(react-native@0.81.4)(react@19.1.0):
+  /expo-auth-session@7.0.8(expo@54.0.10)(react-native@0.81.4)(react@18.3.1):
     resolution: {integrity: sha512-kpo2Jva+6uVjk6TmNqWAoqTnULXZaEVa9l4uf8JH32uDMt/iZQhM0fauy7Ww+y910Euhv5djCP7cPj8KWv6cmQ==}
     peerDependencies:
       react: '*'
@@ -7518,11 +8063,11 @@ packages:
       expo-application: 7.0.7(expo@54.0.10)
       expo-constants: 18.0.9(expo@54.0.10)(react-native@0.81.4)
       expo-crypto: 15.0.7(expo@54.0.10)
-      expo-linking: 8.0.8(expo@54.0.10)(react-native@0.81.4)(react@19.1.0)
+      expo-linking: 8.0.8(expo@54.0.10)(react-native@0.81.4)(react@18.3.1)
       expo-web-browser: 15.0.7(expo@54.0.10)(react-native@0.81.4)
       invariant: 2.2.4
-      react: 19.1.0
-      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
+      react: 18.3.1
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
     transitivePeerDependencies:
       - expo
       - supports-color
@@ -7536,8 +8081,8 @@ packages:
     dependencies:
       '@expo/config': 12.0.9
       '@expo/env': 2.0.7
-      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@19.1.0)
-      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
+      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@18.3.1)
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -7547,7 +8092,7 @@ packages:
       expo: '*'
     dependencies:
       base64-js: 1.5.1
-      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@19.1.0)
+      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@18.3.1)
     dev: false
 
   /expo-file-system@19.0.15(expo@54.0.10)(react-native@0.81.4):
@@ -7556,31 +8101,31 @@ packages:
       expo: '*'
       react-native: '*'
     dependencies:
-      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@19.1.0)
-      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
+      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@18.3.1)
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
 
-  /expo-font@14.0.8(expo@54.0.10)(react-native@0.81.4)(react@19.1.0):
+  /expo-font@14.0.8(expo@54.0.10)(react-native@0.81.4)(react@18.3.1):
     resolution: {integrity: sha512-bTUHaJWRZ7ywP8dg3f+wfOwv6RwMV3mWT2CDUIhsK70GjNGlCtiWOCoHsA5Od/esPaVxqc37cCBvQGQRFStRlA==}
     peerDependencies:
       expo: '*'
       react: '*'
       react-native: '*'
     dependencies:
-      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@19.1.0)
+      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@18.3.1)
       fontfaceobserver: 2.3.0
-      react: 19.1.0
-      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
+      react: 18.3.1
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
 
-  /expo-keep-awake@15.0.7(expo@54.0.10)(react@19.1.0):
+  /expo-keep-awake@15.0.7(expo@54.0.10)(react@18.3.1):
     resolution: {integrity: sha512-CgBNcWVPnrIVII5G54QDqoE125l+zmqR4HR8q+MQaCfHet+dYpS5vX5zii/RMayzGN4jPgA4XYIQ28ePKFjHoA==}
     peerDependencies:
       expo: '*'
       react: '*'
     dependencies:
-      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@19.1.0)
-      react: 19.1.0
+      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@18.3.1)
+      react: 18.3.1
 
-  /expo-linking@8.0.8(expo@54.0.10)(react-native@0.81.4)(react@19.1.0):
+  /expo-linking@8.0.8(expo@54.0.10)(react-native@0.81.4)(react@18.3.1):
     resolution: {integrity: sha512-MyeMcbFDKhXh4sDD1EHwd0uxFQNAc6VCrwBkNvvvufUsTYFq3glTA9Y8a+x78CPpjNqwNAamu74yIaIz7IEJyg==}
     peerDependencies:
       react: '*'
@@ -7588,8 +8133,8 @@ packages:
     dependencies:
       expo-constants: 18.0.9(expo@54.0.10)(react-native@0.81.4)
       invariant: 2.2.4
-      react: 19.1.0
-      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
+      react: 18.3.1
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
     transitivePeerDependencies:
       - expo
       - supports-color
@@ -7605,17 +8150,17 @@ packages:
       require-from-string: 2.0.2
       resolve-from: 5.0.0
 
-  /expo-modules-core@3.0.18(react-native@0.81.4)(react@19.1.0):
+  /expo-modules-core@3.0.18(react-native@0.81.4)(react@18.3.1):
     resolution: {integrity: sha512-9JPnjlXEFaq/uACZ7I4wb/RkgPYCEsfG75UKMvfl7P7rkymtpRGYj8/gTL2KId8Xt1fpmIPOF57U8tKamjtjXg==}
     peerDependencies:
       react: '*'
       react-native: '*'
     dependencies:
       invariant: 2.2.4
-      react: 19.1.0
-      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
+      react: 18.3.1
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
 
-  /expo-notifications@0.32.11(expo@54.0.10)(react-native@0.81.4)(react@19.1.0):
+  /expo-notifications@0.32.11(expo@54.0.10)(react-native@0.81.4)(react@18.3.1):
     resolution: {integrity: sha512-4rLWC9Q4B7aQywXn9cKAlNY4p00CYKLJ23qZ0Pp/whkX0NxmI4MwJ20YhreV08gjHTTTWHpYU7jqYWpsjtPIxA==}
     peerDependencies:
       expo: '*'
@@ -7627,16 +8172,16 @@ packages:
       abort-controller: 3.0.0
       assert: 2.1.0
       badgin: 1.2.3
-      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@19.1.0)
+      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@18.3.1)
       expo-application: 7.0.7(expo@54.0.10)
       expo-constants: 18.0.9(expo@54.0.10)(react-native@0.81.4)
-      react: 19.1.0
-      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
+      react: 18.3.1
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
     transitivePeerDependencies:
       - supports-color
     dev: false
 
-  /expo-router@6.0.8(@expo/metro-runtime@6.1.2)(@types/react@19.1.14)(expo-constants@18.0.9)(expo-linking@8.0.8)(expo@54.0.10)(react-dom@19.1.0)(react-native-safe-area-context@5.6.1)(react-native-screens@4.16.0)(react-native-web@0.21.1)(react-native@0.81.4)(react@19.1.0):
+  /expo-router@6.0.8(@expo/metro-runtime@6.1.2)(@react-navigation/drawer@7.5.8)(@types/react@19.1.14)(expo-constants@18.0.9)(expo-linking@8.0.8)(expo@54.0.10)(react-dom@18.3.1)(react-native-gesture-handler@2.28.0)(react-native-reanimated@4.1.2)(react-native-safe-area-context@5.6.1)(react-native-screens@4.16.0)(react-native-web@0.21.1)(react-native@0.81.4)(react@18.3.1):
     resolution: {integrity: sha512-cx6vFvBrfPNHpNbN2ij2mF5JKE4JXyq+dJVmWNqt7JplA0aohOOKXS/KQ9vQy88HpnrcJMuYqUNHp44aWyce7g==}
     peerDependencies:
       '@expo/metro-runtime': ^6.1.2
@@ -7670,38 +8215,41 @@ packages:
       react-server-dom-webpack:
         optional: true
     dependencies:
-      '@expo/metro-runtime': 6.1.2(expo@54.0.10)(react-dom@19.1.0)(react-native@0.81.4)(react@19.1.0)
+      '@expo/metro-runtime': 6.1.2(expo@54.0.10)(react-dom@18.3.1)(react-native@0.81.4)(react@18.3.1)
       '@expo/schema-utils': 0.1.7
       '@expo/server': 0.7.5
-      '@radix-ui/react-slot': 1.2.0(@types/react@19.1.14)(react@19.1.0)
-      '@radix-ui/react-tabs': 1.1.13(@types/react@19.1.14)(react-dom@19.1.0)(react@19.1.0)
-      '@react-navigation/bottom-tabs': 7.4.7(@react-navigation/native@7.1.17)(react-native-safe-area-context@5.6.1)(react-native-screens@4.16.0)(react-native@0.81.4)(react@19.1.0)
-      '@react-navigation/native': 7.1.17(react-native@0.81.4)(react@19.1.0)
-      '@react-navigation/native-stack': 7.3.26(@react-navigation/native@7.1.17)(react-native-safe-area-context@5.6.1)(react-native-screens@4.16.0)(react-native@0.81.4)(react@19.1.0)
+      '@radix-ui/react-slot': 1.2.0(@types/react@19.1.14)(react@18.3.1)
+      '@radix-ui/react-tabs': 1.1.13(@types/react@19.1.14)(react-dom@18.3.1)(react@18.3.1)
+      '@react-navigation/bottom-tabs': 7.4.7(@react-navigation/native@7.1.17)(react-native-safe-area-context@5.6.1)(react-native-screens@4.16.0)(react-native@0.81.4)(react@18.3.1)
+      '@react-navigation/drawer': 7.5.8(@react-navigation/native@7.1.17)(react-native-gesture-handler@2.28.0)(react-native-reanimated@4.1.2)(react-native-safe-area-context@5.6.1)(react-native-screens@4.16.0)(react-native@0.81.4)(react@18.3.1)
+      '@react-navigation/native': 7.1.17(react-native@0.81.4)(react@18.3.1)
+      '@react-navigation/native-stack': 7.3.26(@react-navigation/native@7.1.17)(react-native-safe-area-context@5.6.1)(react-native-screens@4.16.0)(react-native@0.81.4)(react@18.3.1)
       client-only: 0.0.1
       debug: 4.4.3
       escape-string-regexp: 4.0.0
-      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@19.1.0)
+      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@18.3.1)
       expo-constants: 18.0.9(expo@54.0.10)(react-native@0.81.4)
-      expo-linking: 8.0.8(expo@54.0.10)(react-native@0.81.4)(react@19.1.0)
+      expo-linking: 8.0.8(expo@54.0.10)(react-native@0.81.4)(react@18.3.1)
       fast-deep-equal: 3.1.3
       invariant: 2.2.4
       nanoid: 3.3.11
       query-string: 7.1.3
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
       react-fast-compare: 3.2.2
-      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
-      react-native-is-edge-to-edge: 1.2.1(react-native@0.81.4)(react@19.1.0)
-      react-native-safe-area-context: 5.6.1(react-native@0.81.4)(react@19.1.0)
-      react-native-screens: 4.16.0(react-native@0.81.4)(react@19.1.0)
-      react-native-web: 0.21.1(react-dom@19.1.0)(react@19.1.0)
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
+      react-native-gesture-handler: 2.28.0(react-native@0.81.4)(react@18.3.1)
+      react-native-is-edge-to-edge: 1.2.1(react-native@0.81.4)(react@18.3.1)
+      react-native-reanimated: 4.1.2(@babel/core@7.28.4)(react-native-worklets@0.6.0)(react-native@0.81.4)(react@18.3.1)
+      react-native-safe-area-context: 5.6.1(react-native@0.81.4)(react@18.3.1)
+      react-native-screens: 4.16.0(react-native@0.81.4)(react@18.3.1)
+      react-native-web: 0.21.1(react-dom@18.3.1)(react@18.3.1)
       semver: 7.6.3
       server-only: 0.0.1
       sf-symbols-typescript: 2.1.0
       shallowequal: 1.1.0
-      use-latest-callback: 0.2.4(react@19.1.0)
-      vaul: 1.1.2(@types/react@19.1.14)(react-dom@19.1.0)(react@19.1.0)
+      use-latest-callback: 0.2.4(react@18.3.1)
+      vaul: 1.1.2(@types/react@19.1.14)(react-dom@18.3.1)(react@18.3.1)
     transitivePeerDependencies:
       - '@react-native-masked-view/masked-view'
       - '@types/react'
@@ -7714,20 +8262,20 @@ packages:
       expo: '*'
     dependencies:
       '@expo/prebuild-config': 54.0.3(expo@54.0.10)
-      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@19.1.0)
+      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@18.3.1)
     transitivePeerDependencies:
       - supports-color
     dev: false
 
-  /expo-status-bar@3.0.8(react-native@0.81.4)(react@19.1.0):
+  /expo-status-bar@3.0.8(react-native@0.81.4)(react@18.3.1):
     resolution: {integrity: sha512-L248XKPhum7tvREoS1VfE0H6dPCaGtoUWzRsUv7hGKdiB4cus33Rc0sxkWkoQ77wE8stlnUlL5lvmT0oqZ3ZBw==}
     peerDependencies:
       react: '*'
       react-native: '*'
     dependencies:
-      react: 19.1.0
-      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
-      react-native-is-edge-to-edge: 1.2.1(react-native@0.81.4)(react@19.1.0)
+      react: 18.3.1
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
+      react-native-is-edge-to-edge: 1.2.1(react-native@0.81.4)(react@18.3.1)
     dev: false
 
   /expo-web-browser@15.0.7(expo@54.0.10)(react-native@0.81.4):
@@ -7736,11 +8284,11 @@ packages:
       expo: '*'
       react-native: '*'
     dependencies:
-      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@19.1.0)
-      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
+      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@18.3.1)
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
     dev: false
 
-  /expo@54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@19.1.0):
+  /expo@54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@18.3.1):
     resolution: {integrity: sha512-49+IginEoKC+g125ZlRvUYNl9jKjjHcDiDnQvejNWlMQ0LtcFIWiFad/PLjmi7YqF/0rj9u3FNxqM6jNP16O0w==}
     hasBin: true
     peerDependencies:
@@ -7761,24 +8309,24 @@ packages:
       '@expo/cli': 54.0.8(expo-router@6.0.8)(expo@54.0.10)(react-native@0.81.4)
       '@expo/config': 12.0.9
       '@expo/config-plugins': 54.0.1
-      '@expo/devtools': 0.1.7(react-native@0.81.4)(react@19.1.0)
+      '@expo/devtools': 0.1.7(react-native@0.81.4)(react@18.3.1)
       '@expo/fingerprint': 0.15.1
       '@expo/metro': 54.0.0
       '@expo/metro-config': 54.0.5(expo@54.0.10)
-      '@expo/metro-runtime': 6.1.2(expo@54.0.10)(react-dom@19.1.0)(react-native@0.81.4)(react@19.1.0)
-      '@expo/vector-icons': 15.0.2(expo-font@14.0.8)(react-native@0.81.4)(react@19.1.0)
+      '@expo/metro-runtime': 6.1.2(expo@54.0.10)(react-dom@18.3.1)(react-native@0.81.4)(react@18.3.1)
+      '@expo/vector-icons': 15.0.2(expo-font@14.0.8)(react-native@0.81.4)(react@18.3.1)
       '@ungap/structured-clone': 1.3.0
       babel-preset-expo: 54.0.3(@babel/core@7.28.4)(@babel/runtime@7.28.4)(expo@54.0.10)(react-refresh@0.14.2)
-      expo-asset: 12.0.9(expo@54.0.10)(react-native@0.81.4)(react@19.1.0)
+      expo-asset: 12.0.9(expo@54.0.10)(react-native@0.81.4)(react@18.3.1)
       expo-constants: 18.0.9(expo@54.0.10)(react-native@0.81.4)
       expo-file-system: 19.0.15(expo@54.0.10)(react-native@0.81.4)
-      expo-font: 14.0.8(expo@54.0.10)(react-native@0.81.4)(react@19.1.0)
-      expo-keep-awake: 15.0.7(expo@54.0.10)(react@19.1.0)
+      expo-font: 14.0.8(expo@54.0.10)(react-native@0.81.4)(react@18.3.1)
+      expo-keep-awake: 15.0.7(expo@54.0.10)(react@18.3.1)
       expo-modules-autolinking: 3.0.13
-      expo-modules-core: 3.0.18(react-native@0.81.4)(react@19.1.0)
+      expo-modules-core: 3.0.18(react-native@0.81.4)(react@18.3.1)
       pretty-format: 29.7.0
-      react: 19.1.0
-      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
+      react: 18.3.1
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
       react-refresh: 0.14.2
       whatwg-url-without-unicode: 8.0.0-3
     transitivePeerDependencies:
@@ -7831,6 +8379,12 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
+  /ext@1.7.0:
+    resolution: {integrity: sha512-6hxeJYaL110a9b5TEJSj0gojyHQAmA2ch5Os+ySCiA1QGdS697XWY1pzsrSjqA9LDEEgdB/KypIlR59RcLuHYw==}
+    dependencies:
+      type: 2.7.3
+    dev: false
+
   /external-editor@3.1.0:
     resolution: {integrity: sha512-hMQ4CX1p1izmuLYyZqLMO/qGNw10wSv9QDCPfzXfyFrOaCSSoRfqE1Kf1s5an66J5JZC62NewG+mK49jOCtQew==}
     engines: {node: '>=4'}
@@ -7856,6 +8410,7 @@ packages:
       glob-parent: 5.1.2
       merge2: 1.4.1
       micromatch: 4.0.8
+    dev: true
 
   /fast-json-stable-stringify@2.1.0:
     resolution: {integrity: sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==}
@@ -7876,11 +8431,13 @@ packages:
     hasBin: true
     dependencies:
       strnum: 1.1.2
+    dev: true
 
   /fastq@1.19.1:
     resolution: {integrity: sha512-GwLTyxkCXjXbxqIhTsMI2Nui8huMPtnxg7krajPJAjnEG/iiOS7i+zCtWGZR9G0NBKbXKh6X9m9UIsYX/N6vvQ==}
     dependencies:
       reusify: 1.1.0
+    dev: true
 
   /fb-watchman@2.0.2:
     resolution: {integrity: sha512-p5161BqbuCaSnB8jIbzQHOlpgsPmK5rJVDfDKO91Axs5NC1uu3HRQm6wt9cd9/+GtQQIO53JdGXXoyDpTAsgYA==}
@@ -8140,6 +8697,7 @@ packages:
       graceful-fs: 4.2.11
       jsonfile: 4.0.0
       universalify: 0.1.2
+    dev: true
 
   /fs-minipass@2.1.0:
     resolution: {integrity: sha512-V/JgOLFCS+R6Vcq0slCuaeWEdNC3ouDlJMNIsacH2VtALiu9mV4LPrHc5cDl8k5aw6J8jwgWWpiTo5RYhmIzvg==}
@@ -8273,6 +8831,7 @@ packages:
     engines: {node: '>= 6'}
     dependencies:
       is-glob: 4.0.3
+    dev: true
 
   /glob-parent@6.0.2:
     resolution: {integrity: sha512-XxwI8EOhVQgWp6iDL+3b0r86f4d6AX6zSU55HfB4ydCEuXLXc5FcYeOu+nnGftS4TEju/11rt4KJPTMgbfmv4A==}
@@ -8426,9 +8985,14 @@ packages:
 
   /hermes-estree@0.19.1:
     resolution: {integrity: sha512-daLGV3Q2MKk8w4evNMKwS8zBE/rcpA800nu1Q5kM08IKijoSnPe9Uo1iIxzPKRkn95IxxsgBMPeYHt3VG4ej2g==}
+    dev: true
 
   /hermes-estree@0.23.1:
     resolution: {integrity: sha512-eT5MU3f5aVhTqsfIReZ6n41X5sYn4IdQL0nvz6yO+MMlPxw49aSARHLg/MSehQftyjnrE8X6bYregzSumqc6cg==}
+
+  /hermes-estree@0.25.1:
+    resolution: {integrity: sha512-0wUoCcLp+5Ev5pDW2OriHC2MJCbwLwuRx+gAqMTOkGKJJiBCLjtrvy4PWUGn6MIVefecRpzoOZ/UV6iGdOr+Cw==}
+    dev: false
 
   /hermes-estree@0.29.1:
     resolution: {integrity: sha512-jl+x31n4/w+wEqm0I2r4CMimukLbLQEYpisys5oCre611CI5fc9TxhqkBBCJ1edDG4Kza0f7CgNz8xVMLZQOmQ==}
@@ -8437,11 +9001,18 @@ packages:
     resolution: {integrity: sha512-Vp+bXzxYJWrpEuJ/vXxUsLnt0+y4q9zyi4zUlkLqD8FKv4LjIfOvP69R/9Lty3dCyKh0E2BU7Eypqr63/rKT/A==}
     dependencies:
       hermes-estree: 0.19.1
+    dev: true
 
   /hermes-parser@0.23.1:
     resolution: {integrity: sha512-oxl5h2DkFW83hT4DAUJorpah8ou4yvmweUzLJmmr6YV2cezduCdlil1AvU/a/xSsAFo4WUcNA4GoV5Bvq6JffA==}
     dependencies:
       hermes-estree: 0.23.1
+
+  /hermes-parser@0.25.1:
+    resolution: {integrity: sha512-6pEjquH3rqaI6cYAXYPcz9MS4rY6R4ngRgrgfDshRptUZIc3lw0MCIJIGDj9++mfySOuPTHB4nrSW99BCvOPIA==}
+    dependencies:
+      hermes-estree: 0.25.1
+    dev: false
 
   /hermes-parser@0.29.1:
     resolution: {integrity: sha512-xBHWmUtRC5e/UL0tI7Ivt2riA/YBq9+SiYFU7C1oBa/j2jYGlIF9043oak1F47ihuDIxQ5nbsKueYJDRY02UgA==}
@@ -8453,6 +9024,12 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       source-map: 0.7.6
+    dev: true
+
+  /hoist-non-react-statics@3.3.2:
+    resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
+    dependencies:
+      react-is: 16.13.1
 
   /hosted-git-info@7.0.2:
     resolution: {integrity: sha512-puUZAUKT5m8Zzvs72XWy3HtvVbTWljRE66cP60bxJzAqf2DgICo7lYTY2IHUmLnNpjYvw5bvmoHvPc0QO2a62w==}
@@ -8779,6 +9356,7 @@ packages:
   /is-extglob@2.1.1:
     resolution: {integrity: sha512-SbKbANkN603Vi4jEZv49LeVJMn4yGwsbzZworEoyEiutsN3nJYdbO36zfhGJ6QEDpOZIFkDtnq5JRxmvl3jsoQ==}
     engines: {node: '>=0.10.0'}
+    dev: true
 
   /is-finalizationregistry@1.1.1:
     resolution: {integrity: sha512-1pC6N8qWJbWoPtEjgcL2xyhQOP491EQjeUo3qTKcmV8YSDDJrOepfG8pcC7h/QgnQHYSv0mJ3Z/ZWxmatVrysg==}
@@ -8790,6 +9368,7 @@ packages:
   /is-fullwidth-code-point@2.0.0:
     resolution: {integrity: sha512-VHskAKYM8RfSFXwee5t5cbN5PZeq1Wrh6qd5bkyiXIf6UQcN6w/A0eXM9r6t8d+GYOh+o6ZhiEnb88LN/Y8m2w==}
     engines: {node: '>=4'}
+    dev: true
 
   /is-fullwidth-code-point@3.0.0:
     resolution: {integrity: sha512-zymm5+u+sCsSWyD9qNaejV3DFvhCKclKdizYaJUuHA83RLjb7nSuGnddCHGv0hk+KY7BMAlsWeK4Ueg6EV6XQg==}
@@ -8814,10 +9393,12 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       is-extglob: 2.1.1
+    dev: true
 
   /is-interactive@1.0.0:
     resolution: {integrity: sha512-2HvIEKRoqS62guEC+qBjpvRubdX910WCMuJTZ+I9yvqKU2/12eSL549HMwtabb4oupdj2sMP50k+XJfB/8JE6w==}
     engines: {node: '>=8'}
+    dev: true
 
   /is-map@2.0.3:
     resolution: {integrity: sha512-1Qed0/Hr2m+YqxnM09CjA2d/i6YZNfF6R2oRAOj36eUdS6qIV/huPJNSEpKbupewFs+ZsJlxsjjPbc0/afW6Lw==}
@@ -8920,6 +9501,7 @@ packages:
   /is-unicode-supported@0.1.0:
     resolution: {integrity: sha512-knxG2q4UC3u8stRGyAVJCOdxFmv5DZiRcdlIaAQXAbSfJya+OhopNotLQrstBhququ4ZpuKbDc/8S6mgXgPFPw==}
     engines: {node: '>=10'}
+    dev: true
 
   /is-weakmap@2.0.2:
     resolution: {integrity: sha512-K5pXYOm9wqY1RgjpL3YTkF39tni1XajUIkawTLUo9EZEVUFga5gSQJF8nNS7ZwJQ02y+1YCNYcMh+HIf1ZqE+w==}
@@ -8944,6 +9526,7 @@ packages:
   /is-wsl@1.1.0:
     resolution: {integrity: sha512-gfygJYZ2gLTDlmbWMI0CE2MwnFzSN/2SZfkMlItC4K/JBlsWVDB0bO6XhqcY13YXE7iMcAJnzTCJjPiTeJJ0Mw==}
     engines: {node: '>=4'}
+    dev: true
 
   /is-wsl@2.2.0:
     resolution: {integrity: sha512-fKzAra0rGJUUBwGBgNkHZuToZcn+TtXHpeCgmkMJMMYx1sQDYaCSyjJBSCa2nH1DGm7s3n1oBnohoVTBaN7Lww==}
@@ -8953,6 +9536,7 @@ packages:
 
   /isarray@1.0.0:
     resolution: {integrity: sha512-VLghIWNM6ELQzo7zwmcg0NmTVyWKYjvIeM83yjp0wRDTmUnrM678fQbcKBo6n2CJEF0szoG//ytg+TKla89ALQ==}
+    dev: true
 
   /isarray@2.0.5:
     resolution: {integrity: sha512-xHjhDr3cNBK0BzdUJSPXZntQUx/mwMS5Rw4A7lPJ90XGAO6ISP/ePDNuo0vhqOZU+UD5JoodwCAAoZQd3FeAKw==}
@@ -9214,7 +9798,7 @@ packages:
       jest-mock: 29.7.0
       jest-util: 29.7.0
 
-  /jest-expo@54.0.12(@babel/core@7.28.4)(expo@54.0.10)(jest@29.7.0)(react-dom@19.1.0)(react-native@0.81.4)(react@19.1.0)(webpack@5.101.3):
+  /jest-expo@54.0.12(@babel/core@7.28.4)(expo@54.0.10)(jest@29.7.0)(react-dom@18.3.1)(react-native@0.81.4)(react@18.3.1)(webpack@5.101.3):
     resolution: {integrity: sha512-76dZ0Mk4/lBMwmGRWoSFQ08rfmMTVhnAp3Hxua5cND2TVISZcsya3LUZVKfPYxb5lB7H4OR6B7KStQJFkrnJjg==}
     hasBin: true
     peerDependencies:
@@ -9226,16 +9810,16 @@ packages:
       '@jest/create-cache-key-function': 29.7.0
       '@jest/globals': 29.7.0
       babel-jest: 29.7.0(@babel/core@7.28.4)
-      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@19.1.0)
+      expo: 54.0.10(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.8)(react-native@0.81.4)(react@18.3.1)
       jest-environment-jsdom: 29.7.0
       jest-snapshot: 29.7.0
       jest-watch-select-projects: 2.0.0
       jest-watch-typeahead: 2.2.1(jest@29.7.0)
       json5: 2.2.3
       lodash: 4.17.21
-      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
-      react-server-dom-webpack: 19.0.0(react-dom@19.1.0)(react@19.1.0)(webpack@5.101.3)
-      react-test-renderer: 19.1.0(react@19.1.0)
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
+      react-server-dom-webpack: 19.0.0(react-dom@18.3.1)(react@18.3.1)(webpack@5.101.3)
+      react-test-renderer: 19.1.0(react@18.3.1)
       server-only: 0.0.1
       stacktrace-js: 2.0.2
     transitivePeerDependencies:
@@ -9550,6 +10134,7 @@ packages:
       '@sideway/address': 4.1.5
       '@sideway/formula': 3.0.1
       '@sideway/pinpoint': 2.0.0
+    dev: true
 
   /js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -9695,6 +10280,7 @@ packages:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
     optionalDependencies:
       graceful-fs: 4.2.11
+    dev: true
 
   /jsonfile@6.2.0:
     resolution: {integrity: sha512-FGuPw30AdOIUTRMC2OMRtQV+jkVj2cfPqSeWXv1NEAJ1qZ5zb1X6z1mFhbfOB/iy3ssJCD+3KuZ8r8C3uVFlAg==}
@@ -9975,6 +10561,7 @@ packages:
     dependencies:
       chalk: 4.1.2
       is-unicode-supported: 0.1.0
+    dev: true
 
   /logkitty@0.7.1:
     resolution: {integrity: sha512-/3ER20CTTbahrCrpYfPn7Xavv9diBROZpoXGVZDWMw4b/X4uuUwAC0ki85tgsdMRONURyIJbcOvS94QsUBYPbQ==}
@@ -9983,6 +10570,7 @@ packages:
       ansi-fragments: 0.2.1
       dayjs: 1.11.18
       yargs: 15.4.1
+    dev: true
 
   /loose-envify@1.4.0:
     resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
@@ -10084,6 +10672,7 @@ packages:
   /merge2@1.4.1:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
+    dev: true
 
   /methods@1.1.2:
     resolution: {integrity: sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==}
@@ -10099,6 +10688,19 @@ packages:
       nullthrows: 1.1.1
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /metro-babel-transformer@0.81.5:
+    resolution: {integrity: sha512-oKCQuajU5srm+ZdDcFg86pG/U8hkSjBlkyFjz380SZ4TTIiI5F+OQB830i53D8hmqmcosa4wR/pnKv8y4Q3dLw==}
+    engines: {node: '>=18.18'}
+    dependencies:
+      '@babel/core': 7.28.4
+      flow-enums-runtime: 0.0.6
+      hermes-parser: 0.25.1
+      nullthrows: 1.1.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
 
   /metro-babel-transformer@0.83.1:
     resolution: {integrity: sha512-r3xAD3964E8dwDBaZNSO2aIIvWXjIK80uO2xo0/pi3WI8XWT9h5SCjtGWtMtE5PRWw+t20TN0q1WMRsjvhC1rQ==}
@@ -10116,6 +10718,14 @@ packages:
     engines: {node: '>=18'}
     dependencies:
       flow-enums-runtime: 0.0.6
+    dev: true
+
+  /metro-cache-key@0.81.5:
+    resolution: {integrity: sha512-lGWnGVm1UwO8faRZ+LXQUesZSmP1LOg14OVR+KNPBip8kbMECbQJ8c10nGesw28uQT7AE0lwQThZPXlxDyCLKQ==}
+    engines: {node: '>=18.18'}
+    dependencies:
+      flow-enums-runtime: 0.0.6
+    dev: false
 
   /metro-cache-key@0.83.1:
     resolution: {integrity: sha512-ZUs+GD5CNeDLxx5UUWmfg26IL+Dnbryd+TLqTlZnDEgehkIa11kUSvgF92OFfJhONeXzV4rZDRGNXoo6JT+8Gg==}
@@ -10130,6 +10740,16 @@ packages:
       exponential-backoff: 3.1.2
       flow-enums-runtime: 0.0.6
       metro-core: 0.80.12
+    dev: true
+
+  /metro-cache@0.81.5:
+    resolution: {integrity: sha512-wOsXuEgmZMZ5DMPoz1pEDerjJ11AuMy9JifH4yNW7NmWS0ghCRqvDxk13LsElzLshey8C+my/tmXauXZ3OqZgg==}
+    engines: {node: '>=18.18'}
+    dependencies:
+      exponential-backoff: 3.1.2
+      flow-enums-runtime: 0.0.6
+      metro-core: 0.81.5
+    dev: false
 
   /metro-cache@0.83.1:
     resolution: {integrity: sha512-7N/Ad1PHa1YMWDNiyynTPq34Op2qIE68NWryGEQ4TSE3Zy6a8GpsYnEEZE4Qi6aHgsE+yZHKkRczeBgxhnFIxQ==}
@@ -10158,6 +10778,25 @@ packages:
       - bufferutil
       - supports-color
       - utf-8-validate
+    dev: true
+
+  /metro-config@0.81.5:
+    resolution: {integrity: sha512-oDRAzUvj6RNRxratFdcVAqtAsg+T3qcKrGdqGZFUdwzlFJdHGR9Z413sW583uD2ynsuOjA2QB6US8FdwiBdNKg==}
+    engines: {node: '>=18.18'}
+    dependencies:
+      connect: 3.7.0
+      cosmiconfig: 5.2.1
+      flow-enums-runtime: 0.0.6
+      jest-validate: 29.7.0
+      metro: 0.81.5
+      metro-cache: 0.81.5
+      metro-core: 0.81.5
+      metro-runtime: 0.81.5
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
+    dev: false
 
   /metro-config@0.83.1:
     resolution: {integrity: sha512-HJhpZx3wyOkux/jeF1o7akFJzZFdbn6Zf7UQqWrvp7gqFqNulQ8Mju09raBgPmmSxKDl4LbbNeigkX0/nKY1QA==}
@@ -10183,6 +10822,16 @@ packages:
       flow-enums-runtime: 0.0.6
       lodash.throttle: 4.1.1
       metro-resolver: 0.80.12
+    dev: true
+
+  /metro-core@0.81.5:
+    resolution: {integrity: sha512-+2R0c8ByfV2N7CH5wpdIajCWa8escUFd8TukfoXyBq/vb6yTCsznoA25FhNXJ+MC/cz1L447Zj3vdUfCXIZBwg==}
+    engines: {node: '>=18.18'}
+    dependencies:
+      flow-enums-runtime: 0.0.6
+      lodash.throttle: 4.1.1
+      metro-resolver: 0.81.5
+    dev: false
 
   /metro-core@0.83.1:
     resolution: {integrity: sha512-uVL1eAJcMFd2o2Q7dsbpg8COaxjZBBGaXqO2OHnivpCdfanraVL8dPmY6It9ZeqWLOihUKZ2yHW4b6soVCzH/Q==}
@@ -10211,6 +10860,24 @@ packages:
       fsevents: 2.3.3
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /metro-file-map@0.81.5:
+    resolution: {integrity: sha512-mW1PKyiO3qZvjeeVjj1brhkmIotObA3/9jdbY1fQQYvEWM6Ml7bN/oJCRDGn2+bJRlG+J8pwyJ+DgdrM4BsKyg==}
+    engines: {node: '>=18.18'}
+    dependencies:
+      debug: 2.6.9
+      fb-watchman: 2.0.2
+      flow-enums-runtime: 0.0.6
+      graceful-fs: 4.2.11
+      invariant: 2.2.4
+      jest-worker: 29.7.0
+      micromatch: 4.0.8
+      nullthrows: 1.1.1
+      walker: 1.0.8
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
 
   /metro-file-map@0.83.1:
     resolution: {integrity: sha512-Yu429lnexKl44PttKw3nhqgmpBR+6UQ/tRaYcxPeEShtcza9DWakCn7cjqDTQZtWR2A8xSNv139izJMyQ4CG+w==}
@@ -10234,6 +10901,15 @@ packages:
     dependencies:
       flow-enums-runtime: 0.0.6
       terser: 5.44.0
+    dev: true
+
+  /metro-minify-terser@0.81.5:
+    resolution: {integrity: sha512-/mn4AxjANnsSS3/Bb+zA1G5yIS5xygbbz/OuPaJYs0CPcZCaWt66D+65j4Ft/nJkffUxcwE9mk4ubpkl3rjgtw==}
+    engines: {node: '>=18.18'}
+    dependencies:
+      flow-enums-runtime: 0.0.6
+      terser: 5.44.0
+    dev: false
 
   /metro-minify-terser@0.83.1:
     resolution: {integrity: sha512-kmooOxXLvKVxkh80IVSYO4weBdJDhCpg5NSPkjzzAnPJP43u6+usGXobkTWxxrAlq900bhzqKek4pBsUchlX6A==}
@@ -10247,6 +10923,14 @@ packages:
     engines: {node: '>=18'}
     dependencies:
       flow-enums-runtime: 0.0.6
+    dev: true
+
+  /metro-resolver@0.81.5:
+    resolution: {integrity: sha512-6BX8Nq3g3go3FxcyXkVbWe7IgctjDTk6D9flq+P201DfHHQ28J+DWFpVelFcrNTn4tIfbP/Bw7u/0g2BGmeXfQ==}
+    engines: {node: '>=18.18'}
+    dependencies:
+      flow-enums-runtime: 0.0.6
+    dev: false
 
   /metro-resolver@0.83.1:
     resolution: {integrity: sha512-t8j46kiILAqqFS5RNa+xpQyVjULxRxlvMidqUswPEk5nQVNdlJslqizDm/Et3v/JKwOtQGkYAQCHxP1zGStR/g==}
@@ -10260,9 +10944,25 @@ packages:
     dependencies:
       '@babel/runtime': 7.28.4
       flow-enums-runtime: 0.0.6
+    dev: true
+
+  /metro-runtime@0.81.5:
+    resolution: {integrity: sha512-M/Gf71ictUKP9+77dV/y8XlAWg7xl76uhU7ggYFUwEdOHHWPG6gLBr1iiK0BmTjPFH8yRo/xyqMli4s3oGorPQ==}
+    engines: {node: '>=18.18'}
+    dependencies:
+      '@babel/runtime': 7.28.4
+      flow-enums-runtime: 0.0.6
+    dev: false
 
   /metro-runtime@0.83.1:
     resolution: {integrity: sha512-3Ag8ZS4IwafL/JUKlaeM6/CbkooY+WcVeqdNlBG0m4S0Qz0om3rdFdy1y6fYBpl6AwXJwWeMuXrvZdMuByTcRA==}
+    engines: {node: '>=20.19.4'}
+    dependencies:
+      '@babel/runtime': 7.28.4
+      flow-enums-runtime: 0.0.6
+
+  /metro-runtime@0.83.2:
+    resolution: {integrity: sha512-nnsPtgRvFbNKwemqs0FuyFDzXLl+ezuFsUXDbX8o0SXOfsOPijqiQrf3kuafO1Zx1aUWf4NOrKJMAQP5EEHg9A==}
     engines: {node: '>=20.19.4'}
     dependencies:
       '@babel/runtime': 7.28.4
@@ -10283,6 +10983,25 @@ packages:
       vlq: 1.0.1
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /metro-source-map@0.81.5:
+    resolution: {integrity: sha512-Jz+CjvCKLNbJZYJTBeN3Kq9kIJf6b61MoLBdaOQZJ5Ajhw6Pf95Nn21XwA8BwfUYgajsi6IXsp/dTZsYJbN00Q==}
+    engines: {node: '>=18.18'}
+    dependencies:
+      '@babel/traverse': 7.28.4
+      '@babel/traverse--for-generate-function-map': /@babel/traverse@7.28.4
+      '@babel/types': 7.28.4
+      flow-enums-runtime: 0.0.6
+      invariant: 2.2.4
+      metro-symbolicate: 0.81.5
+      nullthrows: 1.1.1
+      ob1: 0.81.5
+      source-map: 0.5.7
+      vlq: 1.0.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
 
   /metro-source-map@0.83.1:
     resolution: {integrity: sha512-De7Vbeo96fFZ2cqmI0fWwVJbtHIwPZv++LYlWSwzTiCzxBDJORncN0LcT48Vi2UlQLzXJg+/CuTAcy7NBVh69A==}
@@ -10315,6 +11034,22 @@ packages:
       vlq: 1.0.1
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /metro-symbolicate@0.81.5:
+    resolution: {integrity: sha512-X3HV3n3D6FuTE11UWFICqHbFMdTavfO48nXsSpnNGFkUZBexffu0Xd+fYKp+DJLNaQr3S+lAs8q9CgtDTlRRuA==}
+    engines: {node: '>=18.18'}
+    hasBin: true
+    dependencies:
+      flow-enums-runtime: 0.0.6
+      invariant: 2.2.4
+      metro-source-map: 0.81.5
+      nullthrows: 1.1.1
+      source-map: 0.5.7
+      vlq: 1.0.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
 
   /metro-symbolicate@0.83.1:
     resolution: {integrity: sha512-wPxYkONlq/Sv8Ji7vHEx5OzFouXAMQJjpcPW41ySKMLP/Ir18SsiJK2h4YkdKpYrTS1+0xf8oqF6nxCsT3uWtg==}
@@ -10342,6 +11077,21 @@ packages:
       nullthrows: 1.1.1
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /metro-transform-plugins@0.81.5:
+    resolution: {integrity: sha512-MmHhVx/1dJC94FN7m3oHgv5uOjKH8EX8pBeu1pnPMxbJrx6ZuIejO0k84zTSaQTZ8RxX1wqwzWBpXAWPjEX8mA==}
+    engines: {node: '>=18.18'}
+    dependencies:
+      '@babel/core': 7.28.4
+      '@babel/generator': 7.28.3
+      '@babel/template': 7.27.2
+      '@babel/traverse': 7.28.4
+      flow-enums-runtime: 0.0.6
+      nullthrows: 1.1.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
 
   /metro-transform-plugins@0.83.1:
     resolution: {integrity: sha512-1Y+I8oozXwhuS0qwC+ezaHXBf0jXW4oeYn4X39XWbZt9X2HfjodqY9bH9r6RUTsoiK7S4j8Ni2C91bUC+sktJQ==}
@@ -10377,6 +11127,30 @@ packages:
       - bufferutil
       - supports-color
       - utf-8-validate
+    dev: true
+
+  /metro-transform-worker@0.81.5:
+    resolution: {integrity: sha512-lUFyWVHa7lZFRSLJEv+m4jH8WrR5gU7VIjUlg4XmxQfV8ngY4V10ARKynLhMYPeQGl7Qvf+Ayg0eCZ272YZ4Mg==}
+    engines: {node: '>=18.18'}
+    dependencies:
+      '@babel/core': 7.28.4
+      '@babel/generator': 7.28.3
+      '@babel/parser': 7.28.4
+      '@babel/types': 7.28.4
+      flow-enums-runtime: 0.0.6
+      metro: 0.81.5
+      metro-babel-transformer: 0.81.5
+      metro-cache: 0.81.5
+      metro-cache-key: 0.81.5
+      metro-minify-terser: 0.81.5
+      metro-source-map: 0.81.5
+      metro-transform-plugins: 0.81.5
+      nullthrows: 1.1.1
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
+    dev: false
 
   /metro-transform-worker@0.83.1:
     resolution: {integrity: sha512-owCrhPyUxdLgXEEEAL2b14GWTPZ2zYuab1VQXcfEy0sJE71iciD7fuMcrngoufh7e7UHDZ56q4ktXg8wgiYA1Q==}
@@ -10451,6 +11225,58 @@ packages:
       - bufferutil
       - supports-color
       - utf-8-validate
+    dev: true
+
+  /metro@0.81.5:
+    resolution: {integrity: sha512-YpFF0DDDpDVygeca2mAn7K0+us+XKmiGk4rIYMz/CRdjFoCGqAei/IQSpV0UrGfQbToSugpMQeQJveaWSH88Hg==}
+    engines: {node: '>=18.18'}
+    hasBin: true
+    dependencies:
+      '@babel/code-frame': 7.27.1
+      '@babel/core': 7.28.4
+      '@babel/generator': 7.28.3
+      '@babel/parser': 7.28.4
+      '@babel/template': 7.27.2
+      '@babel/traverse': 7.28.4
+      '@babel/types': 7.28.4
+      accepts: 1.3.8
+      chalk: 4.1.2
+      ci-info: 2.0.0
+      connect: 3.7.0
+      debug: 2.6.9
+      error-stack-parser: 2.1.4
+      flow-enums-runtime: 0.0.6
+      graceful-fs: 4.2.11
+      hermes-parser: 0.25.1
+      image-size: 1.2.1
+      invariant: 2.2.4
+      jest-worker: 29.7.0
+      jsc-safe-url: 0.2.4
+      lodash.throttle: 4.1.1
+      metro-babel-transformer: 0.81.5
+      metro-cache: 0.81.5
+      metro-cache-key: 0.81.5
+      metro-config: 0.81.5
+      metro-core: 0.81.5
+      metro-file-map: 0.81.5
+      metro-resolver: 0.81.5
+      metro-runtime: 0.81.5
+      metro-source-map: 0.81.5
+      metro-symbolicate: 0.81.5
+      metro-transform-plugins: 0.81.5
+      metro-transform-worker: 0.81.5
+      mime-types: 2.1.35
+      nullthrows: 1.1.1
+      serialize-error: 2.1.0
+      source-map: 0.5.7
+      throat: 5.0.0
+      ws: 7.5.10
+      yargs: 17.7.2
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
+    dev: false
 
   /metro@0.83.1:
     resolution: {integrity: sha512-UGKepmTxoGD4HkQV8YWvpvwef7fUujNtTgG4Ygf7m/M0qjvb9VuDmAsEU+UdriRX7F61pnVK/opz89hjKlYTXA==}
@@ -10532,6 +11358,7 @@ packages:
     resolution: {integrity: sha512-USPkMeET31rOMiarsBNIHZKLGgvKc/LrjofAnBlOttf5ajRvqiRA8QsenbcooctK6d6Ts6aqZXBA+XbkKthiQg==}
     engines: {node: '>=4.0.0'}
     hasBin: true
+    dev: true
 
   /mimic-fn@1.2.0:
     resolution: {integrity: sha512-jf84uxzwiuiIVKiOLpfYk7N46TSy8ubTonmneY9vrpHNAnp0QBt2BxWV9dO3/j+BoVAb+a5G6YDPW3M5HOdMWQ==}
@@ -10664,6 +11491,12 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
+  /nanoid@5.1.6:
+    resolution: {integrity: sha512-c7+7RQ+dMB5dPwwCp4ee1/iV/q2P6aK1mTZcfr1BTuVlyW9hJYiMPybJCcnBlQtuSmTIWNeazm/zqNoZSSElBg==}
+    engines: {node: ^18 || >=20}
+    hasBin: true
+    dev: false
+
   /napi-postinstall@0.3.3:
     resolution: {integrity: sha512-uTp172LLXSxuSYHv/kou+f6KW3SMppU9ivthaVTXian9sOt3XM/zHYHpRZiLgQoxeWfYUnslNWQHF1+G71xcow==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
@@ -10688,12 +11521,18 @@ packages:
   /nested-error-stacks@2.0.1:
     resolution: {integrity: sha512-SrQrok4CATudVzBS7coSz26QRSmlK9TzzoFbeKfcPBUFPjcQM9Rqvr/DlJkOrwI/0KcgvMub1n1g5Jt9EgRn4A==}
 
+  /next-tick@1.1.0:
+    resolution: {integrity: sha512-CXdUiJembsNjuToQvxayPZF9Vqht7hewsvy2sOWafLvi2awflj9mOC6bHIg50orX8IJvWKY9wYQ/zB2kogPslQ==}
+    dev: false
+
   /nocache@3.0.4:
     resolution: {integrity: sha512-WDD0bdg9mbq6F4mRxEYcPWwfA1vxd0mrvKOyxI7Xj/atfRHVeutzuWByG//jfm4uPzp0y4Kj051EORCBSQMycw==}
     engines: {node: '>=12.0.0'}
+    dev: true
 
   /node-abort-controller@3.1.1:
     resolution: {integrity: sha512-AGK2yQKIjRuqnc6VkX2Xj5d+QW8xZ87pa1UK6yA6ouUyuxfHuMP6umE5QK7UmTeOAymo+Zx1Fxiuw9rVx8taHQ==}
+    dev: true
 
   /node-addon-api@5.1.0:
     resolution: {integrity: sha512-eh0GgfEkpnoWDq+VY8OyvYhFEzBk6jIYbRKdIlyTiAXIVJ8PyBaKb0rp7oDtoddbdoHWhq8wwr+XZ81F1rpNdA==}
@@ -10744,6 +11583,7 @@ packages:
   /node-stream-zip@1.15.0:
     resolution: {integrity: sha512-LN4fydt9TqhZhThkZIVQnF9cwjU3qmUH9h78Mx/K7d3VvfRqqwthLwJEUOEL0QPZ0XQmNN7be5Ggit5+4dq3Bw==}
     engines: {node: '>=0.12.0'}
+    dev: true
 
   /nopt@5.0.0:
     resolution: {integrity: sha512-Tbj67rffqceeLpcRXrT7vKAN8CwfPeIBgM7E6iBkmKLV7bEMwpGgYLGv0jACUsECaa/vuxP0IjEont6umdMgtQ==}
@@ -10798,6 +11638,14 @@ packages:
     engines: {node: '>=18'}
     dependencies:
       flow-enums-runtime: 0.0.6
+    dev: true
+
+  /ob1@0.81.5:
+    resolution: {integrity: sha512-iNpbeXPLmaiT9I5g16gFFFjsF3sGxLpYG2EGP3dfFB4z+l9X60mp/yRzStHhMtuNt8qmf7Ww80nOPQHngHhnIQ==}
+    engines: {node: '>=18.18'}
+    dependencies:
+      flow-enums-runtime: 0.0.6
+    dev: false
 
   /ob1@0.83.1:
     resolution: {integrity: sha512-ngwqewtdUzFyycomdbdIhFLjePPSOt1awKMUXQ0L7iLHgWEPF3DsCerblzjzfAUHaXuvE9ccJymWQ/4PNNqvnQ==}
@@ -10913,6 +11761,7 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       is-wsl: 1.1.0
+    dev: true
 
   /open@7.4.2:
     resolution: {integrity: sha512-MVHddDVweXZF3awtlAS+6pgKLlm/JgxZ90+/NBurBoQctVOOB/zDdVjcyPzQ+0laDGbsWgrRkflI65sQeOgT9Q==}
@@ -10965,6 +11814,7 @@ packages:
       log-symbols: 4.1.0
       strip-ansi: 6.0.1
       wcwidth: 1.0.1
+    dev: true
 
   /os-tmpdir@1.0.2:
     resolution: {integrity: sha512-D2FR03Vir7FIu45XBY20mTb+/ZSWB00sjU9jdQXt83gDrI4Ztz5Fs7/yy74g2N5SVQY4xY1qDr4rNddwYRVX0g==}
@@ -11241,6 +12091,7 @@ packages:
       ansi-regex: 5.0.1
       ansi-styles: 4.3.0
       react-is: 17.0.2
+    dev: true
 
   /pretty-format@29.7.0:
     resolution: {integrity: sha512-Pdlw/oPxN+aXdmM9R00JVC9WVFoCLTKJvDVLgmJ+qAffBMxsV85l/Lu7sNx4zSzPyoL2euImuEwHhOXdEgNFZQ==}
@@ -11249,6 +12100,15 @@ packages:
       '@jest/schemas': 29.6.3
       ansi-styles: 5.2.0
       react-is: 18.3.1
+
+  /pretty-format@30.2.0:
+    resolution: {integrity: sha512-9uBdv/B4EefsuAL+pWqueZyZS2Ba+LxfFeQ9DN14HU4bN8bhaxKdkpjpB6fs9+pSjIBu+FXQHImEg8j/Lw0+vA==}
+    engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
+    dependencies:
+      '@jest/schemas': 30.0.5
+      ansi-styles: 5.2.0
+      react-is: 18.3.1
+    dev: false
 
   /prisma@5.22.0:
     resolution: {integrity: sha512-vtpjW3XuYCSnMsNVBjLMNkTj6OZbudcPPTPYHqX0CJfpcdWciI1dM8uHETwmDxxiqEwCIE6WvXucWUetJgfu/A==}
@@ -11266,6 +12126,12 @@ packages:
 
   /process-nextick-args@2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}
+    dev: true
+
+  /process@0.11.10:
+    resolution: {integrity: sha512-cdGef/drWFoydD1JsMzuFf8100nZl+GT+yacc2bEced5f9Rjk4z+WtFUTBu9PhOi9j/jfmBPu0mMEY4wIdAF8A==}
+    engines: {node: '>= 0.6.0'}
+    dev: false
 
   /progress@2.0.3:
     resolution: {integrity: sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==}
@@ -11350,6 +12216,7 @@ packages:
     resolution: {integrity: sha512-wkvS7mL/JMugcup3/rMitHmd9ecIGd2lhFhK9N3UUQ450h66d1r3Y9nvXzQAW1Lq+wyx61k/1pfKS5KuKiyEbg==}
     engines: {node: '>=0.4.x'}
     deprecated: The querystring API is considered Legacy. new code should use the URLSearchParams API instead.
+    dev: true
 
   /querystringify@2.2.0:
     resolution: {integrity: sha512-FIqgj2EUvTa7R50u0rGsyTftzjYmv/a3hO345bZNrqabNqjtgiDMgmo4mkUjd+nzU5oF3dClKqFIPUKybUyqoQ==}
@@ -11357,6 +12224,7 @@ packages:
 
   /queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
+    dev: true
 
   /queue@6.0.2:
     resolution: {integrity: sha512-iHZWu+q3IdFZFX36ro/lKBkSvfkztY5Y7HMiPlOUjhupPcG2JMfst2KKEpu5XndviX/3UhFbRngUPNKtgvtZiA==}
@@ -11409,30 +12277,32 @@ packages:
       - bufferutil
       - utf-8-validate
 
-  /react-dom@19.1.0(react@19.1.0):
-    resolution: {integrity: sha512-Xs1hdnE+DyKgeHJeJznQmYMIBG3TKIHJJT95Q58nHLSrElKlGQqDTR2HQ9fx5CN/Gk6Vh/kupBTDLU11/nDk/g==}
+  /react-dom@18.3.1(react@18.3.1):
+    resolution: {integrity: sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==}
     peerDependencies:
-      react: ^19.1.0
+      react: ^18.3.1
     dependencies:
-      react: 19.1.0
-      scheduler: 0.26.0
+      loose-envify: 1.4.0
+      react: 18.3.1
+      scheduler: 0.23.2
 
   /react-fast-compare@3.2.2:
     resolution: {integrity: sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ==}
 
-  /react-freeze@1.0.4(react@19.1.0):
+  /react-freeze@1.0.4(react@18.3.1):
     resolution: {integrity: sha512-r4F0Sec0BLxWicc7HEyo2x3/2icUTrRmDjaaRyzzn+7aDyFZliszMDOgLVwSnQnYENOlL1o569Ze2HZefk8clA==}
     engines: {node: '>=10'}
     peerDependencies:
       react: '>=17.0.0'
     dependencies:
-      react: 19.1.0
+      react: 18.3.1
 
   /react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
   /react-is@17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
+    dev: true
 
   /react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
@@ -11440,56 +12310,121 @@ packages:
   /react-is@19.1.1:
     resolution: {integrity: sha512-tr41fA15Vn8p4X9ntI+yCyeGSf1TlYaY5vlTZfQmeLBrFo3psOPX6HhTDnFNL9uj3EhP0KAQ80cugCl4b4BERA==}
 
-  /react-native-is-edge-to-edge@1.2.1(react-native@0.81.4)(react@19.1.0):
+  /react-native-drawer-layout@4.1.13(react-native-gesture-handler@2.28.0)(react-native-reanimated@4.1.2)(react-native@0.81.4)(react@18.3.1):
+    resolution: {integrity: sha512-WeTBUmPJ/ss2r2+Tuxr8Xl3u6/AM5vTg1mlt/+/4qu6vQM+szwR6RQXchB4wxI1OLROBiqYxKlmaZ2tooCZGog==}
+    peerDependencies:
+      react: '>= 18.2.0'
+      react-native: '*'
+      react-native-gesture-handler: '>= 2.0.0'
+      react-native-reanimated: '>= 2.0.0'
+    dependencies:
+      react: 18.3.1
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
+      react-native-gesture-handler: 2.28.0(react-native@0.81.4)(react@18.3.1)
+      react-native-reanimated: 4.1.2(@babel/core@7.28.4)(react-native-worklets@0.6.0)(react-native@0.81.4)(react@18.3.1)
+      use-latest-callback: 0.2.4(react@18.3.1)
+
+  /react-native-gesture-handler@2.28.0(react-native@0.81.4)(react@18.3.1):
+    resolution: {integrity: sha512-0msfJ1vRxXKVgTgvL+1ZOoYw3/0z1R+Ked0+udoJhyplC2jbVKIJ8Z1bzWdpQRCV3QcQ87Op0zJVE5DhKK2A0A==}
+    peerDependencies:
+      react: '*'
+      react-native: '*'
+    dependencies:
+      '@egjs/hammerjs': 2.0.17
+      hoist-non-react-statics: 3.3.2
+      invariant: 2.2.4
+      react: 18.3.1
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
+
+  /react-native-is-edge-to-edge@1.2.1(react-native@0.81.4)(react@18.3.1):
     resolution: {integrity: sha512-FLbPWl/MyYQWz+KwqOZsSyj2JmLKglHatd3xLZWskXOpRaio4LfEDEz8E/A6uD8QoTHW6Aobw1jbEwK7KMgR7Q==}
     peerDependencies:
       react: '*'
       react-native: '*'
     dependencies:
-      react: 19.1.0
-      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
+      react: 18.3.1
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
 
-  /react-native-safe-area-context@5.6.1(react-native@0.81.4)(react@19.1.0):
+  /react-native-reanimated@4.1.2(@babel/core@7.28.4)(react-native-worklets@0.6.0)(react-native@0.81.4)(react@18.3.1):
+    resolution: {integrity: sha512-qzmQiFrvjm62pRBcj97QI9Xckc3EjgHQoY1F2yjktd0kpjhoyePeuTEXjYRCAVIy7IV/1cfeSup34+zFThFoHQ==}
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+      react: '*'
+      react-native: '*'
+      react-native-worklets: '>=0.5.0'
+    dependencies:
+      '@babel/core': 7.28.4
+      react: 18.3.1
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
+      react-native-is-edge-to-edge: 1.2.1(react-native@0.81.4)(react@18.3.1)
+      react-native-worklets: 0.6.0(@babel/core@7.28.4)(react-native@0.81.4)(react@18.3.1)
+      semver: 7.7.2
+
+  /react-native-safe-area-context@5.6.1(react-native@0.81.4)(react@18.3.1):
     resolution: {integrity: sha512-/wJE58HLEAkATzhhX1xSr+fostLsK8Q97EfpfMDKo8jlOc1QKESSX/FQrhk7HhQH/2uSaox4Y86sNaI02kteiA==}
     peerDependencies:
       react: '*'
       react-native: '*'
     dependencies:
-      react: 19.1.0
-      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
+      react: 18.3.1
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
 
-  /react-native-screens@4.16.0(react-native@0.81.4)(react@19.1.0):
+  /react-native-screens@4.16.0(react-native@0.81.4)(react@18.3.1):
     resolution: {integrity: sha512-yIAyh7F/9uWkOzCi1/2FqvNvK6Wb9Y1+Kzn16SuGfN9YFJDTbwlzGRvePCNTOX0recpLQF3kc2FmvMUhyTCH1Q==}
     peerDependencies:
       react: '*'
       react-native: '*'
     dependencies:
-      react: 19.1.0
-      react-freeze: 1.0.4(react@19.1.0)
-      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0)
-      react-native-is-edge-to-edge: 1.2.1(react-native@0.81.4)(react@19.1.0)
+      react: 18.3.1
+      react-freeze: 1.0.4(react@18.3.1)
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
+      react-native-is-edge-to-edge: 1.2.1(react-native@0.81.4)(react@18.3.1)
       warn-once: 0.1.1
 
-  /react-native-web@0.21.1(react-dom@19.1.0)(react@19.1.0):
+  /react-native-web@0.21.1(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-BeNsgwwe4AXUFPAoFU+DKjJ+CVQa3h54zYX77p7GVZrXiiNo3vl03WYDYVEy5R2J2HOPInXtQZB5gmj3vuzrKg==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
     dependencies:
       '@babel/runtime': 7.28.4
-      '@react-native/normalize-colors': 0.74.87
+      '@react-native/normalize-colors': 0.74.89
       fbjs: 3.0.5
       inline-style-prefixer: 7.0.1
       memoize-one: 6.0.0
       nullthrows: 1.1.1
       postcss-value-parser: 4.2.0
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
       styleq: 0.1.3
     transitivePeerDependencies:
       - encoding
 
-  /react-native@0.74.5(@babel/core@7.28.4)(@babel/preset-env@7.28.3)(@types/react@18.3.24)(react@18.3.1):
+  /react-native-worklets@0.6.0(@babel/core@7.28.4)(react-native@0.81.4)(react@18.3.1):
+    resolution: {integrity: sha512-yETMNuCcivdYWteuG4eRqgiAk2DzRCrVAaEBIEWPo4emrf3BNjadFo85L5QvyEusrX9QKE3ZEAx8U5A/nbyFgg==}
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+      react: '*'
+      react-native: '*'
+    dependencies:
+      '@babel/core': 7.28.4
+      '@babel/plugin-transform-arrow-functions': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-class-properties': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-classes': 7.28.4(@babel/core@7.28.4)
+      '@babel/plugin-transform-nullish-coalescing-operator': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-optional-chaining': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-shorthand-properties': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-template-literals': 7.27.1(@babel/core@7.28.4)
+      '@babel/plugin-transform-unicode-regex': 7.27.1(@babel/core@7.28.4)
+      '@babel/preset-typescript': 7.27.1(@babel/core@7.28.4)
+      convert-source-map: 2.0.0
+      react: 18.3.1
+      react-native: 0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1)
+      semver: 7.7.2
+    transitivePeerDependencies:
+      - supports-color
+
+  /react-native@0.74.5(@babel/core@7.28.4)(@babel/preset-env@7.28.3)(@types/react@18.3.0)(react@18.3.1):
     resolution: {integrity: sha512-Bgg2WvxaGODukJMTZFTZBNMKVaROHLwSb8VAGEdrlvKwfb1hHg/3aXTUICYk7dwgAnb+INbGMwnF8yeAgIUmqw==}
     engines: {node: '>=18'}
     hasBin: true
@@ -11510,8 +12445,8 @@ packages:
       '@react-native/gradle-plugin': 0.74.87
       '@react-native/js-polyfills': 0.74.87
       '@react-native/normalize-colors': 0.74.87
-      '@react-native/virtualized-lists': 0.74.87(@types/react@18.3.24)(react-native@0.74.5)(react@18.3.1)
-      '@types/react': 18.3.24
+      '@react-native/virtualized-lists': 0.74.87(@types/react@18.3.0)(react-native@0.74.5)(react@18.3.1)
+      '@types/react': 18.3.0
       abort-controller: 3.0.0
       anser: 1.4.10
       ansi-regex: 5.0.1
@@ -11546,8 +12481,70 @@ packages:
       - encoding
       - supports-color
       - utf-8-validate
+    dev: true
 
-  /react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@19.1.0):
+  /react-native@0.76.0(@babel/core@7.28.4)(@babel/preset-env@7.28.3)(@types/react@18.3.0)(react@18.3.1):
+    resolution: {integrity: sha512-isbLzmY7fhhLdN/oss4jlRHeDmEShuTYsp1Zq93UM0/JssQK4g+2Ub4mHdhxDFm2LN+0ryBgVJK1nO7l93cfsA==}
+    engines: {node: '>=18'}
+    hasBin: true
+    peerDependencies:
+      '@types/react': ^18.2.6
+      react: ^18.2.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      '@jest/create-cache-key-function': 29.7.0
+      '@react-native/assets-registry': 0.76.0
+      '@react-native/codegen': 0.76.0(@babel/preset-env@7.28.3)
+      '@react-native/community-cli-plugin': 0.76.0(@babel/core@7.28.4)(@babel/preset-env@7.28.3)
+      '@react-native/gradle-plugin': 0.76.0
+      '@react-native/js-polyfills': 0.76.0
+      '@react-native/normalize-colors': 0.76.0
+      '@react-native/virtualized-lists': 0.76.0(@types/react@18.3.0)(react-native@0.76.0)(react@18.3.1)
+      '@types/react': 18.3.0
+      abort-controller: 3.0.0
+      anser: 1.4.10
+      ansi-regex: 5.0.1
+      babel-jest: 29.7.0(@babel/core@7.28.4)
+      babel-plugin-syntax-hermes-parser: 0.23.1
+      base64-js: 1.5.1
+      chalk: 4.1.2
+      commander: 12.1.0
+      event-target-shim: 5.0.1
+      flow-enums-runtime: 0.0.6
+      glob: 7.2.3
+      invariant: 2.2.4
+      jest-environment-node: 29.7.0
+      jsc-android: 250231.0.0
+      memoize-one: 5.2.1
+      metro-runtime: 0.81.5
+      metro-source-map: 0.81.5
+      mkdirp: 0.5.6
+      nullthrows: 1.1.1
+      pretty-format: 29.7.0
+      promise: 8.3.0
+      react: 18.3.1
+      react-devtools-core: 5.3.2
+      react-refresh: 0.14.2
+      regenerator-runtime: 0.13.11
+      scheduler: 0.24.0-canary-efb381bbf-20230505
+      semver: 7.7.2
+      stacktrace-parser: 0.1.11
+      whatwg-fetch: 3.6.20
+      ws: 6.2.3
+      yargs: 17.7.2
+    transitivePeerDependencies:
+      - '@babel/core'
+      - '@babel/preset-env'
+      - '@react-native-community/cli-server-api'
+      - bufferutil
+      - encoding
+      - supports-color
+      - utf-8-validate
+    dev: false
+
+  /react-native@0.81.4(@babel/core@7.28.4)(@types/react@19.1.14)(react@18.3.1):
     resolution: {integrity: sha512-bt5bz3A/+Cv46KcjV0VQa+fo7MKxs17RCcpzjftINlen4ZDUl0I6Ut+brQ2FToa5oD0IB0xvQHfmsg2EDqsZdQ==}
     engines: {node: '>= 20.19.4'}
     hasBin: true
@@ -11565,7 +12562,7 @@ packages:
       '@react-native/gradle-plugin': 0.81.4
       '@react-native/js-polyfills': 0.81.4
       '@react-native/normalize-colors': 0.81.4
-      '@react-native/virtualized-lists': 0.81.4(@types/react@19.1.14)(react-native@0.81.4)(react@19.1.0)
+      '@react-native/virtualized-lists': 0.81.4(@types/react@19.1.14)(react-native@0.81.4)(react@18.3.1)
       '@types/react': 19.1.14
       abort-controller: 3.0.0
       anser: 1.4.10
@@ -11579,12 +12576,12 @@ packages:
       invariant: 2.2.4
       jest-environment-node: 29.7.0
       memoize-one: 5.2.1
-      metro-runtime: 0.83.1
+      metro-runtime: 0.83.2
       metro-source-map: 0.83.1
       nullthrows: 1.1.1
       pretty-format: 29.7.0
       promise: 8.3.0
-      react: 19.1.0
+      react: 18.3.1
       react-devtools-core: 6.1.5
       react-refresh: 0.14.2
       regenerator-runtime: 0.13.11
@@ -11602,11 +12599,26 @@ packages:
       - supports-color
       - utf-8-validate
 
+  /react-reconciler@0.32.0(react@18.3.1):
+    resolution: {integrity: sha512-2NPMOzgTlG0ZWdIf3qG+dcbLSoAc/uLfOwckc3ofy5sSK0pLJqnQLpUFxvGcN2rlXSjnVtGeeFLNimCQEj5gOQ==}
+    engines: {node: '>=0.10.0'}
+    peerDependencies:
+      react: ^19.1.0
+    dependencies:
+      react: 18.3.1
+      scheduler: 0.26.0
+    dev: false
+
   /react-refresh@0.14.2:
     resolution: {integrity: sha512-jCvmsr+1IUSMUyzOkRcvnVbX3ZYC6g9TDrDbFuFmRDq7PD4yaGbLKNQL6k2jnArV8hjYxh7hVhAZB6s9HDGpZA==}
     engines: {node: '>=0.10.0'}
 
-  /react-remove-scroll-bar@2.3.8(@types/react@19.1.14)(react@19.1.0):
+  /react-refresh@0.17.0:
+    resolution: {integrity: sha512-z6F7K9bV85EfseRCp2bzrpyQ0Gkw1uLoCel9XBVWPg/TjRj94SkJzUTGfOa4bs7iJvBWtQG0Wq7wnI0syw3EBQ==}
+    engines: {node: '>=0.10.0'}
+    dev: false
+
+  /react-remove-scroll-bar@2.3.8(@types/react@19.1.14)(react@18.3.1):
     resolution: {integrity: sha512-9r+yi9+mgU33AKcj6IbT9oRCO78WriSj6t/cF8DWBZJ9aOGPOTEDvdUDz1FwKim7QXWwmHqtdHnRJfhAxEG46Q==}
     engines: {node: '>=10'}
     peerDependencies:
@@ -11617,11 +12629,11 @@ packages:
         optional: true
     dependencies:
       '@types/react': 19.1.14
-      react: 19.1.0
-      react-style-singleton: 2.2.3(@types/react@19.1.14)(react@19.1.0)
+      react: 18.3.1
+      react-style-singleton: 2.2.3(@types/react@19.1.14)(react@18.3.1)
       tslib: 2.8.1
 
-  /react-remove-scroll@2.7.1(@types/react@19.1.14)(react@19.1.0):
+  /react-remove-scroll@2.7.1(@types/react@19.1.14)(react@18.3.1):
     resolution: {integrity: sha512-HpMh8+oahmIdOuS5aFKKY6Pyog+FNaZV/XyJOq7b4YFwsFHe5yYfdbIalI4k3vU2nSDql7YskmUseHsRrJqIPA==}
     engines: {node: '>=10'}
     peerDependencies:
@@ -11632,14 +12644,14 @@ packages:
         optional: true
     dependencies:
       '@types/react': 19.1.14
-      react: 19.1.0
-      react-remove-scroll-bar: 2.3.8(@types/react@19.1.14)(react@19.1.0)
-      react-style-singleton: 2.2.3(@types/react@19.1.14)(react@19.1.0)
+      react: 18.3.1
+      react-remove-scroll-bar: 2.3.8(@types/react@19.1.14)(react@18.3.1)
+      react-style-singleton: 2.2.3(@types/react@19.1.14)(react@18.3.1)
       tslib: 2.8.1
-      use-callback-ref: 1.3.3(@types/react@19.1.14)(react@19.1.0)
-      use-sidecar: 1.1.3(@types/react@19.1.14)(react@19.1.0)
+      use-callback-ref: 1.3.3(@types/react@19.1.14)(react@18.3.1)
+      use-sidecar: 1.1.3(@types/react@19.1.14)(react@18.3.1)
 
-  /react-server-dom-webpack@19.0.0(react-dom@19.1.0)(react@19.1.0)(webpack@5.101.3):
+  /react-server-dom-webpack@19.0.0(react-dom@18.3.1)(react@18.3.1)(webpack@5.101.3):
     resolution: {integrity: sha512-hLug9KEXLc8vnU9lDNe2b2rKKDaqrp5gNiES4uyu2Up3FZfZJZmdwLFXlWzdA9gTB/6/cWduSB2K1Lfag2pSvw==}
     engines: {node: '>=0.10.0'}
     peerDependencies:
@@ -11649,8 +12661,8 @@ packages:
     dependencies:
       acorn-loose: 8.5.2
       neo-async: 2.6.2
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
       webpack: 5.101.3
       webpack-sources: 3.3.3
     dev: true
@@ -11663,18 +12675,9 @@ packages:
       object-assign: 4.1.1
       react: 18.3.1
       react-is: 18.3.1
-
-  /react-shallow-renderer@16.15.0(react@19.1.0):
-    resolution: {integrity: sha512-oScf2FqQ9LFVQgA73vr86xl2NaOIX73rh+YFqcOp68CWj56tSfgtGKrEbyhCj0rSijyG9M1CYprTh39fBi5hzA==}
-    peerDependencies:
-      react: ^16.0.0 || ^17.0.0 || ^18.0.0
-    dependencies:
-      object-assign: 4.1.1
-      react: 19.1.0
-      react-is: 18.3.1
     dev: true
 
-  /react-style-singleton@2.2.3(@types/react@19.1.14)(react@19.1.0):
+  /react-style-singleton@2.2.3(@types/react@19.1.14)(react@18.3.1):
     resolution: {integrity: sha512-b6jSvxvVnyptAiLjbkWLE/lOnR4lfTtDAl+eUC7RZy+QQWc6wRzIV2CE6xBuMmDxc2qIihtDCZD5NPOFl7fRBQ==}
     engines: {node: '>=10'}
     peerDependencies:
@@ -11686,26 +12689,26 @@ packages:
     dependencies:
       '@types/react': 19.1.14
       get-nonce: 1.0.1
-      react: 19.1.0
+      react: 18.3.1
       tslib: 2.8.1
 
-  /react-test-renderer@18.3.1(react@19.1.0):
+  /react-test-renderer@18.3.1(react@18.3.1):
     resolution: {integrity: sha512-KkAgygexHUkQqtvvx/otwxtuFu5cVjfzTCtjXLH9boS19/Nbtg84zS7wIQn39G8IlrhThBpQsMKkq5ZHZIYFXA==}
     peerDependencies:
       react: ^18.3.1
     dependencies:
-      react: 19.1.0
+      react: 18.3.1
       react-is: 18.3.1
-      react-shallow-renderer: 16.15.0(react@19.1.0)
+      react-shallow-renderer: 16.15.0(react@18.3.1)
       scheduler: 0.23.2
     dev: true
 
-  /react-test-renderer@19.1.0(react@19.1.0):
+  /react-test-renderer@19.1.0(react@18.3.1):
     resolution: {integrity: sha512-jXkSl3CpvPYEF+p/eGDLB4sPoDX8pKkYvRl9+rR8HxLY0X04vW7hCm1/0zHoUSjPZ3bDa+wXWNTDVIw/R8aDVw==}
     peerDependencies:
       react: ^19.1.0
     dependencies:
-      react: 19.1.0
+      react: 18.3.1
       react-is: 19.1.1
       scheduler: 0.26.0
     dev: true
@@ -11715,10 +12718,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       loose-envify: 1.4.0
-
-  /react@19.1.0:
-    resolution: {integrity: sha512-FS+XFBNvn3GTAWq26joslQgWNoFu08F4kl0J4CgdNKADkdSGXQyTCnKteIAJy96Br6YbpEU1LSzV5dYtjMkMDg==}
-    engines: {node: '>=0.10.0'}
 
   /readable-stream@2.3.8:
     resolution: {integrity: sha512-8p0AUk4XODgIewSi0l8Epjs+EVnWiK7NoDIEGU0HhE7+ZyY8D1IMY7odu5lRrFXGg71L15KG8QrPmum45RTtdA==}
@@ -11730,6 +12729,7 @@ packages:
       safe-buffer: 5.1.2
       string_decoder: 1.1.1
       util-deprecate: 1.0.2
+    dev: true
 
   /readable-stream@3.6.2:
     resolution: {integrity: sha512-9u/sniCrY3D5WdsERHzHE4G2YCXqoG5FTHUiCC4SIbr6XcLZBY05ya9EKjYek9O5xOAwjGq+1JdGBAS7Q9ScoA==}
@@ -11861,6 +12861,7 @@ packages:
 
   /require-main-filename@2.0.0:
     resolution: {integrity: sha512-NKN5kMDylKuldxYLSUfrbo5Tuzh4hd+2E8NPPX02mZtn1VuREQToYe/ZdlJy+J3uCpfaiGF05e7B8W0iXbQHmg==}
+    dev: true
 
   /requireg@0.2.2:
     resolution: {integrity: sha512-nYzyjnFcPNGR3lx9lwPPPnuQxv6JWEZd2Ci0u9opN7N5zUEPIhY/GbL3vMGOr2UXwEg9WwSyV9X9Y/kLFgPsOg==}
@@ -11947,10 +12948,12 @@ packages:
     dependencies:
       onetime: 5.1.2
       signal-exit: 3.0.7
+    dev: true
 
   /reusify@1.1.0:
     resolution: {integrity: sha512-g6QUff04oZpHs0eG5p83rFLhHeV00ug/Yf9nZM6fLeUrPguBTkTQOdpAWWspMh55TZfVQDPaN3NQJfbVRAxdIw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
+    dev: true
 
   /rimraf@2.6.3:
     resolution: {integrity: sha512-mwqeW5XsA2qAejG46gYdENaxXjx9onRNCfn7L0duuP4hCuTIi/QO7PDK07KJfp1d+izWPrzEJDcSqBa0OZQriA==}
@@ -11980,6 +12983,7 @@ packages:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
     dependencies:
       queue-microtask: 1.2.3
+    dev: true
 
   /rxjs@7.8.1:
     resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
@@ -12005,6 +13009,7 @@ packages:
 
   /safe-buffer@5.1.2:
     resolution: {integrity: sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==}
+    dev: true
 
   /safe-buffer@5.2.1:
     resolution: {integrity: sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==}
@@ -12042,7 +13047,6 @@ packages:
     resolution: {integrity: sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==}
     dependencies:
       loose-envify: 1.4.0
-    dev: true
 
   /scheduler@0.24.0-canary-efb381bbf-20230505:
     resolution: {integrity: sha512-ABvovCDe/k9IluqSh4/ISoq8tIJnW8euVAWYt5j/bg6dRnqwQwiGO1F/V4AyK96NGF/FB04FhOUDuWj8IKfABA==}
@@ -12280,6 +13284,7 @@ packages:
       ansi-styles: 3.2.1
       astral-regex: 1.0.0
       is-fullwidth-code-point: 2.0.0
+    dev: true
 
   /slugify@1.6.6:
     resolution: {integrity: sha512-h+z7HKHYXj6wJU+AnS/+IH8Uh9fdcX1Lrhg1/VMdf9PwoBQXFcXiAdsy2tSK0P6gKwJLXp02r90ahUCqHk9rrw==}
@@ -12323,6 +13328,7 @@ packages:
   /source-map@0.7.6:
     resolution: {integrity: sha512-i5uvt8C3ikiWeNZSVZNWcfZPItFQOsYTUAOkcUPGd8DqDy1uOUikjt5dG+uRlwyvR108Fb9DOd4GvXfT0N2/uQ==}
     engines: {node: '>= 12'}
+    dev: true
 
   /split-on-first@1.1.0:
     resolution: {integrity: sha512-43ZssAJaMusuKWL8sKUBQXHWOpq8d6CfN/u1p4gUzfJkM05C8rxTmYrkIPTXapZpORA6LkkzcUulJ8FqA7Uudw==}
@@ -12497,6 +13503,7 @@ packages:
     resolution: {integrity: sha512-n/ShnvDi6FHbbVfviro+WojiFzv+s8MPMHBczVePfUpDJLwoLT0ht1l4YwBCbi8pJAveEEdnkHyPyTP/mzRfwg==}
     dependencies:
       safe-buffer: 5.1.2
+    dev: true
 
   /string_decoder@1.3.0:
     resolution: {integrity: sha512-hkRX8U1WjJFd8LsDJ2yQ/wWWxaopEsABU1XfkM8A+j0+85JAGppt16cr1Whg6KIbb4okU6Mql6BOj+uup/wKeA==}
@@ -12554,6 +13561,7 @@ packages:
 
   /strnum@1.1.2:
     resolution: {integrity: sha512-vrN+B7DBIoTTZjnPNewwhx6cBA/H+IS7rfW68n7XxC1y7uoiGQBxaKzqucGUgavX15dJgiGztLJ8vxuEzwqBdA==}
+    dev: true
 
   /strtok3@10.3.4:
     resolution: {integrity: sha512-KIy5nylvC5le1OdaaoCJ07L+8iQzJHGH6pWDuzS+d07Cu7n1MZ2x26P8ZKIWfbK02+XIL8Mp4RkWeqdUCrDMfg==}
@@ -12583,6 +13591,7 @@ packages:
   /sudo-prompt@9.2.1:
     resolution: {integrity: sha512-Mu7R0g4ig9TUuGSxJavny5Rv0egCEtpZRNMrZaYS1vxkiIxGiGUwoezU3LazIQ+KE04hTrTfNPgxU5gzi7F5Pw==}
     deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+    dev: true
 
   /superagent@8.1.2:
     resolution: {integrity: sha512-6WTxW1EB6yCxV5VFOIPQruWGHqc3yI7hEmZK6h+pyk69Lk/Ut7rLUY6W/ONF2MjBuGjvmMiIpsrVJ2vjrHlslA==}
@@ -12773,6 +13782,11 @@ packages:
       glob: 7.2.3
       minimatch: 3.1.2
 
+  /text-encoding@0.7.0:
+    resolution: {integrity: sha512-oJQ3f1hrOnbRLOcwKz0Liq2IcrvDeZRHXhd9RgLrsT+DjWY/nty1Hi7v3dtkaEYbPYe0mUoOfzRrMwfXXwgPUA==}
+    deprecated: no longer maintained
+    dev: false
+
   /text-table@0.2.0:
     resolution: {integrity: sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==}
     dev: true
@@ -12796,6 +13810,7 @@ packages:
     dependencies:
       readable-stream: 2.3.8
       xtend: 4.0.2
+    dev: true
 
   /through@2.3.8:
     resolution: {integrity: sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==}
@@ -13098,6 +14113,10 @@ packages:
       media-typer: 0.3.0
       mime-types: 2.1.35
 
+  /type@2.7.3:
+    resolution: {integrity: sha512-8j+1QmAbPvLZow5Qpi6NCaN8FB60p/6x8/vfNqOk/hC+HuvFZhL4+WfekuhQLiqFZXOgQdrs3B+XxEmCc6b3FQ==}
+    dev: false
+
   /typed-array-buffer@1.0.3:
     resolution: {integrity: sha512-nAYYwfY3qnzX30IkA6AQZjVbtK6duGontcQm1WSG1MD94YLqK0515GNApXkoxKOWMusVssAHWLh9SeaoefYFGw==}
     engines: {node: '>= 0.4'}
@@ -13202,6 +14221,7 @@ packages:
 
   /undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
+    dev: true
 
   /undici-types@6.21.0:
     resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
@@ -13238,6 +14258,7 @@ packages:
   /universalify@0.1.2:
     resolution: {integrity: sha512-rBJeI5CXAlmy1pV+617WB9J63U6XcazHHF2f2dbJix4XzpUF0RS3Zbj0FGIOCAva5P/d/GBOYaACQ1w+0azUkg==}
     engines: {node: '>= 4.0.0'}
+    dev: true
 
   /universalify@0.2.0:
     resolution: {integrity: sha512-CJ1QgKmNg3CwvAv/kOFmtnEN05f0D/cn9QntgNOQlQF9dgvVTHj3t+8JPdjqawCHk7V/KA+fbUqzZ9XWhcqPUg==}
@@ -13303,7 +14324,11 @@ packages:
       requires-port: 1.0.0
     dev: true
 
-  /use-callback-ref@1.3.3(@types/react@19.1.14)(react@19.1.0):
+  /url-polyfill@1.1.14:
+    resolution: {integrity: sha512-p4f3TTAG6ADVF3mwbXw7hGw+QJyw5CnNGvYh5fCuQQZIiuKUswqcznyV3pGDP9j0TSmC4UvRKm8kl1QsX1diiQ==}
+    dev: false
+
+  /use-callback-ref@1.3.3(@types/react@19.1.14)(react@18.3.1):
     resolution: {integrity: sha512-jQL3lRnocaFtu3V00JToYz/4QkNWswxijDaCVNZRiRTO3HQDLsdu1ZtmIUvV4yPp+rvWm5j0y0TG/S61cuijTg==}
     engines: {node: '>=10'}
     peerDependencies:
@@ -13314,17 +14339,17 @@ packages:
         optional: true
     dependencies:
       '@types/react': 19.1.14
-      react: 19.1.0
+      react: 18.3.1
       tslib: 2.8.1
 
-  /use-latest-callback@0.2.4(react@19.1.0):
+  /use-latest-callback@0.2.4(react@18.3.1):
     resolution: {integrity: sha512-LS2s2n1usUUnDq4oVh1ca6JFX9uSqUncTfAm44WMg0v6TxL7POUTk1B044NH8TeLkFbNajIsgDHcgNpNzZucdg==}
     peerDependencies:
       react: '>=16.8'
     dependencies:
-      react: 19.1.0
+      react: 18.3.1
 
-  /use-sidecar@1.1.3(@types/react@19.1.14)(react@19.1.0):
+  /use-sidecar@1.1.3(@types/react@19.1.14)(react@18.3.1):
     resolution: {integrity: sha512-Fedw0aZvkhynoPYlA5WXrMCAMm+nSWdZt6lzJQ7Ok8S6Q+VsHmHpRWndVRJ8Be0ZbkfPc5LRYH+5XrzXcEeLRQ==}
     engines: {node: '>=10'}
     peerDependencies:
@@ -13336,15 +14361,24 @@ packages:
     dependencies:
       '@types/react': 19.1.14
       detect-node-es: 1.1.0
-      react: 19.1.0
+      react: 18.3.1
       tslib: 2.8.1
 
-  /use-sync-external-store@1.5.0(react@19.1.0):
+  /use-subscription@1.11.0(react@18.3.1):
+    resolution: {integrity: sha512-CVJSTGxugcwnCDrunejSMUWb+GeImWrZPWVHep3r+7a5ad22tvBnUAaTHoNhTK547zcdrL5wja8NF+j8GKgKyA==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    dependencies:
+      react: 18.3.1
+      use-sync-external-store: 1.5.0(react@18.3.1)
+    dev: false
+
+  /use-sync-external-store@1.5.0(react@18.3.1):
     resolution: {integrity: sha512-Rb46I4cGGVBmjamjphe8L/UnvJD+uPPtTkNvX5mZgqdbavhI4EbgIWJiIHXJ8bc/i9EQGPRh4DwEURJ552Do0A==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     dependencies:
-      react: 19.1.0
+      react: 18.3.1
 
   /util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
@@ -13402,15 +14436,15 @@ packages:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
 
-  /vaul@1.1.2(@types/react@19.1.14)(react-dom@19.1.0)(react@19.1.0):
+  /vaul@1.1.2(@types/react@19.1.14)(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-ZFkClGpWyI2WUQjdLJ/BaGuV6AVQiJ3uELGk3OYtP+B6yCO7Cmn9vPFXVJkRaGkOJu3m8bQMgtyzNHixULceQA==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0.0 || ^19.0.0-rc
     dependencies:
-      '@radix-ui/react-dialog': 1.1.15(@types/react@19.1.14)(react-dom@19.1.0)(react@19.1.0)
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
+      '@radix-ui/react-dialog': 1.1.15(@types/react@19.1.14)(react-dom@18.3.1)(react@18.3.1)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
     transitivePeerDependencies:
       - '@types/react'
       - '@types/react-dom'
@@ -13445,6 +14479,11 @@ packages:
     resolution: {integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==}
     dependencies:
       defaults: 1.0.4
+
+  /web-streams-polyfill@4.2.0:
+    resolution: {integrity: sha512-0rYDzGOh9EZpig92umN5g5D/9A1Kff7k0/mzPSSCY8jEQeYkgRMoY7LhbXtUCWzLCMX0TUE9aoHkjFNB7D9pfA==}
+    engines: {node: '>= 8'}
+    dev: false
 
   /webidl-conversions@3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
@@ -13627,6 +14666,7 @@ packages:
 
   /which-module@2.0.1:
     resolution: {integrity: sha512-iBdZ57RDvnOR9AGBhML2vFZf7h8vmBjhoaZqODJBFWHVtKkDmKuHai3cx5PgVMrX5YDNp27AofYbAwctSS+vhQ==}
+    dev: true
 
   /which-typed-array@1.1.19:
     resolution: {integrity: sha512-rEvr90Bck4WZt9HHFC4DJMsjvu7x+r6bImz0/BrbWb7A2djJ8hnZMrWnHo9F8ssv0OMErasDhftrfROTyqSDrw==}
@@ -13672,6 +14712,7 @@ packages:
       ansi-styles: 4.3.0
       string-width: 4.2.3
       strip-ansi: 6.0.1
+    dev: true
 
   /wrap-ansi@7.0.0:
     resolution: {integrity: sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==}
@@ -13780,6 +14821,7 @@ packages:
 
   /y18n@4.0.3:
     resolution: {integrity: sha512-JKhqTOwSrqNA1NY5lSztJ1GrBiUodLMmIZuLiDaMRJ+itFd+ABVE8XBjOvIWL+rSqNDC74LCSFmlb/U4UZ4hJQ==}
+    dev: true
 
   /y18n@5.0.8:
     resolution: {integrity: sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==}
@@ -13800,6 +14842,7 @@ packages:
     resolution: {integrity: sha512-lcYcMxX2PO9XMGvAJkJ3OsNMw+/7FKes7/hgerGUYWIoWu5j/+YQqcZr5JnPZWzOsEBgMbSbiSTn/dv/69Mkpw==}
     engines: {node: '>= 14.6'}
     hasBin: true
+    dev: true
 
   /yargs-parser@18.1.3:
     resolution: {integrity: sha512-o50j0JeToy/4K6OZcaQmW6lyXXKhq7csREXcDwk2omFPJEwUNOVtJKvmDr9EI1fAJZUyZcRF7kxGBWmRXudrCQ==}
@@ -13807,6 +14850,7 @@ packages:
     dependencies:
       camelcase: 5.3.1
       decamelize: 1.2.0
+    dev: true
 
   /yargs-parser@21.1.1:
     resolution: {integrity: sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw==}
@@ -13827,6 +14871,7 @@ packages:
       which-module: 2.0.1
       y18n: 4.0.3
       yargs-parser: 18.1.3
+    dev: true
 
   /yargs@17.7.2:
     resolution: {integrity: sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w==}
@@ -13859,7 +14904,7 @@ packages:
   /zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
-  /zustand@5.0.8(@types/react@19.1.14)(react@19.1.0):
+  /zustand@5.0.8(@types/react@19.1.14)(react@18.3.1):
     resolution: {integrity: sha512-gyPKpIaxY9XcO2vSMrLbiER7QMAMGOQZVRdJ6Zi782jkbzZygq5GI9nG8g+sMgitRtndwaBSl7uiqC49o1SSiw==}
     engines: {node: '>=12.20.0'}
     peerDependencies:
@@ -13878,5 +14923,5 @@ packages:
         optional: true
     dependencies:
       '@types/react': 19.1.14
-      react: 19.1.0
+      react: 18.3.1
     dev: false

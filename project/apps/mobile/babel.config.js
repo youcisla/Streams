@@ -4,9 +4,9 @@ module.exports = function (api) {
     presets: ['babel-preset-expo'],
     plugins: [
       // Required for the optional-chaining syntax used by React Native web
-      '@babel/plugin-proposal-optional-chaining',
+      '@babel/plugin-transform-optional-chaining',
       // Required for the nullish-coalescing syntax
-      '@babel/plugin-proposal-nullish-coalescing-operator',
+      '@babel/plugin-transform-nullish-coalescing-operator',
     ],
   };
 };
