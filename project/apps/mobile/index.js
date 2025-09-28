@@ -1,35 +1,14 @@
-import './src/polyfills';// Load polyfills firstimport { registerRootComponent } from 'expo';
+// Load polyfills first
+import './src/polyfills';
 
 import { registerRootComponent } from 'expo';
+import { ExpoRoot } from 'expo-router';
 
-import { ExpoRoot } from 'expo-router';import './src/polyfills';import { ExpoRoot } from 'expo-router';
-
-
-
-export default function App() {import { registerRootComponent } from 'expo';
-
-  const ctx = require.context('./app');
-
-  return <ExpoRoot context={ctx} />;import { ExpoRoot } from 'expo-router';// Must be exported or React Native will error
-
-}
-
+// Main App component
 export default function App() {
-
-registerRootComponent(App);
-// Main App component  const ctx = require.context('./app');
-
-export default function App() {  return <ExpoRoot context={ctx} />;
-
-  try {}
-
-    const ctx = require.context('./app');
-
-    return <ExpoRoot context={ctx} />;registerRootComponent(App);
-  } catch (error) {
-    console.error('App initialization error:', error);
-    throw error;
-  }
+  const ctx = require.context('./app');
+  return <ExpoRoot context={ctx} />;
 }
 
+// Register the root component
 registerRootComponent(App);
