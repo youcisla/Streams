@@ -29,6 +29,9 @@ config.resolver.resolverMainFields = ['react-native', 'browser', 'main'];
 config.resolver.alias = {
   ...config.resolver.alias,
   'punycode': 'punycode/punycode.js',
+  // Add explicit path for inline-style-prefixer
+  'inline-style-prefixer/lib/createPrefixer': path.resolve(workspaceRoot, 'node_modules/inline-style-prefixer/lib/createPrefixer.js'),
+  'inline-style-prefixer': path.resolve(workspaceRoot, 'node_modules/inline-style-prefixer'),
 };
 
 // Add polyfills for missing APIs
@@ -46,11 +49,11 @@ config.transformer = {
 config.resolver.unstable_enablePackageExports = true;
 config.resolver.unstable_conditionNames = ['react-native', 'browser', 'require'];
 
-// Block problematic metro-runtime versions to prevent conflicts
-config.resolver.blockList = [
-  /node_modules\/.*\/metro-runtime@0\.83\.1\/.*$/,
-  /.*\/metro-runtime\/src\/modules\/empty-module\.js$/,
-];
+// Ensure proper resolver configuration
+config.resolver.resolveRequest = (context, moduleName, platform) => {
+  // Let Metro handle the resolution normally
+  return context.resolveRequest(context, moduleName, platform);
+};
 
 // Ensure better dependency resolution for monorepo
 config.resolver.sourceExts = ['js', 'ts', 'tsx', 'jsx', 'json'];

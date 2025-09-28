@@ -68,6 +68,7 @@
     "filter-obj": "^6.1.0",
     "hoist-non-react-statics": "^3.3.2",
     "ieee754": "^1.2.1",
+    "inline-style-prefixer": "^7.0.0",
     "invariant": "^2.2.4",
     "is-arrayish": "^0.3.2",
     "memoize-one": "^6.0.0",

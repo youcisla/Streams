@@ -42,12 +42,24 @@
       "is-arrayish": "^0.3.2",
       "styleq": "^0.1.0",
       "fast-base64-decode": "^1.0.0",
-      "use-latest-callback": "0.2.1"
+      "use-latest-callback": "0.1.9",
+      "inline-style-prefixer": "^7.0.0"
     },
     "peerDependencyRules": {
       "ignoreMissing": [
         "react-native"
-      ]
+      ],
+      "allowedVersions": {
+        "react": "19",
+        "@types/react": "19"
+      }
+    },
+    "packageExtensions": {
+      "react-native-web@*": {
+        "dependencies": {
+          "inline-style-prefixer": "^7.0.0"
+        }
+      }
     }
   }
 }
