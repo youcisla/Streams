@@ -25,6 +25,12 @@ config.resolver.alias = {
 // Ensure proper handling of node_modules resolution
 config.resolver.resolverMainFields = ['react-native', 'browser', 'main'];
 
+// Add Node.js polyfills for React Native compatibility
+config.resolver.alias = {
+  ...config.resolver.alias,
+  'punycode': 'punycode/punycode.js',
+};
+
 // Block problematic metro-runtime versions to prevent conflicts
 config.resolver.blockList = [
   /node_modules\/.*\/metro-runtime@0\.83\.1\/.*$/,
