@@ -1,4 +1,4 @@
-// Import polyfills first - CRITICAL for SharedArrayBuffer support
+// Load polyfills first
 import '../src/polyfills';
 
 import { theme } from '@streamlink/ui';
@@ -21,11 +21,15 @@ export default function RootLayout() {
   const { initialize } = useAuth();
 
   useEffect(() => {
-    try {
-      initialize();
-    } catch (error) {
-      console.error('Failed to initialize auth:', error);
-    }
+    const initializeAuth = async () => {
+      try {
+        await initialize();
+      } catch (error) {
+        console.error('Failed to initialize auth:', error);
+      }
+    };
+    
+    initializeAuth();
   }, [initialize]);
 
   return (
