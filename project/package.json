@@ -24,12 +24,21 @@
     "@types/node": "^20.0.0",
     "typescript": "^5.0.0",
     "prettier": "^3.0.0",
-    "eslint": "^8.57.0",
-    "husky": "^8.0.3"
+    "eslint": "^9.11.0",
+    "husky": "^9.0.0"
   },
   "packageManager": "pnpm@8.15.0",
   "engines": {
     "node": ">=18.0.0",
     "pnpm": ">=8.0.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "react": "19.1.0",
+      "@types/react": "^19.1.10",
+      "eslint": "^9.11.0",
+      "color-string": "^1.9.1",
+      "simple-swizzle": "^0.2.2"
+    }
   }
 }

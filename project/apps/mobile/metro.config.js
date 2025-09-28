@@ -31,10 +31,18 @@ config.resolver.alias = {
   'punycode': 'punycode/punycode.js',
 };
 
+// Add explicit dependency resolution to prevent issues
+config.resolver.unstable_enablePackageExports = true;
+config.resolver.unstable_conditionNames = ['react-native', 'browser', 'require'];
+
 // Block problematic metro-runtime versions to prevent conflicts
 config.resolver.blockList = [
   /node_modules\/.*\/metro-runtime@0\.83\.1\/.*$/,
   /.*\/metro-runtime\/src\/modules\/empty-module\.js$/,
 ];
+
+// Ensure better dependency resolution for monorepo
+config.resolver.sourceExts = ['js', 'ts', 'tsx', 'jsx', 'json'];
+config.resolver.assetExts = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg', 'ttf', 'otf', 'woff', 'woff2'];
 
 module.exports = config;
