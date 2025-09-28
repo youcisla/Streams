@@ -31,6 +31,17 @@ config.resolver.alias = {
   'punycode': 'punycode/punycode.js',
 };
 
+// Add polyfills for missing APIs
+config.transformer = {
+  ...config.transformer,
+  getTransformOptions: async () => ({
+    transform: {
+      experimentalImportSupport: false,
+      inlineRequires: true,
+    },
+  }),
+};
+
 // Add explicit dependency resolution to prevent issues
 config.resolver.unstable_enablePackageExports = true;
 config.resolver.unstable_conditionNames = ['react-native', 'browser', 'require'];

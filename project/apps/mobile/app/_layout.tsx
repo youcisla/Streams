@@ -1,10 +1,11 @@
-import { useEffect } from 'react';
+import { theme } from '@streamlink/ui';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { theme } from '@streamlink/ui';
 import { useAuth } from '../src/hooks/useAuth';
+import '../src/polyfills';
 
 const queryClient = new QueryClient({
   defaultOptions: {
