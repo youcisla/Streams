@@ -1,4 +1,4 @@
-// Import polyfills first
+// Import polyfills first - CRITICAL for SharedArrayBuffer support
 import '../src/polyfills';
 
 import { theme } from '@streamlink/ui';

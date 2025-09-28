@@ -4,54 +4,128 @@ console.log('🔧 Loading polyfills...');
 // React Native get random values polyfill
 import 'react-native-get-random-values';
 
-// Comprehensive SharedArrayBuffer polyfill for React Native
+// Improved SharedArrayBuffer polyfill for React Native
 try {
-  // Define a more robust SharedArrayBuffer polyfill
-  const createSharedArrayBufferPolyfill = () => {
-    function SharedArrayBufferPolyfill(length: number) {
+  // Always apply polyfill in React Native environment for consistency
+  const isReactNative = typeof navigator !== 'undefined' && navigator.product === 'ReactNative';
+  
+  if (isReactNative || typeof SharedArrayBuffer === 'undefined') {
+    console.log('⚠️ Applying SharedArrayBuffer polyfill for React Native...');
+    
+    // Create a more compatible polyfill
+    function SharedArrayBufferPolyfill(this: any, length: number) {
+      if (!(this instanceof SharedArrayBufferPolyfill)) {
+        return new (SharedArrayBufferPolyfill as any)(length);
+      }
+      
       const buffer = new ArrayBuffer(length);
-      // Add shared property to make it distinguishable
-      (buffer as any).shared = true;
-      return buffer;
+      
+      // Copy properties from ArrayBuffer
+      Object.defineProperty(this, 'byteLength', {
+        value: buffer.byteLength,
+        writable: false,
+        enumerable: true,
+        configurable: false
+      });
+      
+      // Copy the underlying data
+      const view = new Uint8Array(buffer);
+      Object.defineProperty(this, '_buffer', {
+        value: view,
+        writable: false,
+        enumerable: false,
+        configurable: false
+      });
+      
+      return this;
     }
     
-    // Copy static methods from ArrayBuffer
-    Object.setPrototypeOf(SharedArrayBufferPolyfill.prototype, ArrayBuffer.prototype);
+    // Set up prototype chain
+    SharedArrayBufferPolyfill.prototype = Object.create(ArrayBuffer.prototype);
+    SharedArrayBufferPolyfill.prototype.constructor = SharedArrayBufferPolyfill;
+    
+    // Add slice method
+    SharedArrayBufferPolyfill.prototype.slice = function(start?: number, end?: number) {
+      const length = this.byteLength;
+      start = start || 0;
+      end = end || length;
+      
+      if (start < 0) start = Math.max(0, length + start);
+      if (end < 0) end = Math.max(0, length + end);
+      
+      start = Math.min(start, length);
+      end = Math.min(end, length);
+      
+      const newLength = Math.max(0, end - start);
+      const newBuffer = new (SharedArrayBufferPolyfill as any)(newLength);
+      
+      if (newLength > 0) {
+        const sourceView = new Uint8Array(this._buffer.buffer, start, newLength);
+        const targetView = new Uint8Array(newBuffer._buffer.buffer);
+        targetView.set(sourceView);
+      }
+      
+      return newBuffer;
+    };
+    
+    // Add static methods
     SharedArrayBufferPolyfill.isView = ArrayBuffer.isView;
     
-    return SharedArrayBufferPolyfill as any;
-  };
-
-  // Check multiple contexts where SharedArrayBuffer might be missing
-  if (typeof SharedArrayBuffer === 'undefined') {
-    console.log('⚠️ SharedArrayBuffer not found, polyfilling...');
+    // Apply the polyfill to all global contexts more safely
+    const polyfill = SharedArrayBufferPolyfill as any;
     
-    const polyfill = createSharedArrayBufferPolyfill();
-    
-    // Set on global object (React Native)
-    if (typeof global !== 'undefined') {
-      global.SharedArrayBuffer = polyfill;
+    try {
+      if (typeof global !== 'undefined') {
+        Object.defineProperty(global, 'SharedArrayBuffer', {
+          value: polyfill,
+          writable: true,
+          configurable: true
+        });
+      }
+    } catch (e) {
+      console.log('Could not define SharedArrayBuffer on global:', e);
     }
     
-    // Set on globalThis
-    if (typeof globalThis !== 'undefined') {
-      globalThis.SharedArrayBuffer = polyfill;
+    try {
+      if (typeof globalThis !== 'undefined') {
+        Object.defineProperty(globalThis, 'SharedArrayBuffer', {
+          value: polyfill,
+          writable: true,
+          configurable: true
+        });
+      }
+    } catch (e) {
+      console.log('Could not define SharedArrayBuffer on globalThis:', e);
     }
     
-    // Set on window (web environments)
-    if (typeof window !== 'undefined') {
-      (window as any).SharedArrayBuffer = polyfill;
+    try {
+      if (typeof window !== 'undefined') {
+        Object.defineProperty(window, 'SharedArrayBuffer', {
+          value: polyfill,
+          writable: true,
+          configurable: true
+        });
+      }
+    } catch (e) {
+      console.log('Could not define SharedArrayBuffer on window:', e);
     }
     
-    console.log('✅ SharedArrayBuffer polyfill applied');
+    console.log('✅ SharedArrayBuffer polyfill applied successfully');
   } else {
-    console.log('✅ SharedArrayBuffer already available');
+    console.log('✅ SharedArrayBuffer is available and working');
   }
 } catch (error) {
-  console.log('❌ Error setting up SharedArrayBuffer polyfill:', error);
-  // Fallback: create a minimal polyfill
-  if (typeof global !== 'undefined' && typeof global.SharedArrayBuffer === 'undefined') {
-    global.SharedArrayBuffer = ArrayBuffer as any;
+  console.error('❌ Critical error setting up SharedArrayBuffer polyfill:', error);
+  // Emergency fallback
+  const emergencyPolyfill = function(length: number) {
+    return new ArrayBuffer(length);
+  };
+  
+  if (typeof global !== 'undefined') {
+    global.SharedArrayBuffer = emergencyPolyfill as any;
+  }
+  if (typeof globalThis !== 'undefined') {
+    globalThis.SharedArrayBuffer = emergencyPolyfill as any;
   }
 }
 
@@ -65,9 +139,28 @@ if (typeof global !== 'undefined') {
       console.log('Warning: Could not setup crypto polyfill');
     }
   }
+  
+  // Additional global fixes for React Native environment
+  if (!global.process) {
+    global.process = require('process');
+  }
+  
+  // Ensure global.Buffer exists
+  if (!global.Buffer) {
+    try {
+      global.Buffer = require('buffer').Buffer;
+    } catch (e) {
+      console.log('Warning: Could not setup Buffer polyfill');
+    }
+  }
 }
 
-console.log('✅ Polyfills setup completed');
+// Ensure globalThis is available
+if (typeof globalThis === 'undefined') {
+  (global as any).globalThis = global;
+}
+
+console.log('✅ Polyfills setup completed successfully');
 
 export { };
 

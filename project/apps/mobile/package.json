@@ -2,7 +2,7 @@
   "name": "@streamlink/mobile",
   "version": "1.0.0",
   "private": true,
-  "main": "expo-router/entry",
+  "main": "index.js",
   "scripts": {
     "build": "expo build",
     "dev": "expo start --clear",
@@ -12,7 +12,7 @@
     "web": "expo start --web",
     "lint": "eslint \"{src,app}/**/*.{ts,tsx}\" --fix",
     "test": "jest",
-    "clean": "rm -rf .expo"
+    "clean": "if exist .expo rmdir /s /q .expo"
   },
   "dependencies": {
     "@expo/metro-runtime": "~6.1.2",
@@ -136,5 +136,10 @@
   },
   "jest": {
     "preset": "jest-expo"
+  },
+  "pnpm": {
+    "overrides": {
+      "use-latest-callback": "0.2.1"
+    }
   }
 }
