@@ -41,7 +41,13 @@
       "simple-swizzle": "^0.2.2",
       "is-arrayish": "^0.3.2",
       "styleq": "^0.1.0",
-      "fast-base64-decode": "^1.0.0"
+      "fast-base64-decode": "^1.0.0",
+      "use-latest-callback": "0.2.1"
+    },
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "react-native"
+      ]
     }
   }
 }

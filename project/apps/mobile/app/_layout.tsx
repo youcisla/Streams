@@ -1,6 +1,3 @@
-// Load polyfills first
-import '../src/polyfills';
-
 import { theme } from '@streamlink/ui';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Stack } from 'expo-router';
