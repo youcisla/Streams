@@ -1,39 +1,72 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { Button, Card, Input, theme } from '@streamlink/ui';
 import { useRouter } from 'expo-router';
+import React, { useMemo, useState } from 'react';
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button, Input, Card, Badge } from '@streamlink/ui';
-import { theme } from '@streamlink/ui';
-import { useAuthStore } from '../../src/store/auth';
 import { api } from '../../src/services/api';
+import { useAuthStore } from '../../src/store/auth';
 
-export default function RegisterScreen() {
+type RoleOptionKey = 'VIEWER' | 'STREAMER' | 'BOTH';
+
+interface RoleOptionConfig {
+  key: RoleOptionKey;
+  label: string;
+  description: string;
+}
+
+const RegisterScreen = () => {
   const router = useRouter();
   const { login } = useAuthStore();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
-  const [role, setRole] = useState<'VIEWER' | 'STREAMER' | 'BOTH'>('VIEWER');
+  const [role, setRole] = useState<RoleOptionKey>('VIEWER');
   const [isLoading, setIsLoading] = useState(false);
 
+  const roleOptions = useMemo<RoleOptionConfig[]>(
+    () => [
+      {
+        key: 'VIEWER',
+        label: 'Viewer',
+        description: 'Watch and engage with streams',
+      },
+      {
+        key: 'STREAMER',
+        label: 'Streamer',
+        description: 'Broadcast and monetize your content',
+      },
+      {
+        key: 'BOTH',
+        label: 'I do both',
+        description: 'Switch between watching and streaming',
+      },
+    ],
+    [],
+  );
+
   const handleRegister = async () => {
-    if (!email || !password || !displayName) {
-      Alert.alert('Error', 'Please fill in all fields');
+    const trimmedEmail = email.trim();
+    const trimmedDisplayName = displayName.trim();
+
+    if (!trimmedDisplayName || !trimmedEmail || !password) {
+      Alert.alert('Missing information', 'Please fill out display name, email, and password.');
       return;
     }
 
     if (password.length < 6) {
-      Alert.alert('Error', 'Password must be at least 6 characters');
+      Alert.alert('Weak password', 'Password must contain at least 6 characters.');
       return;
     }
 
     setIsLoading(true);
     try {
-      const response = await api.register(email, password, displayName, role);
+      const response = await api.register(trimmedEmail, password, trimmedDisplayName, role);
       await login(response.user, response.access_token);
       router.replace('/(tabs)');
     } catch (error) {
-      Alert.alert('Registration Failed', error.message || 'Failed to create account');
+      const message = error instanceof Error ? error.message : 'Failed to create account';
+      Alert.alert('Registration failed', message);
     } finally {
       setIsLoading(false);
     }
@@ -43,16 +76,18 @@ export default function RegisterScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <View style={styles.header}>
-          <Text style={styles.title}>Create Account</Text>
-          <Text style={styles.subtitle}>Join the StreamLink community</Text>
+          <Text style={styles.title}>Create account</Text>
+          <Text style={styles.subtitle}>Join the StreamLink community in seconds</Text>
         </View>
 
         <Card style={styles.formCard}>
           <Input
-            label="Display Name"
+            label="Display name"
             value={displayName}
             onChangeText={setDisplayName}
             autoCapitalize="words"
+            placeholder="Jane Doe"
+            returnKeyType="next"
           />
 
           <Input
@@ -62,6 +97,8 @@ export default function RegisterScreen() {
             keyboardType="email-address"
             autoCapitalize="none"
             autoCorrect={false}
+            placeholder="you@example.com"
+            returnKeyType="next"
           />
 
           <Input
@@ -70,35 +107,28 @@ export default function RegisterScreen() {
             onChangeText={setPassword}
             secureTextEntry
             autoCapitalize="none"
-            helperText="Must be at least 6 characters"
+            helperText="At least 6 characters"
+            placeholder="Enter a secure password"
+            returnKeyType="done"
           />
 
           <View style={styles.roleSection}>
-            <Text style={styles.roleLabel}>I am a...</Text>
+            <Text style={styles.roleLabel}>I am joining as</Text>
             <View style={styles.roleOptions}>
-              <RoleOption
-                label="Viewer"
-                description="Watch and engage with content"
-                selected={role === 'VIEWER'}
-                onPress={() => setRole('VIEWER')}
-              />
-              <RoleOption
-                label="Streamer"
-                description="Create and share content"
-                selected={role === 'STREAMER'}
-                onPress={() => setRole('STREAMER')}
-              />
-              <RoleOption
-                label="Both"
-                description="Watch and create content"
-                selected={role === 'BOTH'}
-                onPress={() => setRole('BOTH')}
-              />
+              {roleOptions.map((option) => (
+                <RoleOption
+                  key={option.key}
+                  label={option.label}
+                  description={option.description}
+                  selected={role === option.key}
+                  onPress={() => setRole(option.key)}
+                />
+              ))}
             </View>
           </View>
 
           <Button
-            title="Create Account"
+            title="Create account"
             onPress={handleRegister}
             loading={isLoading}
             style={styles.submitButton}
@@ -108,7 +138,7 @@ export default function RegisterScreen() {
         <View style={styles.footer}>
           <Text style={styles.footerText}>Already have an account?</Text>
           <Button
-            title="Sign In"
+            title="Sign in"
             onPress={() => router.push('/(auth)/login')}
             variant="ghost"
             size="small"
@@ -117,34 +147,29 @@ export default function RegisterScreen() {
       </View>
     </SafeAreaView>
   );
-}
+};
 
-const RoleOption = ({ 
-  label, 
-  description, 
-  selected, 
-  onPress 
-}: { 
-  label: string; 
-  description: string; 
-  selected: boolean; 
-  onPress: () => void; 
-}) => (
-  <Button
-    title={label}
+type RoleOptionProps = {
+  label: string;
+  description: string;
+  selected: boolean;
+  onPress: () => void;
+};
+
+const RoleOption = ({ label, description, selected, onPress }: RoleOptionProps) => (
+  <TouchableOpacity
     onPress={onPress}
-    variant={selected ? 'primary' : 'outline'}
     style={[styles.roleButton, selected && styles.selectedRole]}
+    accessibilityRole="button"
+    accessibilityState={{ selected }}
+    accessibilityLabel={`${label} role option`}
+    activeOpacity={0.85}
   >
-    <View>
-      <Text style={[styles.roleButtonLabel, selected && styles.selectedRoleText]}>
-        {label}
-      </Text>
-      <Text style={[styles.roleButtonDescription, selected && styles.selectedRoleDescription]}>
-        {description}
-      </Text>
-    </View>
-  </Button>
+    <Text style={[styles.roleButtonLabel, selected && styles.selectedRoleText]}>{label}</Text>
+    <Text style={[styles.roleButtonDescription, selected && styles.selectedRoleDescription]}>
+      {description}
+    </Text>
+  </TouchableOpacity>
 );
 
 const styles = StyleSheet.create({
@@ -156,14 +181,15 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: theme.spacing.lg,
     justifyContent: 'center',
+    gap: theme.spacing.xl,
   },
   header: {
-    marginBottom: theme.spacing.xl,
     alignItems: 'center',
+    gap: theme.spacing.xs,
   },
   title: {
     ...theme.typography.h2,
-    marginBottom: theme.spacing.sm,
+    textAlign: 'center',
   },
   subtitle: {
     ...theme.typography.body,
@@ -171,15 +197,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   formCard: {
-    marginBottom: theme.spacing.xl,
+    gap: theme.spacing.lg,
+    padding: theme.spacing.lg,
   },
   roleSection: {
-    marginVertical: theme.spacing.lg,
+    gap: theme.spacing.sm,
   },
   roleLabel: {
     ...theme.typography.bodySmall,
     color: theme.colors.textSecondary,
-    marginBottom: theme.spacing.sm,
   },
   roleOptions: {
     flexDirection: 'row',
@@ -187,37 +213,48 @@ const styles = StyleSheet.create({
     gap: theme.spacing.sm,
   },
   roleButton: {
-    flex: 1,
-    minWidth: '30%',
+    flexBasis: '30%',
+    flexGrow: 1,
+    borderWidth: 1,
+    borderRadius: theme.borderRadius.lg,
+    borderColor: theme.colors.border,
+    backgroundColor: theme.colors.surface,
     paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.lg,
+    justifyContent: 'center',
+    gap: theme.spacing.xs,
   },
   selectedRole: {
     borderColor: theme.colors.primary,
+    backgroundColor: theme.colors.primary,
+    ...theme.shadows.small,
   },
   roleButtonLabel: {
     ...theme.typography.button,
-    fontSize: 14,
+    color: theme.colors.textPrimary,
   },
   roleButtonDescription: {
     ...theme.typography.caption,
-    marginTop: 2,
+    color: theme.colors.textMuted,
   },
   selectedRoleText: {
-    color: theme.colors.background,
+    color: theme.colors.surface,
   },
   selectedRoleDescription: {
-    color: theme.colors.background,
-    opacity: 0.8,
+    color: theme.colors.surface,
+    opacity: 0.85,
   },
   submitButton: {
-    marginTop: theme.spacing.lg,
+    marginTop: theme.spacing.md,
   },
   footer: {
     alignItems: 'center',
+    gap: theme.spacing.xs,
   },
   footerText: {
     ...theme.typography.bodySmall,
     color: theme.colors.textSecondary,
-    marginBottom: theme.spacing.sm,
   },
 });
+
+export default RegisterScreen;

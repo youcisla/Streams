@@ -201,6 +201,11 @@ Login with demo accounts:
 5. Run linting and tests
 6. Submit a pull request
 
+## ⚠️ Known Web Console Notes
+
+- The Expo web build currently suppresses a React Native Web warning about `pointerEvents` props by using `LogBox.ignoreLogs`. This is a temporary measure until upstream packages migrate to the new `style.pointerEvents` API.
+- When the auth modal stack animates on the web, the browser may report `aria-hidden` focus warnings. These stem from React Navigation's focus management on modal overlays and do not block interaction. Monitor future library releases for a permanent fix.
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.

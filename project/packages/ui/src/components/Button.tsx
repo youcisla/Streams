@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import {
-  TouchableOpacity,
-  Text,
+  ActivityIndicator,
+  StyleProp,
   StyleSheet,
-  ViewStyle,
+  Text,
   TextStyle,
-  ActivityIndicator
+  TouchableOpacity,
+  View,
+  ViewStyle
 } from 'react-native';
 import { theme } from '../theme';
 
@@ -16,8 +18,10 @@ export interface ButtonProps {
   size?: 'small' | 'medium' | 'large';
   disabled?: boolean;
   loading?: boolean;
-  style?: ViewStyle;
-  textStyle?: TextStyle;
+  style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
+  contentStyle?: StyleProp<ViewStyle>;
+  children?: ReactNode;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -28,10 +32,13 @@ export const Button: React.FC<ButtonProps> = ({
   disabled = false,
   loading = false,
   style,
-  textStyle
+  textStyle,
+  contentStyle,
+  children
 }) => {
   const buttonStyle = [
     styles.base,
+    styles.shadow,
     styles[variant],
     styles[`${size}Size`],
     disabled && styles.disabled,
@@ -46,20 +53,27 @@ export const Button: React.FC<ButtonProps> = ({
     textStyle
   ];
 
+  const hasCustomContent = React.Children.count(children) > 0;
+
   return (
     <TouchableOpacity
       style={buttonStyle}
       onPress={onPress}
       disabled={disabled || loading}
       activeOpacity={0.8}
+      accessibilityRole="button"
     >
       {loading ? (
         <ActivityIndicator 
-          color={variant === 'primary' ? theme.colors.textPrimary : theme.colors.primary} 
+          color={variant === 'primary' ? theme.colors.primaryForeground : theme.colors.primary} 
           size="small" 
         />
+      ) : hasCustomContent ? (
+        <View style={[styles.content, contentStyle]}>{children}</View>
       ) : (
-        <Text style={buttonTextStyle}>{title}</Text>
+        <Text style={buttonTextStyle} allowFontScaling>
+          {title}
+        </Text>
       )}
     </TouchableOpacity>
   );
@@ -69,8 +83,15 @@ const styles = StyleSheet.create({
   base: {
     borderRadius: theme.borderRadius.lg,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
+  },
+  shadow: {
     ...theme.shadows.small
+  },
+  content: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   
   // Variants
@@ -109,10 +130,12 @@ const styles = StyleSheet.create({
   // Text styles
   text: {
     ...theme.typography.button,
-    textAlign: 'center'
+    textAlign: 'center',
+    flexShrink: 1,
+    flexWrap: 'wrap'
   },
   primaryText: {
-    color: theme.colors.background
+    color: theme.colors.primaryForeground
   },
   secondaryText: {
     color: theme.colors.textPrimary

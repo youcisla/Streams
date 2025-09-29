@@ -1,13 +1,13 @@
 import { useAuthStore } from '../store/auth';
-import { 
-  LoginResponse, 
-  StreamerProfile, 
-  Reward, 
-  Redemption, 
-  Follow, 
-  Poll, 
-  Product, 
-  Order 
+import {
+    Follow,
+    LoginResponse,
+    Order,
+    Poll,
+    Product,
+    Redemption,
+    Reward,
+    StreamerProfile
 } from '../types/api';
 
 const API_BASE_URL = 'http://localhost:3001/api/v1';
@@ -25,14 +25,48 @@ class ApiService {
       ...options,
     };
 
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
-    
-    if (!response.ok) {
-      const error = await response.text();
-      throw new Error(error || 'Network error');
+    let response: Response;
+    try {
+      response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+    } catch (error) {
+      if (typeof __DEV__ !== 'undefined' && __DEV__) {
+        console.warn('[ApiService] Network request failed', error);
+      }
+      throw new Error('Unable to reach the StreamLink API. Please ensure the backend server is running.');
     }
 
-    return response.json();
+    const responseClone = response.clone();
+    
+    if (!response.ok) {
+      let errorMessage = 'Request failed. Please try again.';
+
+      try {
+        const errorData = await responseClone.json();
+        if (typeof errorData === 'string') {
+          errorMessage = errorData;
+        } else if (errorData?.message) {
+          errorMessage = errorData.message;
+        } else if (errorData?.error) {
+          errorMessage = errorData.error;
+        }
+      } catch {
+        const fallback = await responseClone.text();
+        if (fallback) {
+          errorMessage = fallback;
+        }
+      }
+
+      throw new Error(errorMessage);
+    }
+
+    const contentType = response.headers.get('content-type') ?? '';
+
+    if (contentType.includes('application/json')) {
+      return response.json();
+    }
+
+    const text = await response.text();
+    return text ? (text as unknown as T) : (undefined as T);
   }
 
   // Auth

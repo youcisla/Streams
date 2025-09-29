@@ -1,44 +1,47 @@
+import { Platform, ViewStyle } from 'react-native';
+
 export const colors = {
-  // Dark theme base
-  background: '#000000',
-  surface: '#111111',
-  surfaceElevated: '#1a1a1a',
+  // Dark theme base with improved contrast
+  background: '#05060A',
+  surface: '#111827',
+  surfaceElevated: '#1F2937',
   
-  // Primary cyan/aqua
-  primary: '#00d4ff',
-  primaryDark: '#00a6cc',
-  primaryLight: '#33ddff',
+  // Primary palette (sky blue)
+  primary: '#38BDF8',
+  primaryDark: '#0EA5E9',
+  primaryLight: '#BAE6FD',
+  primaryForeground: '#031625',
   
-  // Secondary
-  secondary: '#1a1a2e',
-  secondaryDark: '#16213e',
-  secondaryLight: '#2a2a4e',
+  // Secondary palette (slate)
+  secondary: '#1E293B',
+  secondaryDark: '#0F172A',
+  secondaryLight: '#334155',
   
   // Accent colors
-  accent: '#00ffff',
-  accentDark: '#00cccc',
-  accentLight: '#33ffff',
+  accent: '#818CF8',
+  accentDark: '#6366F1',
+  accentLight: '#C7D2FE',
   
   // Status colors
-  success: '#00ff88',
-  warning: '#ffaa00',
-  error: '#ff4444',
-  info: '#0099ff',
+  success: '#22C55E',
+  warning: '#F59E0B',
+  error: '#EF4444',
+  info: '#38BDF8',
   
-  // Text colors
-  textPrimary: '#ffffff',
-  textSecondary: '#cccccc',
-  textMuted: '#888888',
-  textDisabled: '#555555',
+  // Text colors with accessible contrast
+  textPrimary: '#F8FAFC',
+  textSecondary: '#E2E8F0',
+  textMuted: '#94A3B8',
+  textDisabled: '#64748B',
   
   // Border colors
-  border: '#333333',
-  borderLight: '#444444',
-  borderFocus: '#00d4ff',
+  border: '#1E293B',
+  borderLight: '#334155',
+  borderFocus: '#38BDF8',
   
   // Transparent overlays
-  overlay: 'rgba(0, 0, 0, 0.8)',
-  overlayLight: 'rgba(0, 0, 0, 0.6)',
+  overlay: 'rgba(7, 11, 23, 0.85)',
+  overlayLight: 'rgba(15, 23, 42, 0.6)',
   
   // Platform colors
   twitch: '#9146ff',
@@ -136,28 +139,57 @@ export const typography = {
   }
 };
 
+const createShadow = ({
+  offsetY,
+  radius,
+  opacity,
+  elevation,
+  webShadow
+}: {
+  offsetY: number;
+  radius: number;
+  opacity: number;
+  elevation: number;
+  webShadow: string;
+}): ViewStyle => {
+  return (
+    Platform.select<ViewStyle>({
+      web: {
+        boxShadow: webShadow
+      },
+      default: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: offsetY },
+        shadowOpacity: opacity,
+        shadowRadius: radius,
+        elevation
+      }
+    }) ?? {}
+  );
+};
+
 export const shadows = {
-  small: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 2
-  },
-  medium: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 4
-  },
-  large: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.35,
-    shadowRadius: 16,
-    elevation: 8
-  }
+  small: createShadow({
+    offsetY: 2,
+    radius: 4,
+    opacity: 0.25,
+    elevation: 2,
+    webShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)'
+  }),
+  medium: createShadow({
+    offsetY: 4,
+    radius: 8,
+    opacity: 0.3,
+    elevation: 4,
+    webShadow: '0px 6px 12px rgba(0, 0, 0, 0.3)'
+  }),
+  large: createShadow({
+    offsetY: 8,
+    radius: 16,
+    opacity: 0.35,
+    elevation: 8,
+    webShadow: '0px 12px 24px rgba(0, 0, 0, 0.35)'
+  })
 };
 
 export const theme = {

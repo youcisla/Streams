@@ -1,6 +1,14 @@
+import { LogBox, Platform } from 'react-native';
+
+if (Platform.OS === 'web') {
+  LogBox.ignoreLogs([
+    'props.pointerEvents is deprecated. Use style.pointerEvents'
+  ]);
+}
+
 type PolyfillField = {
 	name: string;
-	value: any;
+	value: unknown;
 	filename?: string;
 };
 
@@ -26,11 +34,11 @@ if (typeof globalRef.FormData === 'undefined') {
 	class FormDataPolyfill {
 		private _fields: PolyfillField[] = [];
 
-		append(name: string, value: any, filename?: string) {
+		append(name: string, value: unknown, filename?: string) {
 			this._fields.push({ name, value, filename });
 		}
 
-		set(name: string, value: any, filename?: string) {
+		set(name: string, value: unknown, filename?: string) {
 			this.delete(name);
 			this.append(name, value, filename);
 		}
@@ -39,28 +47,28 @@ if (typeof globalRef.FormData === 'undefined') {
 			this._fields = this._fields.filter((field) => field.name !== name);
 		}
 
-		get(name: string) {
+		get(name: string): unknown | null {
 			const field = this._fields.find((item) => item.name === name);
 			return field ? field.value : null;
 		}
 
-		getAll(name: string) {
+		getAll(name: string): unknown[] {
 			return this._fields
 				.filter((item) => item.name === name)
 				.map((item) => item.value);
 		}
 
-		has(name: string) {
+		has(name: string): boolean {
 			return this._fields.some((item) => item.name === name);
 		}
 
-		forEach(callback: (value: any, name: string, formData: FormDataPolyfill) => void, thisArg?: unknown) {
+		forEach(callback: (value: unknown, name: string, formData: FormDataPolyfill) => void, thisArg?: unknown) {
 			this._fields.forEach((field) => {
 				callback.call(thisArg ?? null, field.value, field.name, this);
 			});
 		}
 
-		*entries(): IterableIterator<[string, any]> {
+		*entries(): IterableIterator<[string, unknown]> {
 			for (const field of this._fields) {
 				yield [field.name, field.value];
 			}
@@ -72,7 +80,7 @@ if (typeof globalRef.FormData === 'undefined') {
 			}
 		}
 
-		*values(): IterableIterator<any> {
+		*values(): IterableIterator<unknown> {
 			for (const field of this._fields) {
 				yield field.value;
 			}
