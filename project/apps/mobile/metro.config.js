@@ -34,15 +34,29 @@ config.resolver.alias = {
   'inline-style-prefixer': path.resolve(workspaceRoot, 'node_modules/inline-style-prefixer'),
 };
 
-// Add polyfills for missing APIs
+// Add polyfills for missing APIs and ensure proper initialization
 config.transformer = {
   ...config.transformer,
   getTransformOptions: async () => ({
     transform: {
       experimentalImportSupport: false,
-      inlineRequires: true,
+      inlineRequires: false, // Changed to false to ensure proper order
     },
   }),
+};
+
+// Add runtime initialization to ensure polyfills are loaded first
+config.serializer = {
+  ...config.serializer,
+  createModuleIdFactory: () => {
+    return (path) => {
+      // Prioritize index.js to ensure polyfills load first
+      if (path.endsWith('index.js')) {
+        return 0;
+      }
+      return path;
+    };
+  },
 };
 
 // Add explicit dependency resolution to prevent issues

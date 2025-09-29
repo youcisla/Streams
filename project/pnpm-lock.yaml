@@ -250,6 +250,9 @@ importers:
       react-dom:
         specifier: 19.1.0
         version: 19.1.0(react@19.1.0)
+      react-fast-compare:
+        specifier: ^3.2.2
+        version: 3.2.2
       react-freeze:
         specifier: ^1.0.4
         version: 1.0.4(react@19.1.0)
