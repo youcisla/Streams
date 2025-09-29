@@ -1,16 +1,62 @@
+import Constants from 'expo-constants';
+import { Platform } from 'react-native';
+
 import { useAuthStore } from '../store/auth';
 import {
-    Follow,
-    LoginResponse,
-    Order,
-    Poll,
-    Product,
-    Redemption,
-    Reward,
-    StreamerProfile
+  Follow,
+  LoginResponse,
+  Order,
+  Poll,
+  Product,
+  Redemption,
+  Reward,
+  StreamerProfile,
 } from '../types/api';
 
-const API_BASE_URL = 'http://localhost:3001/api/v1';
+const API_PATH = '/api/v1';
+
+const normalizeBaseUrl = (value: string) => value.replace(/\/$/, '');
+
+const resolveApiBaseUrl = (): string => {
+  const envUrl =
+    process.env.EXPO_PUBLIC_API_URL ??
+    process.env.EXPO_PUBLIC_API_BASE_URL ??
+    process.env.EXPO_PUBLIC_API_HOST;
+
+  if (envUrl) {
+    return normalizeBaseUrl(envUrl);
+  }
+
+  if (Platform.OS === 'web' && typeof window !== 'undefined') {
+    return normalizeBaseUrl(window.location.origin);
+  }
+
+  const manifestLike: Partial<typeof Constants> & {
+    manifest?: { debuggerHost?: string };
+    manifest2?: { extra?: { expoClient?: { hostUri?: string } } };
+  } = Constants;
+
+  const hostUri =
+    Constants.expoConfig?.hostUri ??
+    manifestLike.manifest?.debuggerHost ??
+    manifestLike.manifest2?.extra?.expoClient?.hostUri ??
+    '';
+
+  if (hostUri) {
+    const normalized = hostUri.startsWith('http') ? hostUri : `http://${hostUri}`;
+    try {
+      const url = new URL(normalized);
+      const hostname = url.hostname;
+      if (hostname) {
+        return `http://${hostname}:3001`;
+      }
+    } catch {/* swallow parse errors */}
+  }
+
+  return 'http://localhost:3001';
+};
+
+const API_BASE_URL = `${resolveApiBaseUrl()}${API_PATH}`;
 
 class ApiService {
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
