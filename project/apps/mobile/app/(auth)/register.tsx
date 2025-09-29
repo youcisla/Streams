@@ -238,10 +238,10 @@ const styles = StyleSheet.create({
     color: theme.colors.textMuted,
   },
   selectedRoleText: {
-    color: theme.colors.surface,
+    color: theme.colors.background,
   },
   selectedRoleDescription: {
-    color: theme.colors.surface,
+    color: theme.colors.background,
     opacity: 0.85,
   },
   submitButton: {
