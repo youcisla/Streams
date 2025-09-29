@@ -1,12 +1,12 @@
 const { getDefaultConfig } = require('expo/metro-config');
 const path = require('path');
 
-const config = getDefaultConfig(__dirname, {
-  isCSSEnabled: true,
-});
-
 const projectRoot = __dirname;
 const workspaceRoot = path.resolve(projectRoot, '../..');
+
+const config = getDefaultConfig(projectRoot, {
+  isCSSEnabled: true,
+});
 
 config.watchFolders = [workspaceRoot];
 config.resolver.nodeModulesPaths = [
@@ -14,69 +14,38 @@ config.resolver.nodeModulesPaths = [
   path.resolve(workspaceRoot, 'node_modules'),
 ];
 
-// Disable hierarchical lookup to prevent version conflicts
-config.resolver.disableHierarchicalLookup = true;
-
-// Add better module resolution for monorepo
-config.resolver.platforms = ['native', 'android', 'ios', 'web'];
-config.resolver.alias = {
-  '@streamlink/ui': path.resolve(workspaceRoot, 'packages/ui/src'),
-  '@streamlink/config': path.resolve(workspaceRoot, 'packages/config/src'),
-};
-
-// Ensure proper handling of node_modules resolution
-config.resolver.resolverMainFields = ['react-native', 'browser', 'main'];
-
-// Add Node.js polyfills for React Native compatibility
 config.resolver.alias = {
   ...config.resolver.alias,
-  'punycode': 'punycode/punycode.js',
-  // Add explicit path for inline-style-prefixer
-  'inline-style-prefixer/lib/createPrefixer': path.resolve(workspaceRoot, 'node_modules/inline-style-prefixer/lib/createPrefixer.js'),
+  '@streamlink/ui': path.resolve(workspaceRoot, 'packages/ui'),
+  '@streamlink/config': path.resolve(workspaceRoot, 'packages/config/src'),
+  punycode: 'punycode/punycode.js',
+  'inline-style-prefixer/lib/createPrefixer': path.resolve(
+    workspaceRoot,
+    'node_modules/inline-style-prefixer/lib/createPrefixer.js'
+  ),
   'inline-style-prefixer': path.resolve(workspaceRoot, 'node_modules/inline-style-prefixer'),
-  'event-target-shim': path.resolve(workspaceRoot, 'node_modules/event-target-shim/dist/event-target-shim.js'),
+  'event-target-shim': path.resolve(
+    workspaceRoot,
+    'node_modules/event-target-shim/dist/event-target-shim.js'
+  ),
 };
 
-// Add polyfills for missing APIs and ensure proper initialization
 config.transformer = {
   ...config.transformer,
   getTransformOptions: async () => ({
     transform: {
       experimentalImportSupport: false,
-      inlineRequires: false, // Changed to false to ensure proper order
+      inlineRequires: false,
     },
   }),
 };
 
-// Add runtime initialization to ensure polyfills are loaded first
-config.serializer = {
-  ...config.serializer,
-  createModuleIdFactory: () => {
-    return (path) => {
-      // Prioritize index.js to ensure polyfills load first
-      if (path.endsWith('index.js')) {
-        return 0;
-      }
-      return path;
-    };
-  },
-};
-
-// Add explicit dependency resolution to prevent issues
-config.resolver.unstable_enablePackageExports = true;
-config.resolver.unstable_conditionNames = ['react-native', 'browser', 'require'];
-
-// Ensure proper resolver configuration
-config.resolver.resolveRequest = (context, moduleName, platform) => {
-  // Let Metro handle the resolution normally
-  return context.resolveRequest(context, moduleName, platform);
-};
-
-// Ensure better dependency resolution for monorepo
 const defaultSourceExts = config.resolver.sourceExts ?? [];
-const defaultAssetExts = config.resolver.assetExts ?? [];
-
 config.resolver.sourceExts = Array.from(new Set([...defaultSourceExts, 'cjs', 'mjs', 'css']));
-config.resolver.assetExts = Array.from(new Set([...defaultAssetExts, 'png', 'jpg', 'jpeg', 'gif', 'webp', 'svg', 'ttf', 'otf', 'woff', 'woff2']));
+
+const defaultAssetExts = config.resolver.assetExts ?? [];
+config.resolver.assetExts = Array.from(
+  new Set([...defaultAssetExts, 'png', 'jpg', 'jpeg', 'gif', 'webp', 'svg', 'ttf', 'otf', 'woff', 'woff2'])
+);
 
 module.exports = config;

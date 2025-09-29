@@ -34,10 +34,6 @@
   },
   "pnpm": {
     "overrides": {
-  "react": "19.1.0",
-  "react-dom": "19.1.0",
-  "react-test-renderer": "19.1.0",
-  "@types/react": "~19.1.10",
       "eslint": "^9.11.0",
       "color-string": "^1.9.1",
       "simple-swizzle": "^0.2.2",
@@ -52,8 +48,8 @@
         "react-native"
       ],
       "allowedVersions": {
-        "react": "19",
-        "@types/react": "19"
+        "react": "18",
+        "@types/react": "18"
       }
     },
     "packageExtensions": {
