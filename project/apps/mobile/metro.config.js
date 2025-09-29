@@ -1,7 +1,9 @@
 const { getDefaultConfig } = require('expo/metro-config');
 const path = require('path');
 
-const config = getDefaultConfig(__dirname);
+const config = getDefaultConfig(__dirname, {
+  isCSSEnabled: true,
+});
 
 const projectRoot = __dirname;
 const workspaceRoot = path.resolve(projectRoot, '../..');
@@ -71,7 +73,10 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
 };
 
 // Ensure better dependency resolution for monorepo
-config.resolver.sourceExts = ['js', 'ts', 'tsx', 'jsx', 'json'];
-config.resolver.assetExts = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg', 'ttf', 'otf', 'woff', 'woff2'];
+const defaultSourceExts = config.resolver.sourceExts ?? [];
+const defaultAssetExts = config.resolver.assetExts ?? [];
+
+config.resolver.sourceExts = Array.from(new Set([...defaultSourceExts, 'cjs', 'mjs', 'css']));
+config.resolver.assetExts = Array.from(new Set([...defaultAssetExts, 'png', 'jpg', 'jpeg', 'gif', 'webp', 'svg', 'ttf', 'otf', 'woff', 'woff2']));
 
 module.exports = config;

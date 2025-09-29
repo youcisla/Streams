@@ -333,6 +333,9 @@ importers:
       util:
         specifier: ^0.12.5
         version: 0.12.5
+      vaul:
+        specifier: ^0.9.1
+        version: 0.9.9(@types/react@19.1.15)(react-dom@19.1.0)(react@19.1.0)
       warn-once:
         specifier: ^0.1.1
         version: 0.1.1
@@ -12985,6 +12988,20 @@ packages:
   /vary@1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
+
+  /vaul@0.9.9(@types/react@19.1.15)(react-dom@19.1.0)(react@19.1.0):
+    resolution: {integrity: sha512-7afKg48srluhZwIkaU+lgGtFCUsYBSGOl8vcc8N/M3YQlZFlynHD15AE+pwrYdc826o7nrIND4lL9Y6b9WWZZQ==}
+    peerDependencies:
+      react: 19.1.0 || 19
+      react-dom: 19.1.0
+    dependencies:
+      '@radix-ui/react-dialog': 1.1.15(@types/react@19.1.15)(react-dom@19.1.0)(react@19.1.0)
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - '@types/react-dom'
+    dev: false
 
   /vaul@1.1.2(@types/react@19.1.15)(react-dom@19.1.0)(react@19.1.0):
     resolution: {integrity: sha512-ZFkClGpWyI2WUQjdLJ/BaGuV6AVQiJ3uELGk3OYtP+B6yCO7Cmn9vPFXVJkRaGkOJu3m8bQMgtyzNHixULceQA==}
