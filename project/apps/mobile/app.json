@@ -6,6 +6,7 @@
     "main": "index.js",
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
+    "sdkVersion": "54.0.0",
     "splash": {
       "resizeMode": "contain",
       "backgroundColor": "#000000"

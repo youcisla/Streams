@@ -1,6 +1,94 @@
-// This file is now empty to avoid circular dependencies
-// All polyfills have been moved to index.js
-// This file is kept only to avoid import errors
+type PolyfillField = {
+	name: string;
+	value: any;
+	filename?: string;
+};
 
-export { };
+const getGlobalObject = (): Record<string, unknown> => {
+	if (typeof globalThis !== 'undefined') {
+		return globalThis as Record<string, unknown>;
+	}
+	if (typeof global !== 'undefined') {
+		return global as Record<string, unknown>;
+	}
+	if (typeof window !== 'undefined') {
+		return window as unknown as Record<string, unknown>;
+	}
+	if (typeof self !== 'undefined') {
+		return self as unknown as Record<string, unknown>;
+	}
+	return {};
+};
+
+const globalRef = getGlobalObject();
+
+if (typeof globalRef.FormData === 'undefined') {
+	class FormDataPolyfill {
+		private _fields: PolyfillField[] = [];
+
+		append(name: string, value: any, filename?: string) {
+			this._fields.push({ name, value, filename });
+		}
+
+		set(name: string, value: any, filename?: string) {
+			this.delete(name);
+			this.append(name, value, filename);
+		}
+
+		delete(name: string) {
+			this._fields = this._fields.filter((field) => field.name !== name);
+		}
+
+		get(name: string) {
+			const field = this._fields.find((item) => item.name === name);
+			return field ? field.value : null;
+		}
+
+		getAll(name: string) {
+			return this._fields
+				.filter((item) => item.name === name)
+				.map((item) => item.value);
+		}
+
+		has(name: string) {
+			return this._fields.some((item) => item.name === name);
+		}
+
+		forEach(callback: (value: any, name: string, formData: FormDataPolyfill) => void, thisArg?: unknown) {
+			this._fields.forEach((field) => {
+				callback.call(thisArg ?? null, field.value, field.name, this);
+			});
+		}
+
+		*entries(): IterableIterator<[string, any]> {
+			for (const field of this._fields) {
+				yield [field.name, field.value];
+			}
+		}
+
+		*keys(): IterableIterator<string> {
+			for (const field of this._fields) {
+				yield field.name;
+			}
+		}
+
+		*values(): IterableIterator<any> {
+			for (const field of this._fields) {
+				yield field.value;
+			}
+		}
+
+		[Symbol.iterator]() {
+			return this.entries();
+		}
+	}
+
+	Object.defineProperty(globalRef, 'FormData', {
+		value: FormDataPolyfill,
+		writable: true,
+		configurable: true,
+	});
+}
+
+export { }; // ensure this file is treated as a module
 

@@ -32,6 +32,7 @@ config.resolver.alias = {
   // Add explicit path for inline-style-prefixer
   'inline-style-prefixer/lib/createPrefixer': path.resolve(workspaceRoot, 'node_modules/inline-style-prefixer/lib/createPrefixer.js'),
   'inline-style-prefixer': path.resolve(workspaceRoot, 'node_modules/inline-style-prefixer'),
+  'event-target-shim': path.resolve(workspaceRoot, 'node_modules/event-target-shim/dist/event-target-shim.js'),
 };
 
 // Add polyfills for missing APIs and ensure proper initialization
