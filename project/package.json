@@ -25,6 +25,9 @@
     "typescript": "^5.0.0",
     "prettier": "^3.0.0",
     "eslint": "^9.11.0",
+    "globals": "^15.11.0",
+    "eslint-plugin-react-refresh": "^0.4.7",
+    "typescript-eslint": "^8.8.1",
     "husky": "^9.0.0"
   },
   "packageManager": "pnpm@8.15.0",
@@ -34,6 +37,10 @@
   },
   "pnpm": {
     "overrides": {
+      "react": "19.1.0",
+      "react-dom": "19.1.0",
+      "react-test-renderer": "19.1.0",
+      "@types/react": "~19.1.10",
       "eslint": "^9.11.0",
       "color-string": "^1.9.1",
       "simple-swizzle": "^0.2.2",
@@ -48,8 +55,8 @@
         "react-native"
       ],
       "allowedVersions": {
-        "react": "18",
-        "@types/react": "18"
+        "react": "19",
+        "@types/react": "19"
       }
     },
     "packageExtensions": {
