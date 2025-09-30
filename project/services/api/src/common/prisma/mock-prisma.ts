@@ -35,6 +35,8 @@ export enum MiniGameType {
 export interface User {
   id: string;
   email: string;
+  username?: string;
+  passwordHash?: string;
   role: Role;
   displayName?: string;
   avatarUrl?: string;
@@ -47,6 +49,7 @@ export class PrismaClient {
   private createMockModel<T = any>() {
     return {
       findUnique: (args?: any) => Promise.resolve(null),
+      findFirst: (args?: any) => Promise.resolve(null),
       findMany: (args?: any) => Promise.resolve([]),
       create: (args?: any) => Promise.resolve({} as T),
       update: (args?: any) => Promise.resolve({} as T),

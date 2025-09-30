@@ -19,6 +19,7 @@ const RegisterScreen = () => {
   const { login } = useAuthStore();
 
   const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [role, setRole] = useState<RoleOptionKey>('VIEWER');
@@ -47,10 +48,16 @@ const RegisterScreen = () => {
 
   const handleRegister = async () => {
     const trimmedEmail = email.trim();
+    const trimmedUsername = username.trim();
     const trimmedDisplayName = displayName.trim();
 
-    if (!trimmedDisplayName || !trimmedEmail || !password) {
-      Alert.alert('Missing information', 'Please fill out display name, email, and password.');
+    if (!trimmedDisplayName || !trimmedEmail || !trimmedUsername || !password) {
+      Alert.alert('Missing information', 'Please fill out display name, email, username, and password.');
+      return;
+    }
+
+    if (!/^[a-zA-Z0-9_.-]{3,}$/.test(trimmedUsername)) {
+      Alert.alert('Invalid username', 'Usernames must be at least 3 characters and contain only letters, numbers, or .-_');
       return;
     }
 
@@ -61,7 +68,13 @@ const RegisterScreen = () => {
 
     setIsLoading(true);
     try {
-      const response = await api.register(trimmedEmail, password, trimmedDisplayName, role);
+      const response = await api.register({
+        email: trimmedEmail,
+        password,
+        displayName: trimmedDisplayName,
+        role,
+        username: trimmedUsername.toLowerCase(),
+      });
       await login(response.user, response.access_token);
       router.replace('/(tabs)');
     } catch (error) {
@@ -98,6 +111,17 @@ const RegisterScreen = () => {
             autoCapitalize="none"
             autoCorrect={false}
             placeholder="you@example.com"
+            returnKeyType="next"
+          />
+
+          <Input
+            label="Username"
+            value={username}
+            onChangeText={setUsername}
+            autoCapitalize="none"
+            autoCorrect={false}
+            placeholder="yourhandle"
+            helperText="Unique name, 3+ characters"
             returnKeyType="next"
           />
 

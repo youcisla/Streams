@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TextInput } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Card, Button, Badge, EmptyState, Input } from '@streamlink/ui';
-import { theme } from '@streamlink/ui';
 import { Ionicons } from '@expo/vector-icons';
+import { Badge, Button, Card, EmptyState, theme } from '@streamlink/ui';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Alert, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { api } from '../../../src/services/api';
 
 // Mock data for demo purposes
 const MOCK_STREAMERS = [
@@ -47,26 +49,104 @@ const MOCK_STREAMERS = [
 
 const CATEGORIES = ['All', 'Gaming', 'Art', 'Music', 'Education', 'Lifestyle'];
 
+export type DiscoverStreamer = typeof MOCK_STREAMERS[number];
+
 export default function DiscoverScreen() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [followedStreamers, setFollowedStreamers] = useState<Set<string>>(new Set());
 
-  const filteredStreamers = MOCK_STREAMERS.filter(streamer => {
+  const { data: streamers = [] } = useQuery<DiscoverStreamer[]>({
+    queryKey: ['discover-streamers'],
+    queryFn: async () => MOCK_STREAMERS.map((streamer) => ({ ...streamer })),
+    staleTime: Infinity,
+    gcTime: Infinity,
+  });
+
+  const { data: following } = useQuery({
+    queryKey: ['following'],
+    queryFn: () => api.getFollowing(),
+    staleTime: 15_000,
+  });
+
+  useEffect(() => {
+    if (!following) {
+      return;
+    }
+    setFollowedStreamers(new Set(following.map((item) => item.streamer.id)));
+  }, [following]);
+
+  const followMutation = useMutation<
+    unknown,
+    Error,
+    { streamerId: string; shouldFollow: boolean }
+  >({
+    mutationFn: async ({ streamerId, shouldFollow }) => {
+      if (shouldFollow) {
+        return api.followStreamer(streamerId);
+      }
+      return api.unfollowStreamer(streamerId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['following'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
+    },
+  });
+
+  const filteredStreamers = useMemo(() => streamers.filter((streamer) => {
     const matchesSearch = streamer.displayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          streamer.bio.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === 'All' || streamer.category === selectedCategory;
     return matchesSearch && matchesCategory;
-  });
+  }), [streamers, searchQuery, selectedCategory]);
 
   const handleFollow = (streamerId: string) => {
-    const newFollowed = new Set(followedStreamers);
-    if (newFollowed.has(streamerId)) {
-      newFollowed.delete(streamerId);
+    const currentlyFollowed = followedStreamers.has(streamerId);
+  const previousFollowed = new Set(followedStreamers);
+  const previousStreamers = streamers.map((streamer) => ({ ...streamer }));
+
+    const updatedFollowed = new Set(followedStreamers);
+    if (currentlyFollowed) {
+      updatedFollowed.delete(streamerId);
     } else {
-      newFollowed.add(streamerId);
+      updatedFollowed.add(streamerId);
     }
-    setFollowedStreamers(newFollowed);
+
+    const delta = currentlyFollowed ? -1 : 1;
+    setFollowedStreamers(updatedFollowed);
+    queryClient.setQueryData<DiscoverStreamer[]>(['discover-streamers'], (existing = []) =>
+      existing.map((streamer) =>
+        streamer.id === streamerId
+          ? { ...streamer, followers: Math.max(0, streamer.followers + delta) }
+          : streamer
+      )
+    );
+
+    followMutation.mutate(
+      { streamerId, shouldFollow: !currentlyFollowed },
+      {
+        onError: (error) => {
+          setFollowedStreamers(new Set(previousFollowed));
+          queryClient.setQueryData(['discover-streamers'], previousStreamers);
+          const message = error instanceof Error ? error.message : 'Unable to update follow status. Please try again.';
+          Alert.alert('Follow failed', message);
+        },
+      },
+    );
+  };
+
+  const handleViewProfile = (streamerId: string) => {
+    const streamer = streamers.find((item) => item.id === streamerId);
+    router.push({
+      pathname: '/(tabs)/discover/[streamerId]',
+      params: {
+        streamerId,
+        data: streamer ? encodeURIComponent(JSON.stringify(streamer)) : undefined,
+      },
+    } as never);
   };
 
   return (
@@ -118,6 +198,8 @@ export default function DiscoverScreen() {
                 streamer={streamer}
                 isFollowed={followedStreamers.has(streamer.id)}
                 onFollow={() => handleFollow(streamer.id)}
+                isProcessing={followMutation.isPending && followMutation.variables?.streamerId === streamer.id}
+                onViewProfile={() => handleViewProfile(streamer.id)}
               />
             ))}
           </View>
@@ -148,14 +230,18 @@ export default function DiscoverScreen() {
   );
 }
 
-const StreamerCard = ({ 
-  streamer, 
-  isFollowed, 
-  onFollow 
-}: { 
-  streamer: any; 
-  isFollowed: boolean; 
-  onFollow: () => void; 
+const StreamerCard = ({
+  streamer,
+  isFollowed,
+  onFollow,
+  isProcessing,
+  onViewProfile,
+}: {
+  streamer: any;
+  isFollowed: boolean;
+  onFollow: () => void;
+  isProcessing: boolean;
+  onViewProfile: () => void;
 }) => (
   <Card style={styles.streamerCard} variant="elevated">
     <View style={styles.streamerHeader}>
@@ -194,13 +280,15 @@ const StreamerCard = ({
         variant={isFollowed ? 'secondary' : 'primary'}
         size="small"
         onPress={onFollow}
+        loading={isProcessing}
+        disabled={isProcessing}
         style={styles.followButton}
       />
       <Button
         title="View Profile"
         variant="outline"
         size="small"
-        onPress={() => {}}
+        onPress={onViewProfile}
         style={styles.profileButton}
       />
     </View>

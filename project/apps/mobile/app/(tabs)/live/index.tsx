@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Card, Button, Badge, EmptyState, Modal } from '@streamlink/ui';
-import { theme } from '@streamlink/ui';
-import { useQuery } from '@tanstack/react-query';
-import { api } from '../../src/services/api';
 import { Ionicons } from '@expo/vector-icons';
+import { Badge, Button, Card, EmptyState, Modal, theme } from '@streamlink/ui';
+import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'expo-router';
+import React, { useMemo, useState } from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { api } from '../../../src/services/api';
 
-// Mock live interaction data for demo
 const MOCK_LIVE_DATA = {
   polls: [
     {
@@ -18,20 +17,21 @@ const MOCK_LIVE_DATA = {
         { id: '1', label: 'Minecraft', votes: 15 },
         { id: '2', label: 'Fortnite', votes: 8 },
         { id: '3', label: 'Among Us', votes: 12 },
-        { id: '4', label: 'Valorant', votes: 5 }
+        { id: '4', label: 'Valorant', votes: 5 },
       ],
       createdAt: new Date().toISOString(),
       endsAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-    }
+    },
   ],
-  pointsBalance: 1250,
+  pointsBalance: 1_250,
   activeStreamers: [
     {
       id: '1',
       displayName: 'GamerPro123',
       platform: 'TWITCH',
       title: 'Ranked Valorant Grind!',
-      viewers: 1420,
+      viewers: 1_420,
+      thumbnail: 'https://images.pexels.com/photos/907221/pexels-photo-907221.jpeg?auto=compress&cs=tinysrgb&w=640',
     },
     {
       id: '2',
@@ -39,31 +39,48 @@ const MOCK_LIVE_DATA = {
       platform: 'YOUTUBE',
       title: 'Live Music Session',
       viewers: 850,
-    }
-  ]
+      thumbnail: 'https://images.pexels.com/photos/164772/pexels-photo-164772.jpeg?auto=compress&cs=tinysrgb&w=640',
+    },
+  ],
 };
 
+export type LiveStreamer = typeof MOCK_LIVE_DATA.activeStreamers[number];
+
 export default function LiveScreen() {
+  const router = useRouter();
   const [selectedPoll, setSelectedPoll] = useState<string | null>(null);
   const [showRedeemModal, setShowRedeemModal] = useState(false);
+  const [joiningStreamId, setJoiningStreamId] = useState<string | null>(null);
 
   const { data: rewards } = useQuery({
     queryKey: ['rewards'],
     queryFn: () => api.getRewards(),
-    enabled: false, // Enable when we have a selected streamer
+    enabled: false,
   });
 
   const handleVote = (pollId: string, optionId: string) => {
     console.log('Voting in poll:', pollId, 'option:', optionId);
-    // In real app, this would call api.votePoll
     setSelectedPoll(null);
   };
 
   const handleRedeem = (rewardId: string) => {
     console.log('Redeeming reward:', rewardId);
-    // In real app, this would call api.redeemReward
     setShowRedeemModal(false);
   };
+
+  const handleJoinStream = (streamer: LiveStreamer) => {
+    setJoiningStreamId(streamer.id);
+    router.push({
+      pathname: '/(tabs)/live/[streamerId]',
+      params: {
+        streamerId: streamer.id,
+        data: encodeURIComponent(JSON.stringify(streamer)),
+      },
+    } as never);
+  };
+
+  const polls = useMemo(() => MOCK_LIVE_DATA.polls, []);
+  const activeStreamers = useMemo(() => MOCK_LIVE_DATA.activeStreamers, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -73,7 +90,6 @@ export default function LiveScreen() {
           <Text style={styles.subtitle}>Engage with your favorite streamers</Text>
         </View>
 
-        {/* Points Balance */}
         <Card style={styles.pointsCard} variant="elevated">
           <View style={styles.pointsHeader}>
             <Text style={styles.pointsTitle}>Your Points</Text>
@@ -87,18 +103,21 @@ export default function LiveScreen() {
           />
         </Card>
 
-        {/* Active Streamers */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Live Now</Text>
-          {MOCK_LIVE_DATA.activeStreamers.map((streamer) => (
-            <LiveStreamerCard key={streamer.id} streamer={streamer} />
+          {activeStreamers.map((streamer) => (
+            <LiveStreamerCard
+              key={streamer.id}
+              streamer={streamer}
+              onJoin={() => handleJoinStream(streamer)}
+              isJoining={joiningStreamId === streamer.id}
+            />
           ))}
         </View>
 
-        {/* Active Polls */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Active Polls</Text>
-          {MOCK_LIVE_DATA.polls.map((poll) => (
+          {polls.map((poll) => (
             <PollCard
               key={poll.id}
               poll={poll}
@@ -107,7 +126,6 @@ export default function LiveScreen() {
           ))}
         </View>
 
-        {/* Mini Games */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Mini Games</Text>
           <Card style={styles.emptyCard}>
@@ -120,25 +138,17 @@ export default function LiveScreen() {
         </View>
       </ScrollView>
 
-      {/* Poll Voting Modal */}
-      <Modal
-        visible={selectedPoll !== null}
-        onClose={() => setSelectedPoll(null)}
-      >
+      <Modal visible={selectedPoll !== null} onClose={() => setSelectedPoll(null)}>
         {selectedPoll && (
           <PollVotingModal
-            poll={MOCK_LIVE_DATA.polls.find(p => p.id === selectedPoll)!}
+            poll={polls.find((p) => p.id === selectedPoll)!}
             onVote={handleVote}
             onClose={() => setSelectedPoll(null)}
           />
         )}
       </Modal>
 
-      {/* Redeem Modal */}
-      <Modal
-        visible={showRedeemModal}
-        onClose={() => setShowRedeemModal(false)}
-      >
+      <Modal visible={showRedeemModal} onClose={() => setShowRedeemModal(false)}>
         <RedeemModal
           pointsBalance={MOCK_LIVE_DATA.pointsBalance}
           onRedeem={handleRedeem}
@@ -149,7 +159,15 @@ export default function LiveScreen() {
   );
 }
 
-const LiveStreamerCard = ({ streamer }: { streamer: any }) => (
+const LiveStreamerCard = ({
+  streamer,
+  onJoin,
+  isJoining,
+}: {
+  streamer: LiveStreamer;
+  onJoin: () => void;
+  isJoining: boolean;
+}) => (
   <Card style={styles.streamerCard}>
     <View style={styles.streamerHeader}>
       <View style={styles.streamerInfo}>
@@ -158,9 +176,7 @@ const LiveStreamerCard = ({ streamer }: { streamer: any }) => (
         <View style={styles.streamerMeta}>
           <Badge label="LIVE" variant="error" size="small" />
           <Badge label={streamer.platform} platform={streamer.platform.toLowerCase() as any} size="small" />
-          <Text style={styles.viewerCount}>
-            {streamer.viewers.toLocaleString()} viewers
-          </Text>
+          <Text style={styles.viewerCount}>{streamer.viewers.toLocaleString()} viewers</Text>
         </View>
       </View>
     </View>
@@ -168,7 +184,9 @@ const LiveStreamerCard = ({ streamer }: { streamer: any }) => (
       title="Join Stream"
       variant="primary"
       size="small"
-      onPress={() => {}}
+      onPress={onJoin}
+      loading={isJoining}
+      disabled={isJoining}
     />
   </Card>
 );
@@ -184,13 +202,7 @@ const PollCard = ({ poll, onVote }: { poll: any; onVote: () => void }) => (
         </View>
       ))}
     </View>
-    <Button
-      title="Vote"
-      variant="outline"
-      size="small"
-      onPress={onVote}
-      style={styles.voteButton}
-    />
+    <Button title="Vote" variant="outline" size="small" onPress={onVote} style={styles.voteButton} />
   </Card>
 );
 
@@ -208,24 +220,19 @@ const PollVotingModal = ({ poll, onVote, onClose }: { poll: any; onVote: (pollId
         />
       ))}
     </View>
-    <Button
-      title="Cancel"
-      variant="ghost"
-      onPress={onClose}
-    />
+    <Button title="Cancel" variant="ghost" onPress={onClose} />
   </View>
 );
 
-const RedeemModal = ({ 
-  pointsBalance, 
-  onRedeem, 
-  onClose 
-}: { 
-  pointsBalance: number; 
-  onRedeem: (rewardId: string) => void; 
-  onClose: () => void; 
+const RedeemModal = ({
+  pointsBalance,
+  onRedeem,
+  onClose,
+}: {
+  pointsBalance: number;
+  onRedeem: (rewardId: string) => void;
+  onClose: () => void;
 }) => {
-  // Mock rewards for demo
   const mockRewards = [
     { id: '1', title: 'Shoutout', costPoints: 100, description: 'Get a shoutout on stream' },
     { id: '2', title: 'Song Request', costPoints: 50, description: 'Request a song to be played' },
@@ -235,9 +242,7 @@ const RedeemModal = ({
   return (
     <View>
       <Text style={styles.modalTitle}>Redeem Rewards</Text>
-      <Text style={styles.pointsBalanceText}>
-        Available Points: {pointsBalance.toLocaleString()}
-      </Text>
+      <Text style={styles.pointsBalanceText}>Available Points: {pointsBalance.toLocaleString()}</Text>
       <View style={styles.rewardsContainer}>
         {mockRewards.map((reward) => (
           <Card key={reward.id} style={styles.rewardCard}>
@@ -246,7 +251,7 @@ const RedeemModal = ({
             <Text style={styles.rewardCost}>{reward.costPoints} points</Text>
             <Button
               title="Redeem"
-              variant={pointsBalance >= reward.costPoints ? "primary" : "secondary"}
+              variant={pointsBalance >= reward.costPoints ? 'primary' : 'secondary'}
               disabled={pointsBalance < reward.costPoints}
               size="small"
               onPress={() => onRedeem(reward.id)}
@@ -254,11 +259,7 @@ const RedeemModal = ({
           </Card>
         ))}
       </View>
-      <Button
-        title="Close"
-        variant="ghost"
-        onPress={onClose}
-      />
+      <Button title="Close" variant="ghost" onPress={onClose} />
     </View>
   );
 };
@@ -400,6 +401,6 @@ const styles = StyleSheet.create({
   rewardCost: {
     ...theme.typography.body,
     color: theme.colors.primary,
-    marginBottom: theme.spacing.sm,
+    fontWeight: '600',
   },
 });

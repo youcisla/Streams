@@ -13,15 +13,34 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(email: string, password: string): Promise<User | null> {
-    const user = await this.prisma.user.findUnique({
-      where: { email },
+  private sanitizeUser(user: User & { passwordHash?: string | null }) {
+    const { passwordHash, ...safeUser } = user;
+    return safeUser as User;
+  }
+
+  async validateUser(loginId: string, password: string): Promise<User | null> {
+    const trimmedLogin = loginId.trim();
+    const normalizedLogin = trimmedLogin.toLowerCase();
+    const user = await this.prisma.user.findFirst({
+      where: {
+        OR: [
+          { email: trimmedLogin },
+          { email: normalizedLogin },
+          { username: normalizedLogin },
+        ],
+      },
     });
 
-    if (user && await bcrypt.compare(password, password)) {
-      return user;
+    if (!user || !user.passwordHash) {
+      return null;
     }
-    return null;
+
+    const isMatch = await bcrypt.compare(password, user.passwordHash);
+    if (!isMatch) {
+      return null;
+    }
+
+    return this.sanitizeUser(user);
   }
 
   async login(user: User) {
@@ -31,6 +50,7 @@ export class AuthService {
       user: {
         id: user.id,
         email: user.email,
+        username: user.username,
         displayName: user.displayName,
         role: user.role,
         avatarUrl: user.avatarUrl,
@@ -38,9 +58,23 @@ export class AuthService {
     };
   }
 
-  async register(email: string, password: string, displayName?: string, role: 'VIEWER' | 'STREAMER' | 'BOTH' = 'VIEWER') {
-    const existingUser = await this.prisma.user.findUnique({
-      where: { email },
+  async register(
+    email: string,
+    password: string,
+    displayName?: string,
+    role: 'VIEWER' | 'STREAMER' | 'BOTH' = 'VIEWER',
+    username?: string,
+  ) {
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedUsername = username?.trim().toLowerCase();
+
+    const existingUser = await this.prisma.user.findFirst({
+      where: {
+        OR: [
+          { email: normalizedEmail },
+          ...(normalizedUsername ? [{ username: normalizedUsername }] : []),
+        ],
+      },
     });
 
     if (existingUser) {
@@ -48,35 +82,41 @@ export class AuthService {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    
+
     const user = await this.prisma.user.create({
       data: {
-        email,
+  email: normalizedEmail,
+        username: normalizedUsername,
+        passwordHash: hashedPassword,
         displayName,
         role,
         // Create profile based on role
-        ...(role === 'STREAMER' || role === 'BOTH' ? {
-          streamerProfile: {
-            create: {
-              isPublic: true,
-            },
-          },
-        } : {}),
-        ...(role === 'VIEWER' || role === 'BOTH' ? {
-          viewerProfile: {
-            create: {
-              preferences: {
-                notifications: true,
-                theme: 'dark',
+        ...(role === 'STREAMER' || role === 'BOTH'
+          ? {
+              streamerProfile: {
+                create: {
+                  isPublic: true,
+                },
               },
-            },
-          },
-        } : {}),
+            }
+          : {}),
+        ...(role === 'VIEWER' || role === 'BOTH'
+          ? {
+              viewerProfile: {
+                create: {
+                  preferences: {
+                    notifications: true,
+                    theme: 'dark',
+                  },
+                },
+              },
+            }
+          : {}),
       },
     });
 
     this.logger.log(`New user registered: ${email} with role ${role}`);
-    return this.login(user);
+    return this.login(this.sanitizeUser(user));
   }
 
   async googleLogin(profile: any) {
@@ -85,9 +125,13 @@ export class AuthService {
     });
 
     if (!user) {
+      const generatedUsername = profile.email
+        ? profile.email.split('@')[0].toLowerCase()
+        : undefined;
       user = await this.prisma.user.create({
         data: {
-          email: profile.email,
+          email: profile.email?.toLowerCase(),
+          username: generatedUsername,
           displayName: profile.displayName,
           avatarUrl: profile.picture,
           role: 'VIEWER',
@@ -124,6 +168,6 @@ export class AuthService {
       },
     });
 
-    return this.login(user);
+    return this.login(this.sanitizeUser(user));
   }
 }

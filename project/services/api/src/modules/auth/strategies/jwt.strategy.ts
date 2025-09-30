@@ -1,8 +1,8 @@
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../common/prisma/prisma.service';
+import { PassportStrategy } from '@nestjs/passport';
 import { config } from '@streamlink/config';
+import { ExtractJwt, Strategy } from 'passport-jwt';
+import { PrismaService } from '../../../common/prisma/prisma.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -22,6 +22,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         viewerProfile: true,
       },
     });
-    return user;
+    if (!user) {
+      return null;
+    }
+
+    const { passwordHash, ...safeUser } = user as typeof user & { passwordHash?: string | null };
+    return safeUser;
   }
 }

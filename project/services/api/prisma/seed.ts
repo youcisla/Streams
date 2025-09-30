@@ -11,9 +11,14 @@ async function main() {
   
   const streamer = await prisma.user.upsert({
     where: { email: 'streamer@example.com' },
-    update: {},
+    update: {
+      username: 'demostreamer',
+      passwordHash: hashedPassword,
+    },
     create: {
       email: 'streamer@example.com',
+      username: 'demostreamer',
+      passwordHash: hashedPassword,
       role: Role.STREAMER,
       displayName: 'Demo Streamer',
       avatarUrl: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=200',
@@ -38,9 +43,14 @@ async function main() {
   for (let i = 1; i <= 50; i++) {
     const viewer = await prisma.user.upsert({
       where: { email: `viewer${i}@example.com` },
-      update: {},
+      update: {
+        username: `viewer${i}`,
+        passwordHash: hashedPassword,
+      },
       create: {
         email: `viewer${i}@example.com`,
+        username: `viewer${i}`,
+        passwordHash: hashedPassword,
         role: Role.VIEWER,
         displayName: `Demo Viewer ${i}`,
         avatarUrl: `https://images.pexels.com/photos/${220450 + i}/pexels-photo-${220450 + i}.jpeg?auto=compress&cs=tinysrgb&w=200`,

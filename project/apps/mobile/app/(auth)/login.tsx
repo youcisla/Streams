@@ -1,32 +1,32 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { Button, Card, Input, theme } from '@streamlink/ui';
 import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button, Input, Card } from '@streamlink/ui';
-import { theme } from '@streamlink/ui';
-import { useAuthStore } from '../../src/store/auth';
 import { api } from '../../src/services/api';
+import { useAuthStore } from '../../src/store/auth';
 
 export default function LoginScreen() {
   const router = useRouter();
   const { login } = useAuthStore();
-  const [email, setEmail] = useState('');
+  const [loginId, setLoginId] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      Alert.alert('Error', 'Please fill in all fields');
+    if (!loginId.trim() || !password) {
+      Alert.alert('Error', 'Please enter your email or username and password.');
       return;
     }
 
     setIsLoading(true);
     try {
-      const response = await api.login(email, password);
+      const response = await api.login({ loginId: loginId.trim(), password });
       await login(response.user, response.access_token);
       router.replace('/(tabs)');
     } catch (error) {
-      Alert.alert('Login Failed', error.message || 'Invalid email or password');
+      const message = error instanceof Error ? error.message : 'Invalid credentials. Please try again.';
+      Alert.alert('Login Failed', message);
     } finally {
       setIsLoading(false);
     }
@@ -42,12 +42,12 @@ export default function LoginScreen() {
 
         <Card style={styles.formCard}>
           <Input
-            label="Email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
+            label="Email or Username"
+            value={loginId}
+            onChangeText={setLoginId}
             autoCapitalize="none"
             autoCorrect={false}
+            placeholder="you@example.com or yourhandle"
           />
 
           <Input

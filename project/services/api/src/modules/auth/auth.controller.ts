@@ -1,8 +1,8 @@
-import { Controller, Post, Body, UseGuards, Get, Req } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Body, Controller, Get, Post, Req, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { AuthService } from './auth.service';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Public } from '../../common/decorators/public.decorator';
+import { AuthService } from './auth.service';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -13,18 +13,33 @@ export class AuthController {
   @Post('register')
   @ApiOperation({ summary: 'Register a new user' })
   @ApiResponse({ status: 201, description: 'User registered successfully' })
-  async register(@Body() body: { email: string; password: string; displayName?: string; role?: 'VIEWER' | 'STREAMER' | 'BOTH' }) {
-    return this.authService.register(body.email, body.password, body.displayName, body.role);
+  async register(
+    @Body()
+    body: {
+      email: string;
+      password: string;
+      displayName?: string;
+      role?: 'VIEWER' | 'STREAMER' | 'BOTH';
+      username?: string;
+    },
+  ) {
+    return this.authService.register(
+      body.email,
+      body.password,
+      body.displayName,
+      body.role,
+      body.username,
+    );
   }
 
   @Public()
   @Post('login')
-  @ApiOperation({ summary: 'Login with email and password' })
+  @ApiOperation({ summary: 'Login with email or username and password' })
   @ApiResponse({ status: 200, description: 'Login successful' })
-  async login(@Body() body: { email: string; password: string }) {
-    const user = await this.authService.validateUser(body.email, body.password);
+  async login(@Body() body: { loginId: string; password: string }) {
+    const user = await this.authService.validateUser(body.loginId, body.password);
     if (!user) {
-      throw new Error('Invalid credentials');
+      throw new UnauthorizedException('Invalid credentials');
     }
     return this.authService.login(user);
   }

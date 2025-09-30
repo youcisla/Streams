@@ -3,14 +3,14 @@ import { Platform } from 'react-native';
 
 import { useAuthStore } from '../store/auth';
 import {
-  Follow,
-  LoginResponse,
-  Order,
-  Poll,
-  Product,
-  Redemption,
-  Reward,
-  StreamerProfile,
+    Follow,
+    LoginResponse,
+    Order,
+    Poll,
+    Product,
+    Redemption,
+    Reward,
+    StreamerProfile,
 } from '../types/api';
 
 const API_PATH = '/api/v1';
@@ -116,17 +116,25 @@ class ApiService {
   }
 
   // Auth
-  async login(email: string, password: string): Promise<LoginResponse> {
+  async login(payload: { loginId: string; password: string }): Promise<LoginResponse> {
+    const { loginId, password } = payload;
     return this.request('/auth/login', {
       method: 'POST',
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ loginId, password }),
     });
   }
 
-  async register(email: string, password: string, displayName?: string, role?: 'VIEWER' | 'STREAMER' | 'BOTH'): Promise<LoginResponse> {
+  async register(payload: {
+    email: string;
+    password: string;
+    displayName?: string;
+    role?: 'VIEWER' | 'STREAMER' | 'BOTH';
+    username?: string;
+  }): Promise<LoginResponse> {
+    const { email, password, displayName, role, username } = payload;
     return this.request('/auth/register', {
       method: 'POST',
-      body: JSON.stringify({ email, password, displayName, role }),
+      body: JSON.stringify({ email, password, displayName, role, username }),
     });
   }
 

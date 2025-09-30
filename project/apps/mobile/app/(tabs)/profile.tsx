@@ -1,15 +1,23 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import { Card, Button, Badge } from '@streamlink/ui';
-import { theme } from '@streamlink/ui';
-import { useAuthStore } from '../../src/store/auth';
 import { Ionicons } from '@expo/vector-icons';
+import { Badge, Button, Card, theme } from '@streamlink/ui';
+import { useRouter } from 'expo-router';
+import React, { useCallback } from 'react';
+import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import type { IoniconName, ProfileSection } from '../../src/features/profile/sections';
+import { useAuthStore } from '../../src/store/auth';
 
 export default function ProfileScreen() {
   const router = useRouter();
   const { user, logout } = useAuthStore();
+
+  const navigateToSection = useCallback(
+    (section: ProfileSection) => {
+      const href = `/(tabs)/profile/${section}` as const;
+      router.push(href as never);
+    },
+    [router]
+  );
 
   const handleLogout = () => {
     Alert.alert(
@@ -73,7 +81,7 @@ export default function ProfileScreen() {
             title="Edit Profile"
             variant="outline"
             size="small"
-            onPress={() => {}}
+            onPress={() => navigateToSection('edit')}
           />
         </Card>
 
@@ -85,21 +93,21 @@ export default function ProfileScreen() {
             icon="notifications"
             title="Notifications"
             description="Manage your notification preferences"
-            onPress={() => {}}
+            onPress={() => navigateToSection('notifications')}
           />
           
           <SettingsItem
             icon="link"
             title="Linked Accounts"
             description="Connect your streaming platforms"
-            onPress={() => {}}
+            onPress={() => navigateToSection('linked-accounts')}
           />
           
           <SettingsItem
             icon="shield-checkmark"
             title="Privacy & Security"
             description="Manage your privacy settings"
-            onPress={() => {}}
+            onPress={() => navigateToSection('privacy-security')}
           />
         </View>
 
@@ -111,21 +119,21 @@ export default function ProfileScreen() {
             icon="color-palette"
             title="Theme"
             description="Dark theme (default)"
-            onPress={() => {}}
+            onPress={() => navigateToSection('theme')}
           />
           
           <SettingsItem
             icon="language"
             title="Language"
             description="English"
-            onPress={() => {}}
+            onPress={() => navigateToSection('language')}
           />
           
           <SettingsItem
             icon="help-circle"
             title="Help & Support"
             description="Get help and contact support"
-            onPress={() => {}}
+            onPress={() => navigateToSection('help-support')}
           />
         </View>
 
@@ -137,21 +145,21 @@ export default function ProfileScreen() {
             icon="download"
             title="Export Data"
             description="Download your account data"
-            onPress={() => {}}
+            onPress={() => navigateToSection('export-data')}
           />
           
           <SettingsItem
             icon="document-text"
             title="Privacy Policy"
             description="Read our privacy policy"
-            onPress={() => {}}
+            onPress={() => navigateToSection('privacy-policy')}
           />
           
           <SettingsItem
             icon="document"
             title="Terms of Service"
             description="Read our terms of service"
-            onPress={() => {}}
+            onPress={() => navigateToSection('terms-of-service')}
           />
         </View>
 
@@ -183,16 +191,16 @@ export default function ProfileScreen() {
   );
 }
 
-const SettingsItem = ({ 
-  icon, 
-  title, 
-  description, 
-  onPress 
-}: { 
-  icon: string; 
-  title: string; 
-  description: string; 
-  onPress: () => void; 
+const SettingsItem = ({
+  icon,
+  title,
+  description,
+  onPress,
+}: {
+  icon: IoniconName;
+  title: string;
+  description: string;
+  onPress: () => void;
 }) => (
   <Button
     title=""
@@ -201,7 +209,7 @@ const SettingsItem = ({
     style={styles.settingsItem}
   >
     <View style={styles.settingsItemContent}>
-      <Ionicons name={icon as any} size={24} color={theme.colors.textSecondary} />
+      <Ionicons name={icon} size={24} color={theme.colors.textSecondary} />
       <View style={styles.settingsItemText}>
         <Text style={styles.settingsItemTitle}>{title}</Text>
         <Text style={styles.settingsItemDescription}>{description}</Text>

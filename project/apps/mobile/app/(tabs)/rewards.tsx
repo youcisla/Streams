@@ -1,8 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Badge, Button, Card, EmptyState, theme } from '@streamlink/ui';
+import { Badge, Button, Card, EmptyState, Modal, theme } from '@streamlink/ui';
 import { useQuery } from '@tanstack/react-query';
 import type { ComponentProps } from 'react';
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { api } from '../../src/services/api';
@@ -29,6 +29,7 @@ const normalizeRedemptions = (value: unknown): Redemption[] => {
 };
 
 export default function RewardsScreen() {
+  const [isExploreOpen, setIsExploreOpen] = useState(false);
   const { data: redemptions, isLoading } = useQuery({
     queryKey: ['redemptions'],
     queryFn: () => api.getRedemptions(),
@@ -39,13 +40,19 @@ export default function RewardsScreen() {
     queryFn: () => api.getPointsBalance(),
   });
 
-  const normalizedRedemptions = React.useMemo(
+  const { data: availableRewards } = useQuery({
+    queryKey: ['available-rewards'],
+    queryFn: () => api.getRewards(),
+  });
+
+  const normalizedRedemptions = useMemo(
     () => normalizeRedemptions(redemptions),
     [redemptions]
   );
 
   const pendingRedemptions = normalizedRedemptions.filter((redemption) => redemption.status === 'PENDING');
   const completedRedemptions = normalizedRedemptions.filter((redemption) => redemption.status === 'FULFILLED');
+  const rewardsList = availableRewards ?? [];
 
   if (isLoading) {
     return (
@@ -118,7 +125,7 @@ export default function RewardsScreen() {
                     title="Explore Rewards"
                     variant="outline"
                     size="small"
-                    onPress={() => {}}
+                    onPress={() => setIsExploreOpen(true)}
                   />
                 }
               />
@@ -157,6 +164,30 @@ export default function RewardsScreen() {
           </View>
         </Card>
       </ScrollView>
+
+      <Modal visible={isExploreOpen} onClose={() => setIsExploreOpen(false)}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalHeading}>Available Rewards</Text>
+          {rewardsList.length > 0 ? (
+            rewardsList.map((reward) => (
+              <Card key={reward.id} style={styles.rewardItem}>
+                <Text style={styles.rewardItemTitle}>{reward.title}</Text>
+                {reward.description && (
+                  <Text style={styles.rewardItemDescription}>{reward.description}</Text>
+                )}
+                <Text style={styles.rewardItemCost}>{reward.costPoints.toLocaleString()} pts</Text>
+              </Card>
+            ))
+          ) : (
+            <EmptyState
+              title="No rewards yet"
+              description="Rewards will appear here once streamers add them."
+              icon={<Ionicons name="gift-outline" size={48} color={theme.colors.textMuted} />}
+            />
+          )}
+          <Button title="Close" variant="ghost" onPress={() => setIsExploreOpen(false)} />
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -350,6 +381,30 @@ const styles = StyleSheet.create({
   earnMethodPoints: {
     ...theme.typography.bodySmall,
     color: theme.colors.success,
+    fontWeight: '600',
+  },
+  modalContent: {
+    gap: theme.spacing.md,
+    padding: theme.spacing.lg,
+  },
+  modalHeading: {
+    ...theme.typography.h4,
+    textAlign: 'center',
+  },
+  rewardItem: {
+    gap: theme.spacing.xs,
+  },
+  rewardItemTitle: {
+    ...theme.typography.body,
+    fontWeight: '600',
+  },
+  rewardItemDescription: {
+    ...theme.typography.bodySmall,
+    color: theme.colors.textSecondary,
+  },
+  rewardItemCost: {
+    ...theme.typography.caption,
+    color: theme.colors.primary,
     fontWeight: '600',
   },
 });
