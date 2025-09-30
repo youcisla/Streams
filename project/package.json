@@ -8,6 +8,9 @@
     "packages/*",
     "services/*"
   ],
+  "dependencies": {
+    "lucide-react": "^0.470.0"
+  },
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",

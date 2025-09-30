@@ -4,12 +4,12 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "build": "pnpm exec expo build",
-    "dev": "pnpm exec expo start --clear",
-    "start": "pnpm exec expo start",
-    "android": "pnpm exec expo start --android",
-    "ios": "pnpm exec expo start --ios",
-    "web": "pnpm exec expo start --web",
+  "build": "pnpm exec expo build",
+  "dev": "pnpm exec expo start --offline --clear",
+  "start": "pnpm exec expo start --offline",
+  "android": "pnpm exec expo start --offline --android",
+  "ios": "pnpm exec expo start --offline --ios",
+  "web": "pnpm exec expo start --offline --web",
     "lint": "eslint \"{src,app}/**/*.{ts,tsx}\" --fix",
     "test": "jest",
     "clean": "if exist .expo rmdir /s /q .expo"

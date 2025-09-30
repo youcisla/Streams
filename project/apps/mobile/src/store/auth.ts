@@ -1,6 +1,11 @@
-import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { create } from 'zustand';
 import { User } from '../types/api';
+
+const STORAGE_KEYS = {
+  token: 'auth_token',
+  user: 'user',
+} as const;
 
 interface AuthState {
   user: User | null;
@@ -15,7 +20,7 @@ interface AuthState {
   initialize: () => Promise<void>;
 }
 
-export const useAuthStore = create<AuthState>((set, get) => ({
+export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   token: null,
   isLoading: true,
@@ -26,28 +31,53 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   setLoading: (isLoading) => set({ isLoading }),
 
   login: async (user, token) => {
-    await AsyncStorage.setItem('auth_token', token);
-    await AsyncStorage.setItem('user', JSON.stringify(user));
+    await AsyncStorage.multiSet([
+      [STORAGE_KEYS.token, token],
+      [STORAGE_KEYS.user, JSON.stringify(user)],
+    ]);
     set({ user, token, isAuthenticated: true });
   },
 
   logout: async () => {
-    await AsyncStorage.removeItem('auth_token');
-    await AsyncStorage.removeItem('user');
+    await AsyncStorage.multiRemove([STORAGE_KEYS.token, STORAGE_KEYS.user]);
     set({ user: null, token: null, isAuthenticated: false });
   },
 
   initialize: async () => {
     try {
-      const token = await AsyncStorage.getItem('auth_token');
-      const userJson = await AsyncStorage.getItem('user');
-      
-      if (token && userJson) {
-        const user = JSON.parse(userJson);
-        set({ user, token, isAuthenticated: true });
+      const [storedToken, storedUser] = await Promise.all([
+        AsyncStorage.getItem(STORAGE_KEYS.token),
+        AsyncStorage.getItem(STORAGE_KEYS.user),
+      ]);
+
+      let token: string | null = null;
+      let user: User | null = null;
+
+      if (storedToken && storedToken !== 'undefined' && storedToken !== 'null' && storedToken.trim() !== '') {
+        token = storedToken;
+      } else if (storedToken) {
+        await AsyncStorage.removeItem(STORAGE_KEYS.token);
       }
+
+      if (storedUser && storedUser !== 'undefined' && storedUser !== 'null') {
+        try {
+          user = JSON.parse(storedUser) as User;
+        } catch (parseError) {
+          console.warn('[AuthStore] Failed to parse stored user. Clearing persisted value.', parseError);
+          await AsyncStorage.removeItem(STORAGE_KEYS.user);
+        }
+      } else if (storedUser) {
+        await AsyncStorage.removeItem(STORAGE_KEYS.user);
+      }
+
+      set({
+        user,
+        token,
+        isAuthenticated: Boolean(user && token),
+      });
     } catch (error) {
       console.error('Error initializing auth:', error);
+      set({ user: null, token: null, isAuthenticated: false });
     } finally {
       set({ isLoading: false });
     }

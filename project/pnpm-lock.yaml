@@ -23,6 +23,10 @@ packageExtensionsChecksum: 948d4037fcdbea65ccd067de6464f717
 importers:
 
   .:
+    dependencies:
+      lucide-react:
+        specifier: ^0.470.0
+        version: 0.470.0(react@19.1.0)
     devDependencies:
       '@types/node':
         specifier: ^20.0.0
@@ -9767,6 +9771,14 @@ packages:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
     dependencies:
       yallist: 3.1.1
+
+  /lucide-react@0.470.0(react@19.1.0):
+    resolution: {integrity: sha512-tqYODeoB3qU5gxH33IbL7IcF05EYYzsZQJqdM9HGGHwmoJMPvVLPHO6Plu6HNAfntucZQ41taEw6aUpwOtaoXg==}
+    peerDependencies:
+      react: 19.1.0 || 19
+    dependencies:
+      react: 19.1.0
+    dev: false
 
   /luxon@3.5.0:
     resolution: {integrity: sha512-rh+Zjr6DNfUYR3bPwJEnuwDdqMbxZW7LOQfUN4B54+Cl+0o5zaU9RJ6bcidfDtC1cWCZXQ+nvX8bf6bAji37QQ==}

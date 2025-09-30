@@ -1,11 +1,32 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useQuery } from '@tanstack/react-query';
-import { Card, Button, Badge, EmptyState } from '@streamlink/ui';
-import { theme } from '@streamlink/ui';
-import { api } from '../../src/services/api';
 import { Ionicons } from '@expo/vector-icons';
+import { Badge, Button, Card, EmptyState, theme } from '@streamlink/ui';
+import { useQuery } from '@tanstack/react-query';
+import type { ComponentProps } from 'react';
+import React from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { api } from '../../src/services/api';
+import type { Redemption } from '../../src/types/api';
+
+const normalizeRedemptions = (value: unknown): Redemption[] => {
+  if (Array.isArray(value)) {
+    return value;
+  }
+
+  if (value && typeof value === 'object') {
+    const { data, items } = value as { data?: unknown; items?: unknown };
+
+    if (Array.isArray(data)) {
+      return data;
+    }
+
+    if (Array.isArray(items)) {
+      return items;
+    }
+  }
+
+  return [];
+};
 
 export default function RewardsScreen() {
   const { data: redemptions, isLoading } = useQuery({
@@ -18,8 +39,23 @@ export default function RewardsScreen() {
     queryFn: () => api.getPointsBalance(),
   });
 
-  const pendingRedemptions = redemptions?.filter(r => r.status === 'PENDING') || [];
-  const completedRedemptions = redemptions?.filter(r => r.status === 'FULFILLED') || [];
+  const normalizedRedemptions = React.useMemo(
+    () => normalizeRedemptions(redemptions),
+    [redemptions]
+  );
+
+  const pendingRedemptions = normalizedRedemptions.filter((redemption) => redemption.status === 'PENDING');
+  const completedRedemptions = normalizedRedemptions.filter((redemption) => redemption.status === 'FULFILLED');
+
+  if (isLoading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loadingState}>
+          <Text style={styles.loadingText}>Loading rewards...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -125,7 +161,7 @@ export default function RewardsScreen() {
   );
 }
 
-const RedemptionCard = ({ redemption }: { redemption: any }) => (
+const RedemptionCard = ({ redemption }: { redemption: Redemption }) => (
   <Card style={styles.redemptionCard}>
     <View style={styles.redemptionHeader}>
       <View style={styles.redemptionInfo}>
@@ -156,19 +192,21 @@ const RedemptionCard = ({ redemption }: { redemption: any }) => (
   </Card>
 );
 
+type IoniconName = ComponentProps<typeof Ionicons>['name'];
+
 const EarnMethod = ({ 
   icon, 
   title, 
   description, 
   points 
 }: { 
-  icon: string; 
+  icon: IoniconName; 
   title: string; 
   description: string; 
   points: string; 
 }) => (
   <View style={styles.earnMethod}>
-    <Ionicons name={icon as any} size={24} color={theme.colors.primary} />
+    <Ionicons name={icon} size={24} color={theme.colors.primary} />
     <View style={styles.earnMethodInfo}>
       <Text style={styles.earnMethodTitle}>{title}</Text>
       <Text style={styles.earnMethodDescription}>{description}</Text>
@@ -223,6 +261,17 @@ const styles = StyleSheet.create({
   pointsBalance: {
     ...theme.typography.h2,
     color: theme.colors.primary,
+  },
+  loadingState: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: theme.spacing.lg,
+    backgroundColor: theme.colors.background,
+  },
+  loadingText: {
+    ...theme.typography.body,
+    color: theme.colors.textSecondary,
   },
   pointsDescription: {
     ...theme.typography.bodySmall,
