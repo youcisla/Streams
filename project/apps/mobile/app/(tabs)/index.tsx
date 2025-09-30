@@ -15,6 +15,7 @@ import { TrendingStreamCard } from '../../src/components/streams/TrendingStreamC
 import { TrendingStreamSkeleton } from '../../src/components/streams/TrendingStreamSkeleton';
 import { toBadgePlatform } from '../../src/constants/platforms';
 import { useInfiniteTrendingStreams } from '../../src/hooks/useInfiniteTrendingStreams';
+import { useTrendingFilters, type CategoryFilter, type PlatformFilter } from '../../src/hooks/useTrendingFilters';
 import { formatDate, t } from '../../src/lib/i18n/index';
 import { api } from '../../src/services/api';
 import { useAuthStore } from '../../src/store/auth';
@@ -27,7 +28,7 @@ type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
 const TRENDING_SKELETON_COUNT = 3;
 
-type PlatformFilter = 'ALL' | StreamPlatform;
+type PlatformCategoriesMap = Partial<Record<PlatformFilter, string[]>>;
 
 const PLATFORM_FILTER_OPTIONS: Array<{ label: string; value: PlatformFilter; icon: IoniconName }> = [
   { label: 'All', value: 'ALL', icon: 'earth' },
@@ -40,7 +41,10 @@ export default function HomeScreen() {
   const { user } = useAuthStore();
   const isStreamer = user?.role === 'STREAMER' || user?.role === 'BOTH';
   const isViewer = user?.role === 'VIEWER' || user?.role === 'BOTH';
-  const [selectedPlatform, setSelectedPlatform] = useState<PlatformFilter>('ALL');
+  const { filters, updateFilters, resetFilters, hydrated } = useTrendingFilters();
+  const selectedPlatform = filters.platform;
+  const selectedCategory = filters.category;
+  const [categoriesByPlatform, setCategoriesByPlatform] = useState<PlatformCategoriesMap>({});
   const flatListRef = useRef<FlatList<TrendingStream> | null>(null);
 
   const {
@@ -71,6 +75,8 @@ export default function HomeScreen() {
   const trendingQuery = useInfiniteTrendingStreams({
     limit: 10,
     platforms: platformsFilter,
+    category: selectedCategory === 'ALL' ? undefined : selectedCategory,
+    enabled: hydrated,
   });
   const {
     data: trendingData,
@@ -142,23 +148,83 @@ export default function HomeScreen() {
     void handleRefresh();
   }, [handleRefresh]);
 
-  const isRefreshing = trendingRefetching || followingLoading || statsLoading;
-
   const handleLoadMore = useCallback(() => {
     if (hasNextPage && !isFetchingNextPage) {
       void fetchNextPage();
     }
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
+  const handleSelectPlatform = useCallback((value: PlatformFilter) => {
+    updateFilters({ platform: value, category: 'ALL' });
+  }, [updateFilters]);
+
+  const handleSelectCategory = useCallback((value: CategoryFilter) => {
+    updateFilters({ category: value });
+  }, [updateFilters]);
+
+  const isTrendingLoading = !hydrated || trendingLoading;
+  const isRefreshing = trendingRefetching || followingLoading || statsLoading;
+
+  const handleResetFilters = useCallback(() => {
+    resetFilters();
+  }, [resetFilters]);
+
   useEffect(() => {
     if (flatListRef.current) {
       flatListRef.current.scrollToOffset({ offset: 0, animated: true });
     }
-  }, [selectedPlatform]);
+  }, [selectedPlatform, selectedCategory]);
+
+  useEffect(() => {
+    const categoryNames = Array.from(
+      new Set(
+        (trendingData?.pages ?? [])
+          .flatMap((page) => page.items)
+          .map((item) => item.category)
+          .filter((value): value is string => Boolean(value && value.trim().length > 0))
+          .map((value) => value.trim()),
+      ),
+    );
+
+    if (categoryNames.length === 0) {
+      return;
+    }
+
+    setCategoriesByPlatform((prev) => {
+      const existing = prev[selectedPlatform] ?? [];
+      const merged = Array.from(new Set([...existing, ...categoryNames]));
+
+      const isSameLength = merged.length === existing.length;
+      const isSameOrder = isSameLength && merged.every((value, index) => value === existing[index]);
+
+      if (isSameLength && isSameOrder) {
+        return prev;
+      }
+
+      const sorted = merged.slice().sort((a, b) => a.localeCompare(b));
+
+      return {
+        ...prev,
+        [selectedPlatform]: sorted,
+      };
+    });
+  }, [selectedPlatform, trendingData]);
 
   const activePlatformLabel = useMemo(() => {
     return PLATFORM_FILTER_OPTIONS.find((option) => option.value === selectedPlatform)?.label ?? 'All';
   }, [selectedPlatform]);
+
+  const availableCategories = useMemo(() => categoriesByPlatform[selectedPlatform] ?? [], [categoriesByPlatform, selectedPlatform]);
+
+  useEffect(() => {
+    if (selectedCategory === 'ALL') {
+      return;
+    }
+
+    if (!availableCategories.includes(selectedCategory)) {
+      updateFilters({ category: 'ALL' });
+    }
+  }, [availableCategories, selectedCategory, updateFilters]);
 
   const headerComponent = useMemo(
     () => (
@@ -231,10 +297,23 @@ export default function HomeScreen() {
                 label={option.label}
                 icon={option.icon}
                 selected={option.value === selectedPlatform}
-                onPress={() => setSelectedPlatform(option.value)}
+                onPress={() => handleSelectPlatform(option.value)}
               />
             ))}
           </View>
+          {availableCategories.length > 0 && (
+            <View style={styles.categoryRow}>
+              {["ALL", ...availableCategories].map((category) => (
+                <FilterChip
+                  key={category === 'ALL' ? 'ALL_CATEGORIES' : category}
+                  label={category === 'ALL' ? 'All topics' : category}
+                  icon={category === 'ALL' ? 'albums' : 'pricetag'}
+                  selected={selectedCategory === category}
+                  onPress={() => handleSelectCategory(category as CategoryFilter)}
+                />
+              ))}
+            </View>
+          )}
         </View>
       </View>
     ),
@@ -250,11 +329,15 @@ export default function HomeScreen() {
       liveStreamers,
       upcomingStreamers,
       selectedPlatform,
+      selectedCategory,
+      availableCategories,
+      handleSelectCategory,
+      handleSelectPlatform,
     ],
   );
 
   const emptyComponent = useMemo(() => {
-    if (trendingLoading) {
+    if (isTrendingLoading) {
       return (
         <View style={styles.skeletonContainer}>
           {Array.from({ length: TRENDING_SKELETON_COUNT }).map((_, index) => (
@@ -264,7 +347,7 @@ export default function HomeScreen() {
       );
     }
 
-    if (trendingError) {
+    if (hydrated && trendingError) {
       return (
         <Card style={styles.emptyCard}>
           <EmptyState
@@ -279,27 +362,32 @@ export default function HomeScreen() {
       );
     }
 
-    const title =
-      selectedPlatform === 'ALL'
-        ? 'No trending streams right now'
-        : `No ${activePlatformLabel} streams trending right now`;
+    const isPlatformFiltered = selectedPlatform !== 'ALL';
+    const isCategoryFiltered = selectedCategory !== 'ALL';
 
-    const description =
-      selectedPlatform === 'ALL'
-        ? 'Check back soon to see who goes live next.'
-        : 'Try a different platform or reset your filters.';
+    const platformSegment = isPlatformFiltered ? `${activePlatformLabel} ` : '';
+    const categorySegment = isCategoryFiltered ? `${selectedCategory} ` : '';
 
-    const action =
-      selectedPlatform === 'ALL'
-        ? undefined
-        : (
-            <Button
-              title="Reset filters"
-              variant="outline"
-              size="small"
-              onPress={() => setSelectedPlatform('ALL')}
-            />
-          );
+    const title = isPlatformFiltered || isCategoryFiltered
+      ? `No ${platformSegment}${categorySegment}streams trending right now`
+      : 'No trending streams right now';
+
+    const description = isPlatformFiltered || isCategoryFiltered
+      ? 'Try a different filter combination or reset to see more streams.'
+      : 'Check back soon to see who goes live next.';
+
+    const shouldShowReset = isPlatformFiltered || isCategoryFiltered;
+
+    const action = shouldShowReset
+      ? (
+          <Button
+            title="Reset filters"
+            variant="outline"
+            size="small"
+            onPress={handleResetFilters}
+          />
+        )
+      : undefined;
 
     return (
       <Card style={styles.emptyCard}>
@@ -311,9 +399,13 @@ export default function HomeScreen() {
         />
       </Card>
     );
-  }, [activePlatformLabel, refetchTrending, selectedPlatform, trendingError, trendingLoading]);
+  }, [activePlatformLabel, handleResetFilters, hydrated, isTrendingLoading, refetchTrending, selectedCategory, selectedPlatform, trendingError]);
 
   const footerComponent = useMemo(() => {
+    if (!hydrated) {
+      return <View style={styles.footerSpacer} />;
+    }
+
     if (isFetchingNextPage) {
       return (
         <View style={styles.footerLoader}>
@@ -331,7 +423,7 @@ export default function HomeScreen() {
     }
 
     return <View style={styles.footerSpacer} />;
-  }, [hasNextPage, isFetchingNextPage, trendingStreams.length]);
+  }, [hasNextPage, hydrated, isFetchingNextPage, trendingStreams.length]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -522,6 +614,12 @@ const styles = StyleSheet.create({
     gap: theme.spacing.xs,
   },
   filterRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: theme.spacing.sm,
+    marginTop: theme.spacing.sm,
+  },
+  categoryRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: theme.spacing.sm,

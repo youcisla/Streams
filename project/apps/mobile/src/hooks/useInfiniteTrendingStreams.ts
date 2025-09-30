@@ -6,6 +6,7 @@ export interface UseTrendingStreamsOptions {
   limit?: number;
   category?: string;
   platforms?: StreamPlatform[];
+  enabled?: boolean;
 }
 
 interface PageResponse {
@@ -18,7 +19,7 @@ interface PageResponse {
 }
 
 export const useInfiniteTrendingStreams = (options: UseTrendingStreamsOptions = {}) => {
-  const { limit = 10, category, platforms } = options;
+  const { limit = 10, category, platforms, enabled = true } = options;
 
   const queryKey = [
     'trending-streams',
@@ -43,5 +44,6 @@ export const useInfiniteTrendingStreams = (options: UseTrendingStreamsOptions = 
     select: (data) => data,
     staleTime: 15 * 1000,
     refetchOnWindowFocus: false,
+    enabled,
   });
 };
