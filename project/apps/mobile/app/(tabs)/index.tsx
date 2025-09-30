@@ -1,10 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Badge, Button, Card, EmptyState, theme } from '@streamlink/ui';
 import { useQuery } from '@tanstack/react-query';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
     ActivityIndicator,
     FlatList,
+    Pressable,
     StyleSheet,
     Text,
     View,
@@ -17,7 +18,7 @@ import { useInfiniteTrendingStreams } from '../../src/hooks/useInfiniteTrendingS
 import { formatDate, t } from '../../src/lib/i18n/index';
 import { api } from '../../src/services/api';
 import { useAuthStore } from '../../src/store/auth';
-import type { DashboardStats, Follow, TrendingStream } from '../../src/types/api';
+import type { DashboardStats, Follow, StreamPlatform, TrendingStream } from '../../src/types/api';
 import { formatRelativeTimeFromNow } from '../../src/utils/date';
 import { formatCompactNumber } from '../../src/utils/number';
 import { sanitizeName } from '../../src/utils/text';
@@ -26,10 +27,21 @@ type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
 const TRENDING_SKELETON_COUNT = 3;
 
+type PlatformFilter = 'ALL' | StreamPlatform;
+
+const PLATFORM_FILTER_OPTIONS: Array<{ label: string; value: PlatformFilter; icon: IoniconName }> = [
+  { label: 'All', value: 'ALL', icon: 'earth' },
+  { label: 'Twitch', value: 'TWITCH', icon: 'logo-twitch' },
+  { label: 'YouTube', value: 'YOUTUBE', icon: 'logo-youtube' },
+  { label: 'Kick', value: 'KICK', icon: 'flash' },
+];
+
 export default function HomeScreen() {
   const { user } = useAuthStore();
   const isStreamer = user?.role === 'STREAMER' || user?.role === 'BOTH';
   const isViewer = user?.role === 'VIEWER' || user?.role === 'BOTH';
+  const [selectedPlatform, setSelectedPlatform] = useState<PlatformFilter>('ALL');
+  const flatListRef = useRef<FlatList<TrendingStream> | null>(null);
 
   const {
     data: following,
@@ -51,7 +63,15 @@ export default function HomeScreen() {
     enabled: isStreamer,
   });
 
-  const trendingQuery = useInfiniteTrendingStreams({ limit: 10 });
+  const platformsFilter = useMemo<StreamPlatform[] | undefined>(
+    () => (selectedPlatform === 'ALL' ? undefined : [selectedPlatform]),
+    [selectedPlatform],
+  );
+
+  const trendingQuery = useInfiniteTrendingStreams({
+    limit: 10,
+    platforms: platformsFilter,
+  });
   const {
     data: trendingData,
     isLoading: trendingLoading,
@@ -130,6 +150,16 @@ export default function HomeScreen() {
     }
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
+  useEffect(() => {
+    if (flatListRef.current) {
+      flatListRef.current.scrollToOffset({ offset: 0, animated: true });
+    }
+  }, [selectedPlatform]);
+
+  const activePlatformLabel = useMemo(() => {
+    return PLATFORM_FILTER_OPTIONS.find((option) => option.value === selectedPlatform)?.label ?? 'All';
+  }, [selectedPlatform]);
+
   const headerComponent = useMemo(
     () => (
       <View style={styles.headerContainer}>
@@ -194,6 +224,17 @@ export default function HomeScreen() {
           <Text style={styles.sectionSubtitle}>
             The hottest creators across Twitch, YouTube, Kick, and more.
           </Text>
+          <View style={styles.filterRow}>
+            {PLATFORM_FILTER_OPTIONS.map((option) => (
+              <FilterChip
+                key={option.value}
+                label={option.label}
+                icon={option.icon}
+                selected={option.value === selectedPlatform}
+                onPress={() => setSelectedPlatform(option.value)}
+              />
+            ))}
+          </View>
         </View>
       </View>
     ),
@@ -208,6 +249,7 @@ export default function HomeScreen() {
       isViewer,
       liveStreamers,
       upcomingStreamers,
+      selectedPlatform,
     ],
   );
 
@@ -237,16 +279,39 @@ export default function HomeScreen() {
       );
     }
 
+    const title =
+      selectedPlatform === 'ALL'
+        ? 'No trending streams right now'
+        : `No ${activePlatformLabel} streams trending right now`;
+
+    const description =
+      selectedPlatform === 'ALL'
+        ? 'Check back soon to see who goes live next.'
+        : 'Try a different platform or reset your filters.';
+
+    const action =
+      selectedPlatform === 'ALL'
+        ? undefined
+        : (
+            <Button
+              title="Reset filters"
+              variant="outline"
+              size="small"
+              onPress={() => setSelectedPlatform('ALL')}
+            />
+          );
+
     return (
       <Card style={styles.emptyCard}>
         <EmptyState
-          title="No trending streams right now"
-          description="Check back soon to see who goes live next."
+          title={title}
+          description={description}
           icon={<Ionicons name="videocam-off" size={48} color={theme.colors.textMuted} />}
+          action={action}
         />
       </Card>
     );
-  }, [refetchTrending, trendingError, trendingLoading]);
+  }, [activePlatformLabel, refetchTrending, selectedPlatform, trendingError, trendingLoading]);
 
   const footerComponent = useMemo(() => {
     if (isFetchingNextPage) {
@@ -271,6 +336,7 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
+        ref={flatListRef}
         data={trendingStreams}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <TrendingStreamCard stream={item} />}
@@ -330,6 +396,31 @@ const FollowCard = ({ follow }: { follow: Follow }) => (
       </Text>
     </View>
   </Card>
+);
+
+const FilterChip = ({
+  label,
+  icon,
+  selected,
+  onPress,
+}: {
+  label: string;
+  icon: IoniconName;
+  selected: boolean;
+  onPress: () => void;
+}) => (
+  <Pressable
+    onPress={onPress}
+    accessibilityRole="button"
+    style={[styles.filterChip, selected && styles.filterChipSelected]}
+  >
+    <Ionicons
+      name={icon}
+      size={16}
+      color={selected ? theme.colors.background : theme.colors.textSecondary}
+    />
+    <Text style={[styles.filterChipLabel, selected && styles.filterChipLabelSelected]}>{label}</Text>
+  </Pressable>
 );
 
 const styles = StyleSheet.create({
@@ -429,6 +520,34 @@ const styles = StyleSheet.create({
   },
   trendingIntro: {
     gap: theme.spacing.xs,
+  },
+  filterRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: theme.spacing.sm,
+    marginTop: theme.spacing.sm,
+  },
+  filterChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.xs,
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.xs,
+    borderRadius: theme.borderRadius.full,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    backgroundColor: theme.colors.surface,
+  },
+  filterChipSelected: {
+    backgroundColor: theme.colors.primary,
+    borderColor: theme.colors.primary,
+  },
+  filterChipLabel: {
+    ...theme.typography.caption,
+    color: theme.colors.textSecondary,
+  },
+  filterChipLabelSelected: {
+    color: theme.colors.background,
   },
   skeletonContainer: {
     gap: theme.spacing.md,
