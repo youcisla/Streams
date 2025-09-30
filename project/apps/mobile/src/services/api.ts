@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 
 import { useAuthStore } from '../store/auth';
 import {
+    DashboardStats,
     Follow,
     LoginResponse,
     Order,
@@ -143,8 +144,8 @@ class ApiService {
     return this.request(`/streamers/${streamerId}/profile`);
   }
 
-  async getDashboardStats() {
-    return this.request('/streamers/dashboard');
+  async getDashboardStats(): Promise<DashboardStats> {
+    return this.request<DashboardStats>('/streamers/dashboard');
   }
 
   async getRewards(): Promise<Reward[]> {

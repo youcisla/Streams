@@ -5,6 +5,7 @@ import React, { useMemo } from 'react';
 import { Alert, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { toBadgePlatform } from '../../../src/constants/platforms';
 import type { LiveStreamer } from './index';
 
 const parseStreamer = (value?: string): LiveStreamer | null => {
@@ -70,7 +71,7 @@ export default function LiveStreamScreen() {
         <Card style={styles.infoCard}>
           <View style={styles.headerRow}>
             <Text style={styles.displayName}>{streamer.displayName}</Text>
-            <Badge label={streamer.platform} platform={streamer.platform.toLowerCase() as any} size="small" />
+            <Badge label={streamer.platform} platform={toBadgePlatform(streamer.platform)} size="small" />
           </View>
           <Text style={styles.streamTitle}>{streamer.title}</Text>
           <View style={styles.metaRow}>

@@ -14,6 +14,8 @@ export interface LoginResponse {
   user: User;
 }
 
+export type StreamPlatform = 'TWITCH' | 'YOUTUBE' | 'KICK' | 'INSTAGRAM' | 'TIKTOK' | 'X';
+
 export interface StreamerProfile {
   id: string;
   displayName?: string;
@@ -28,11 +30,11 @@ export interface StreamerProfile {
     likes: number;
   };
   isLive: boolean;
-  liveOn: string[];
+  liveOn: StreamPlatform[];
 }
 
 export interface PlatformAccount {
-  platform: 'TWITCH' | 'YOUTUBE' | 'KICK' | 'INSTAGRAM' | 'TIKTOK' | 'X';
+  platform: StreamPlatform;
   handle: string;
   linkedAt: string;
 }
@@ -86,7 +88,7 @@ export interface Follow {
       bio?: string;
     };
     liveStatuses: Array<{
-      platform: string;
+      platform: StreamPlatform;
       title?: string;
       startedAt?: string;
     }>;
@@ -132,4 +134,11 @@ export interface Order {
   status: 'PENDING' | 'COMPLETED' | 'FAILED' | 'REFUNDED';
   createdAt: string;
   completedAt?: string;
+}
+
+export interface DashboardStats {
+  followers: number;
+  totalViews: number;
+  recentContent: number;
+  pendingRedemptions: number;
 }

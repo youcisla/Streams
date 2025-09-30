@@ -5,10 +5,24 @@ import { useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { toBadgePlatform, type PlatformId } from '../../../src/constants/platforms';
 import { api } from '../../../src/services/api';
+import type { Follow } from '../../../src/types/api';
+
+type DiscoverCategory = 'Gaming' | 'Art' | 'Music' | 'Education' | 'Lifestyle';
+
+export type DiscoverStreamer = {
+  id: string;
+  displayName: string;
+  bio: string;
+  platforms: PlatformId[];
+  followers: number;
+  isLive: boolean;
+  category: DiscoverCategory;
+};
 
 // Mock data for demo purposes
-const MOCK_STREAMERS = [
+const MOCK_STREAMERS: DiscoverStreamer[] = [
   {
     id: '1',
     displayName: 'GamerPro123',
@@ -47,16 +61,14 @@ const MOCK_STREAMERS = [
   },
 ];
 
-const CATEGORIES = ['All', 'Gaming', 'Art', 'Music', 'Education', 'Lifestyle'];
-
-export type DiscoverStreamer = typeof MOCK_STREAMERS[number];
+const CATEGORIES: Array<'All' | DiscoverCategory> = ['All', 'Gaming', 'Art', 'Music', 'Education', 'Lifestyle'];
 
 export default function DiscoverScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState<'All' | DiscoverCategory>('All');
   const [followedStreamers, setFollowedStreamers] = useState<Set<string>>(new Set());
 
   const { data: streamers = [] } = useQuery<DiscoverStreamer[]>({
@@ -66,7 +78,7 @@ export default function DiscoverScreen() {
     gcTime: Infinity,
   });
 
-  const { data: following } = useQuery({
+  const { data: following } = useQuery<Follow[]>({
     queryKey: ['following'],
     queryFn: () => api.getFollowing(),
     staleTime: 15_000,
@@ -237,7 +249,7 @@ const StreamerCard = ({
   isProcessing,
   onViewProfile,
 }: {
-  streamer: any;
+  streamer: DiscoverStreamer;
   isFollowed: boolean;
   onFollow: () => void;
   isProcessing: boolean;
@@ -260,11 +272,11 @@ const StreamerCard = ({
             {streamer.followers.toLocaleString()} followers
           </Text>
           <View style={styles.platformsContainer}>
-            {streamer.platforms.map((platform: string) => (
+            {streamer.platforms.map((platform) => (
               <Badge
                 key={platform}
                 label={platform}
-                platform={platform.toLowerCase() as any}
+                platform={toBadgePlatform(platform)}
                 size="small"
                 style={styles.platformBadge}
               />

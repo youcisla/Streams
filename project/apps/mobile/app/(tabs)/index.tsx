@@ -1,32 +1,36 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, RefreshControl } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useQuery } from '@tanstack/react-query';
-import { Card, Button, Badge, EmptyState } from '@streamlink/ui';
-import { theme } from '@streamlink/ui';
-import { useAuthStore } from '../../src/store/auth';
-import { api } from '../../src/services/api';
 import { Ionicons } from '@expo/vector-icons';
+import { Badge, Button, Card, EmptyState, theme } from '@streamlink/ui';
+import { useQuery } from '@tanstack/react-query';
+import type { ComponentProps } from 'react';
+import React from 'react';
+import { RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { toBadgePlatform } from '../../src/constants/platforms';
+import { api } from '../../src/services/api';
+import { useAuthStore } from '../../src/store/auth';
+import type { DashboardStats, Follow } from '../../src/types/api';
+
+type IoniconName = ComponentProps<typeof Ionicons>['name'];
 
 export default function HomeScreen() {
   const { user } = useAuthStore();
   const isStreamer = user?.role === 'STREAMER' || user?.role === 'BOTH';
   const isViewer = user?.role === 'VIEWER' || user?.role === 'BOTH';
 
-  const { data: following, isLoading: followingLoading, refetch: refetchFollowing } = useQuery({
+  const { data: following, isLoading: followingLoading, refetch: refetchFollowing } = useQuery<Follow[]>({
     queryKey: ['following'],
     queryFn: () => api.getFollowing(),
     enabled: isViewer,
   });
 
-  const { data: dashboardStats, isLoading: statsLoading, refetch: refetchStats } = useQuery({
+  const { data: dashboardStats, isLoading: statsLoading, refetch: refetchStats } = useQuery<DashboardStats>({
     queryKey: ['dashboard-stats'],
     queryFn: () => api.getDashboardStats(),
     enabled: isStreamer,
   });
 
-  const liveStreamers = following?.filter(follow => follow.streamer.liveStatuses.length > 0) || [];
-  const upcomingStreamers = following?.slice(0, 5) || [];
+  const liveStreamers = (following ?? []).filter((follow) => follow.streamer.liveStatuses.length > 0);
+  const upcomingStreamers = following?.slice(0, 5) ?? [];
 
   const handleRefresh = () => {
     refetchFollowing();
@@ -137,20 +141,27 @@ export default function HomeScreen() {
   );
 }
 
-const StatItem = ({ label, value, icon }: { label: string; value: number; icon: string }) => (
+const StatItem = ({ label, value, icon }: { label: string; value: number; icon: IoniconName }) => (
   <View style={styles.statItem}>
-    <Ionicons name={icon as any} size={24} color={theme.colors.primary} />
+    <Ionicons name={icon} size={24} color={theme.colors.primary} />
     <Text style={styles.statValue}>{value.toLocaleString()}</Text>
     <Text style={styles.statLabel}>{label}</Text>
   </View>
 );
 
-const LiveStreamerCard = ({ follow }: { follow: any }) => (
+const LiveStreamerCard = ({ follow }: { follow: Follow }) => {
+  const primaryStatus = follow.streamer.liveStatuses[0];
+  const platformBadge = primaryStatus ? toBadgePlatform(primaryStatus.platform) : undefined;
+
+  return (
   <Card style={styles.streamerCard} variant="elevated">
     <View style={styles.streamerHeader}>
       <View style={styles.streamerInfo}>
         <Text style={styles.streamerName}>{follow.streamer.displayName}</Text>
         <Badge label="LIVE" variant="error" size="small" />
+        {platformBadge && (
+          <Badge label={primaryStatus?.platform ?? 'LIVE'} platform={platformBadge} size="small" />
+        )}
       </View>
       <Text style={styles.liveTitle}>
         {follow.streamer.liveStatuses[0]?.title || 'Untitled Stream'}
@@ -158,9 +169,10 @@ const LiveStreamerCard = ({ follow }: { follow: any }) => (
     </View>
     <Button title="Watch Now" variant="primary" size="small" onPress={() => {}} />
   </Card>
-);
+  );
+};
 
-const FollowCard = ({ follow }: { follow: any }) => (
+const FollowCard = ({ follow }: { follow: Follow }) => (
   <Card style={styles.streamerCard}>
     <View style={styles.streamerInfo}>
       <Text style={styles.streamerName}>{follow.streamer.displayName}</Text>

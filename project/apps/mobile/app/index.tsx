@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
-import { useRouter } from 'expo-router';
 import { theme } from '@streamlink/ui';
+import { useRouter } from 'expo-router';
+import React, { useEffect } from 'react';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { useAuth } from '../src/hooks/useAuth';
 
 export default function IndexScreen() {
@@ -16,7 +16,7 @@ export default function IndexScreen() {
         router.replace('/(auth)/onboarding');
       }
     }
-  }, [isLoading, isAuthenticated]);
+  }, [isLoading, isAuthenticated, router]);
 
   return (
     <View style={styles.container}>

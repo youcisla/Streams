@@ -1,9 +1,8 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { Button, theme } from '@streamlink/ui';
 import { useRouter } from 'expo-router';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button } from '@streamlink/ui';
-import { theme } from '@streamlink/ui';
 
 export default function OnboardingScreen() {
   const router = useRouter();

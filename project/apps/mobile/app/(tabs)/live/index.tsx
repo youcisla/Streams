@@ -1,11 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Badge, Button, Card, EmptyState, Modal, theme } from '@streamlink/ui';
-import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { api } from '../../../src/services/api';
+import { toBadgePlatform, type PlatformId } from '../../../src/constants/platforms';
 
 const MOCK_LIVE_DATA = {
   polls: [
@@ -28,7 +27,7 @@ const MOCK_LIVE_DATA = {
     {
       id: '1',
       displayName: 'GamerPro123',
-      platform: 'TWITCH',
+      platform: 'TWITCH' as PlatformId,
       title: 'Ranked Valorant Grind!',
       viewers: 1_420,
       thumbnail: 'https://images.pexels.com/photos/907221/pexels-photo-907221.jpeg?auto=compress&cs=tinysrgb&w=640',
@@ -36,7 +35,7 @@ const MOCK_LIVE_DATA = {
     {
       id: '2',
       displayName: 'MusicMaven',
-      platform: 'YOUTUBE',
+      platform: 'YOUTUBE' as PlatformId,
       title: 'Live Music Session',
       viewers: 850,
       thumbnail: 'https://images.pexels.com/photos/164772/pexels-photo-164772.jpeg?auto=compress&cs=tinysrgb&w=640',
@@ -45,18 +44,13 @@ const MOCK_LIVE_DATA = {
 };
 
 export type LiveStreamer = typeof MOCK_LIVE_DATA.activeStreamers[number];
+type LivePoll = typeof MOCK_LIVE_DATA.polls[number];
 
 export default function LiveScreen() {
   const router = useRouter();
   const [selectedPoll, setSelectedPoll] = useState<string | null>(null);
   const [showRedeemModal, setShowRedeemModal] = useState(false);
   const [joiningStreamId, setJoiningStreamId] = useState<string | null>(null);
-
-  const { data: rewards } = useQuery({
-    queryKey: ['rewards'],
-    queryFn: () => api.getRewards(),
-    enabled: false,
-  });
 
   const handleVote = (pollId: string, optionId: string) => {
     console.log('Voting in poll:', pollId, 'option:', optionId);
@@ -175,7 +169,7 @@ const LiveStreamerCard = ({
         <Text style={styles.streamerTitle}>{streamer.title}</Text>
         <View style={styles.streamerMeta}>
           <Badge label="LIVE" variant="error" size="small" />
-          <Badge label={streamer.platform} platform={streamer.platform.toLowerCase() as any} size="small" />
+          <Badge label={streamer.platform} platform={toBadgePlatform(streamer.platform)} size="small" />
           <Text style={styles.viewerCount}>{streamer.viewers.toLocaleString()} viewers</Text>
         </View>
       </View>
@@ -191,11 +185,11 @@ const LiveStreamerCard = ({
   </Card>
 );
 
-const PollCard = ({ poll, onVote }: { poll: any; onVote: () => void }) => (
+const PollCard = ({ poll, onVote }: { poll: LivePoll; onVote: () => void }) => (
   <Card style={styles.pollCard}>
     <Text style={styles.pollQuestion}>{poll.question}</Text>
     <View style={styles.pollOptions}>
-      {poll.options.map((option: any) => (
+      {poll.options.map((option) => (
         <View key={option.id} style={styles.pollOption}>
           <Text style={styles.pollOptionLabel}>{option.label}</Text>
           <Text style={styles.pollOptionVotes}>{option.votes} votes</Text>
@@ -206,11 +200,11 @@ const PollCard = ({ poll, onVote }: { poll: any; onVote: () => void }) => (
   </Card>
 );
 
-const PollVotingModal = ({ poll, onVote, onClose }: { poll: any; onVote: (pollId: string, optionId: string) => void; onClose: () => void }) => (
+const PollVotingModal = ({ poll, onVote, onClose }: { poll: LivePoll; onVote: (pollId: string, optionId: string) => void; onClose: () => void }) => (
   <View>
     <Text style={styles.modalTitle}>{poll.question}</Text>
     <View style={styles.pollVotingOptions}>
-      {poll.options.map((option: any) => (
+      {poll.options.map((option) => (
         <Button
           key={option.id}
           title={`${option.label} (${option.votes} votes)`}
@@ -233,7 +227,7 @@ const RedeemModal = ({
   onRedeem: (rewardId: string) => void;
   onClose: () => void;
 }) => {
-  const mockRewards = [
+  const mockRewards: Array<{ id: string; title: string; costPoints: number; description: string }> = [
     { id: '1', title: 'Shoutout', costPoints: 100, description: 'Get a shoutout on stream' },
     { id: '2', title: 'Song Request', costPoints: 50, description: 'Request a song to be played' },
     { id: '3', title: 'Discord VIP', costPoints: 500, description: 'Get VIP role in Discord' },

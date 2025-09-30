@@ -5,6 +5,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { toBadgePlatform, type PlatformId } from '../../../src/constants/platforms';
 import { api } from '../../../src/services/api';
 import type { Follow, StreamerProfile } from '../../../src/types/api';
 
@@ -16,7 +17,7 @@ type DisplayStreamer = {
   bio?: string;
   followers: number;
   isLive?: boolean;
-  platforms: string[];
+  platforms: PlatformId[];
   category?: string;
 };
 
@@ -41,7 +42,7 @@ const mapProfileToDisplay = (
     return null;
   }
 
-  const platforms = profile?.platforms?.map((platform) => platform.platform.toUpperCase()) ?? fallback?.platforms ?? [];
+  const platforms = profile?.platforms?.map((platform) => platform.platform.toUpperCase() as PlatformId) ?? fallback?.platforms ?? [];
 
   return {
     id: profile?.id ?? fallback?.id ?? '',
@@ -276,7 +277,7 @@ export default function StreamerProfileScreen() {
                 <Badge
                   key={platform}
                   label={platform}
-                  platform={platform.toLowerCase() as any}
+                  platform={toBadgePlatform(platform)}
                   size="small"
                   style={styles.platformBadge}
                 />
