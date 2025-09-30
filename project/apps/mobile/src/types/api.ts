@@ -142,3 +142,32 @@ export interface DashboardStats {
   recentContent: number;
   pendingRedemptions: number;
 }
+
+export interface TrendingStreamCreator {
+  id: string;
+  displayName?: string;
+  username?: string;
+  avatarUrl?: string;
+}
+
+export interface TrendingStream {
+  id: string;
+  streamerId: string;
+  title: string;
+  platform: StreamPlatform;
+  viewerCount: number;
+  startedAt: string | null;
+  thumbnail?: string | null;
+  url: string;
+  category?: string | null;
+  creator: TrendingStreamCreator;
+}
+
+export interface TrendingStreamsResponse {
+  items: TrendingStream[];
+  meta: {
+    total: number;
+    hasMore: boolean;
+    nextCursor?: string;
+  };
+}

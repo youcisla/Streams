@@ -12,6 +12,8 @@ import {
     Redemption,
     Reward,
     StreamerProfile,
+    StreamPlatform,
+    TrendingStreamsResponse,
 } from '../types/api';
 
 const API_PATH = '/api/v1';
@@ -114,6 +116,36 @@ class ApiService {
 
     const text = await response.text();
     return text ? (text as unknown as T) : (undefined as T);
+  }
+
+  private buildQueryString(params: Record<string, unknown>): string {
+    const searchParams = new URLSearchParams();
+
+    Object.entries(params).forEach(([key, value]) => {
+      if (value === undefined || value === null) {
+        return;
+      }
+
+      if (Array.isArray(value)) {
+        value.forEach((entry) => {
+          if (entry === undefined || entry === null) {
+            return;
+          }
+          const normalized = String(entry).trim();
+          if (normalized.length > 0) {
+            searchParams.append(key, normalized);
+          }
+        });
+      } else {
+        const normalized = String(value).trim();
+        if (normalized.length > 0) {
+          searchParams.append(key, normalized);
+        }
+      }
+    });
+
+    const query = searchParams.toString();
+    return query ? `?${query}` : '';
   }
 
   // Auth
@@ -246,6 +278,24 @@ class ApiService {
   async getPointsBalance(streamerId?: string): Promise<{ balance: number }> {
     const query = streamerId ? `?streamerId=${streamerId}` : '';
     return this.request(`/users/me/points${query}`);
+  }
+
+  async getTrendingStreams(options: {
+    limit?: number;
+    cursor?: string;
+    category?: string;
+    platforms?: StreamPlatform[];
+  } = {}): Promise<TrendingStreamsResponse> {
+    const { limit, cursor, category, platforms } = options;
+
+    const query = this.buildQueryString({
+      limit,
+      cursor,
+      category,
+      platforms: platforms?.map((platform) => platform.toUpperCase()),
+    });
+
+    return this.request(`/streams/trending${query}`);
   }
 }
 

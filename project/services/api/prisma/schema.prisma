@@ -175,6 +175,8 @@ model LiveStatus {
   startedAt  DateTime?
   title      String?
   game       String?
+  viewerCount Int?     @default(0)
+  thumbnailUrl String?
   updatedAt  DateTime  @updatedAt
 
   streamer User @relation(fields: [streamerId], references: [id], onDelete: Cascade)

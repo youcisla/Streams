@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { User } from '../types/api';
+import { sanitizeName } from '../utils/text';
 
 const STORAGE_KEYS = {
   token: 'auth_token',
@@ -20,22 +21,44 @@ interface AuthState {
   initialize: () => Promise<void>;
 }
 
+const sanitizeUserProfile = (user: User | null): User | null => {
+  if (!user) {
+    return null;
+  }
+
+  const sanitizedDisplayName = sanitizeName(user.displayName ?? null);
+  const sanitizedUsername = sanitizeName(user.username ?? null);
+  const trimmedAvatarUrl = user.avatarUrl?.trim();
+
+  return {
+    ...user,
+    email: user.email.trim(),
+    displayName: sanitizedDisplayName.length > 0 ? sanitizedDisplayName : undefined,
+    username: sanitizedUsername.length > 0 ? sanitizedUsername : undefined,
+    avatarUrl: trimmedAvatarUrl && trimmedAvatarUrl.length > 0 ? trimmedAvatarUrl : undefined,
+  };
+};
+
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   token: null,
   isLoading: true,
   isAuthenticated: false,
 
-  setUser: (user) => set({ user, isAuthenticated: !!user }),
+  setUser: (user) => {
+    const sanitizedUser = sanitizeUserProfile(user);
+    set({ user: sanitizedUser, isAuthenticated: !!sanitizedUser });
+  },
   setToken: (token) => set({ token }),
   setLoading: (isLoading) => set({ isLoading }),
 
   login: async (user, token) => {
+    const sanitizedUser = sanitizeUserProfile(user);
     await AsyncStorage.multiSet([
       [STORAGE_KEYS.token, token],
-      [STORAGE_KEYS.user, JSON.stringify(user)],
+      [STORAGE_KEYS.user, JSON.stringify(sanitizedUser)],
     ]);
-    set({ user, token, isAuthenticated: true });
+    set({ user: sanitizedUser, token, isAuthenticated: true });
   },
 
   logout: async () => {
@@ -51,7 +74,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       ]);
 
       let token: string | null = null;
-      let user: User | null = null;
+  let user: User | null = null;
 
       if (storedToken && storedToken !== 'undefined' && storedToken !== 'null' && storedToken.trim() !== '') {
         token = storedToken;
@@ -61,7 +84,8 @@ export const useAuthStore = create<AuthState>((set) => ({
 
       if (storedUser && storedUser !== 'undefined' && storedUser !== 'null') {
         try {
-          user = JSON.parse(storedUser) as User;
+          const parsedUser = JSON.parse(storedUser) as User;
+          user = sanitizeUserProfile(parsedUser);
         } catch (parseError) {
           console.warn('[AuthStore] Failed to parse stored user. Clearing persisted value.', parseError);
           await AsyncStorage.removeItem(STORAGE_KEYS.user);

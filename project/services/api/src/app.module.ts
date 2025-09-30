@@ -1,17 +1,18 @@
+import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
-import { BullModule } from '@nestjs/bull';
 
 import { PrismaModule } from './common/prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { UsersModule } from './modules/users/users.module';
-import { PlatformsModule } from './modules/platforms/platforms.module';
-import { StreamersModule } from './modules/streamers/streamers.module';
-import { ViewersModule } from './modules/viewers/viewers.module';
 import { InteractionsModule } from './modules/interactions/interactions.module';
 import { MarketplaceModule } from './modules/marketplace/marketplace.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
+import { PlatformsModule } from './modules/platforms/platforms.module';
+import { StreamersModule } from './modules/streamers/streamers.module';
+import { StreamsModule } from './modules/streams/streams.module';
+import { UsersModule } from './modules/users/users.module';
+import { ViewersModule } from './modules/viewers/viewers.module';
 import { WebhooksModule } from './modules/webhooks/webhooks.module';
 
 import { config } from '@streamlink/config';
@@ -36,6 +37,7 @@ import { config } from '@streamlink/config';
     UsersModule,
     PlatformsModule,
     StreamersModule,
+  StreamsModule,
     ViewersModule,
     InteractionsModule,
     MarketplaceModule,

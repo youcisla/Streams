@@ -23,9 +23,14 @@ export class UsersService {
   }
 
   async updateProfile(userId: string, data: { displayName?: string; avatarUrl?: string }) {
+    const sanitizedDisplayName = data.displayName?.trim();
+
     return this.prisma.user.update({
       where: { id: userId },
-      data,
+      data: {
+        ...data,
+        ...(sanitizedDisplayName !== undefined ? { displayName: sanitizedDisplayName } : {}),
+      },
       include: {
         streamerProfile: true,
         viewerProfile: true,

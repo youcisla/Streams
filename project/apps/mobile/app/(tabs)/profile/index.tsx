@@ -4,8 +4,8 @@ import { useRouter } from 'expo-router';
 import React, { useCallback } from 'react';
 import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import type { IoniconName, ProfileSection } from '../../src/features/profile/sections';
-import { useAuthStore } from '../../src/store/auth';
+import type { IoniconName, ProfileSection } from '../../../src/features/profile/sections';
+import { useAuthStore } from '../../../src/store/auth';
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -88,21 +88,21 @@ export default function ProfileScreen() {
         {/* Account Settings */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Account</Text>
-          
+
           <SettingsItem
             icon="notifications"
             title="Notifications"
             description="Manage your notification preferences"
             onPress={() => navigateToSection('notifications')}
           />
-          
+
           <SettingsItem
             icon="link"
             title="Linked Accounts"
             description="Connect your streaming platforms"
             onPress={() => navigateToSection('linked-accounts')}
           />
-          
+
           <SettingsItem
             icon="shield-checkmark"
             title="Privacy & Security"
@@ -114,21 +114,21 @@ export default function ProfileScreen() {
         {/* App Settings */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>App</Text>
-          
+
           <SettingsItem
             icon="color-palette"
             title="Theme"
             description="Dark theme (default)"
             onPress={() => navigateToSection('theme')}
           />
-          
+
           <SettingsItem
             icon="language"
             title="Language"
             description="English"
             onPress={() => navigateToSection('language')}
           />
-          
+
           <SettingsItem
             icon="help-circle"
             title="Help & Support"
@@ -140,21 +140,21 @@ export default function ProfileScreen() {
         {/* Data & Privacy */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Data & Privacy</Text>
-          
+
           <SettingsItem
             icon="download"
             title="Export Data"
             description="Download your account data"
             onPress={() => navigateToSection('export-data')}
           />
-          
+
           <SettingsItem
             icon="document-text"
             title="Privacy Policy"
             description="Read our privacy policy"
             onPress={() => navigateToSection('privacy-policy')}
           />
-          
+
           <SettingsItem
             icon="document"
             title="Terms of Service"
@@ -171,7 +171,7 @@ export default function ProfileScreen() {
             onPress={handleLogout}
             style={styles.actionButton}
           />
-          
+
           <Button
             title="Delete Account"
             variant="outline"

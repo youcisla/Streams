@@ -169,6 +169,13 @@ async function main() {
 
   // Create live statuses
   for (const platform of platforms) {
+    const isLive = true;
+    const startedAt = new Date(Date.now() - Math.floor(Math.random() * 60) * 60 * 1000);
+    const viewerCount = Math.floor(Math.random() * 8500) + 150;
+    const title = `${platform.toString().toLowerCase()} community hangout`;
+    const game = platform === Platform.TWITCH ? 'Just Chatting' : platform === Platform.KICK ? 'Apex Legends' : 'Variety';
+    const thumbnailUrl = `https://images.pexels.com/photos/${300000 + Math.floor(Math.random() * 500)}?auto=compress&cs=tinysrgb&w=640`;
+
     await prisma.liveStatus.upsert({
       where: {
         streamerId_platform: {
@@ -176,14 +183,23 @@ async function main() {
           platform
         }
       },
-      update: {},
+      update: {
+        isLive,
+        startedAt,
+        title,
+        game,
+        viewerCount,
+        thumbnailUrl
+      },
       create: {
         streamerId: streamer.id,
         platform,
-        isLive: platform === Platform.TWITCH,
-        startedAt: platform === Platform.TWITCH ? new Date() : null,
-        title: platform === Platform.TWITCH ? 'Live Gaming Session!' : null,
-        game: platform === Platform.TWITCH ? 'Just Chatting' : null
+        isLive,
+        startedAt,
+        title,
+        game,
+        viewerCount,
+        thumbnailUrl
       }
     });
   }
