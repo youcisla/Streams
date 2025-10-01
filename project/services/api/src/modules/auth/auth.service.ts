@@ -14,17 +14,30 @@ export class AuthService {
   ) {}
 
   private sanitizeUser(user: User & { passwordHash?: string | null }) {
+    if (!user) {
+      throw new BadRequestException('Invalid user record');
+    }
+
     const { passwordHash, ...safeUser } = user;
 
-    const trimmedEmail = safeUser.email.trim();
-    const trimmedUsername = safeUser.username?.trim() ?? null;
-    const trimmedDisplayName = safeUser.displayName?.trim() ?? null;
+    const normalizedEmail =
+      typeof safeUser.email === 'string' ? safeUser.email.trim() : safeUser.email ?? '';
+    const normalizedUsername =
+      typeof safeUser.username === 'string' ? safeUser.username.trim() : safeUser.username ?? null;
+    const normalizedDisplayName =
+      typeof safeUser.displayName === 'string'
+        ? safeUser.displayName.trim()
+        : safeUser.displayName ?? null;
+
+    if (!normalizedEmail) {
+      this.logger.warn(`sanitizeUser invoked for user ${safeUser.id ?? 'unknown'} without email value.`);
+    }
 
     return {
       ...safeUser,
-      email: trimmedEmail,
-      username: trimmedUsername,
-      displayName: trimmedDisplayName,
+      email: normalizedEmail,
+      username: normalizedUsername,
+      displayName: normalizedDisplayName,
     } as User;
   }
 
@@ -54,19 +67,18 @@ export class AuthService {
   }
 
   async login(user: User) {
-    const payload = { email: user.email, sub: user.id, role: user.role };
-    const trimmedUsername = user.username?.trim() ?? undefined;
-    const trimmedDisplayName = user.displayName?.trim() ?? undefined;
+    const sanitizedUser = this.sanitizeUser(user);
+    const payload = { email: sanitizedUser.email, sub: sanitizedUser.id, role: sanitizedUser.role };
 
     return {
       access_token: this.jwtService.sign(payload),
       user: {
-        id: user.id,
-        email: user.email.trim(),
-        username: trimmedUsername,
-        displayName: trimmedDisplayName,
-        role: user.role,
-        avatarUrl: user.avatarUrl,
+        id: sanitizedUser.id,
+        email: sanitizedUser.email,
+        username: sanitizedUser.username ?? undefined,
+        displayName: sanitizedUser.displayName ?? undefined,
+        role: sanitizedUser.role,
+        avatarUrl: sanitizedUser.avatarUrl,
       },
     };
   }
