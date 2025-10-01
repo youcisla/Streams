@@ -46,10 +46,14 @@ export const Icon = forwardRef<HTMLSpanElement, IconProps>(function Icon(
   const isDecorative = !label;
   const resolvedSize = typeof size === 'number' ? size : theme.iconSizes[size] ?? theme.iconSizes.md;
 
+  const classNames = [shouldUsePixel ? 'icon-pixel' : undefined, className]
+    .filter(Boolean)
+    .join(' ') || undefined;
+
   return (
     <span
       ref={ref}
-      className={['icon-pixel', className].filter(Boolean).join(' ')}
+      className={classNames}
       style={{
         display: 'inline-flex',
         alignItems: 'center',

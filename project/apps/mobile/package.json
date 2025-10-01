@@ -4,7 +4,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-  "build": "pnpm exec expo build",
+  "build": "pnpm exec expo export --platform all --output-dir dist",
   "dev": "pnpm exec expo start --offline --clear",
   "start": "pnpm exec expo start --offline",
   "android": "pnpm exec expo start --offline --android",

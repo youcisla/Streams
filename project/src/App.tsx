@@ -1,29 +1,30 @@
 import {
-    ArrowRight,
-    BadgeCheck,
-    BarChart3,
-    BellRing,
-    CalendarClock,
-    CheckCircle2,
-    Layers,
-    LineChart,
-    Link2,
-    LucideIcon,
-    Megaphone,
-    MessageCircle,
-    ShieldCheck,
-    Sparkles,
-    Store,
-    Users2,
-    Zap
+  ArrowRight,
+  BadgeCheck,
+  BarChart3,
+  BellRing,
+  CalendarClock,
+  CheckCircle2,
+  Layers,
+  LineChart,
+  Link2,
+  LucideIcon,
+  Megaphone,
+  MessageCircle,
+  ShieldCheck,
+  Sparkles,
+  Store,
+  Users2,
+  Zap
 } from 'lucide-react';
 import {
-    type FormEvent,
-    useCallback,
-    useEffect,
-    useMemo,
-    useRef,
-    useState
+  type FormEvent,
+  type RefObject,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
 } from 'react';
 
 type Feature = {
@@ -39,6 +40,40 @@ type JourneyStep = {
   title: string;
   subtitle: string;
   duration: string;
+};
+
+type Testimonial = {
+  id: string;
+  quote: string;
+  name: string;
+  role: string;
+  metric: string;
+  result: string;
+};
+
+type FAQ = {
+  id: string;
+  question: string;
+  answer: string;
+};
+
+type TrustLogo = {
+  name: string;
+  descriptor: string;
+};
+
+type NavSection = {
+  id: string;
+  label: string;
+  ref: RefObject<HTMLDivElement | null>;
+};
+
+type ContactFormState = {
+  name: string;
+  email: string;
+  company: string;
+  role: string;
+  message: string;
 };
 
 const FeatureCard = ({ icon: Icon, title, description, highlights }: Feature) => (
@@ -81,10 +116,13 @@ function App() {
   const journeyRef = useRef<HTMLDivElement | null>(null);
   const marketplaceRef = useRef<HTMLDivElement | null>(null);
   const pricingRef = useRef<HTMLDivElement | null>(null);
+  const testimonialsRef = useRef<HTMLDivElement | null>(null);
+  const faqRef = useRef<HTMLDivElement | null>(null);
 
   const [activeSection, setActiveSection] = useState('overview');
+  const [hasScrolled, setHasScrolled] = useState(false);
   const [isContactOpen, setContactOpen] = useState(false);
-  const [formState, setFormState] = useState({
+  const [formState, setFormState] = useState<ContactFormState>({
     name: '',
     email: '',
     company: '',
@@ -94,14 +132,17 @@ function App() {
   const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [expandedFaq, setExpandedFaq] = useState<string | null>(null);
 
-  const sections = useMemo(
+  const sections = useMemo<NavSection[]>(
     () => [
       { id: 'overview', label: 'Overview', ref: overviewRef },
       { id: 'insights', label: 'Insights', ref: insightsRef },
       { id: 'journey', label: 'User Journey', ref: journeyRef },
       { id: 'marketplace', label: 'Platform Suite', ref: marketplaceRef },
-      { id: 'pricing', label: 'Plans', ref: pricingRef }
+      { id: 'stories', label: 'Stories', ref: testimonialsRef },
+      { id: 'pricing', label: 'Plans', ref: pricingRef },
+      { id: 'faq', label: 'FAQ', ref: faqRef }
     ],
     []
   );
@@ -187,9 +228,84 @@ function App() {
     []
   );
 
+  const trustLogos = useMemo<TrustLogo[]>(
+    () => [
+      { name: 'Hyperwave Media', descriptor: 'Esports broadcast network' },
+      { name: 'Orbit Collective', descriptor: 'Creator talent alliance' },
+      { name: 'Studio Meridian', descriptor: 'Global production guild' },
+      { name: 'Lumen Labs', descriptor: 'Analytics research studio' },
+      { name: 'Northstar Forge', descriptor: 'Interactive commerce team' },
+      { name: 'Signal & Bloom', descriptor: 'Community ops consultancy' }
+    ],
+    []
+  );
+
+  const testimonials = useMemo<Testimonial[]>(
+    () => [
+      {
+        id: 'orbit',
+        quote:
+          'StreamLink replaced six dashboards and a maze of spreadsheets. Our partner managers finally operate from the same source of truth.',
+        name: 'Morgan Lee',
+        role: 'Head of Talent • Orbit Collective',
+        metric: '38% retention lift',
+        result: 'Automations now handle nightly perk drops and ticketing follow-ups across three regions.'
+      },
+      {
+        id: 'hyperwave',
+        quote:
+          'We orchestrate campaigns across Twitch, YouTube, and Kick. StreamLink keeps compliance, creative, and finance synced without late-night fire drills.',
+        name: 'Casey Morales',
+        role: 'VP Production • Hyperwave Media',
+        metric: '11 hrs saved weekly',
+        result: 'Crew members launch synchronized promos directly from StreamLink without chasing approvals.'
+      },
+      {
+        id: 'lumen',
+        quote:
+          'The insight feed surfaces anomalies before they derail a season. We go from signal to action in minutes instead of days.',
+        name: 'Priya Natarajan',
+        role: 'Principal Analyst • Lumen Labs',
+        metric: '92% faster response',
+        result: 'Alerting playbooks now trigger escalations and retention plays automatically.'
+      }
+    ],
+    []
+  );
+
+  const faqs = useMemo<FAQ[]>(
+    () => [
+      {
+        id: 'timeline',
+        question: 'How long does onboarding and data migration take?',
+        answer:
+          'Most studios launch in under two weeks. We import creator rosters, migrate historical performance, and configure automations alongside your success manager.'
+      },
+      {
+        id: 'security',
+        question: 'Do you support enterprise-grade identity and security requirements?',
+        answer:
+          'Yes. StreamLink offers SSO/SAML, audit logs, scoped API tokens, and regional data residency. Our security team partners with yours on reviews and pen tests.'
+      },
+      {
+        id: 'integrations',
+        question: 'What tools and data destinations can StreamLink connect to?',
+        answer:
+          'Sync events and metrics to Snowflake, BigQuery, Redshift, and Looker. Webhooks and a GraphQL API keep CRMs, Discord servers, and marketing tools up to date.'
+      },
+      {
+        id: 'pricing',
+        question: 'How does pricing scale as our creator roster grows?',
+        answer:
+          'Plans include unlimited viewer accounts, with predictable pricing per creator workspace. Volume discounts and custom terms are available for enterprise teams.'
+      }
+    ],
+    []
+  );
+
   const scrollToSection = useCallback(
     (id: string) => {
-      const target = sections.find((section) => section.id === id)?.ref.current;
+      const target = sections.find((section: NavSection) => section.id === id)?.ref.current;
       if (target) {
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
@@ -214,7 +330,7 @@ function App() {
       { threshold: 0.45 }
     );
 
-    sections.forEach((section) => {
+    sections.forEach((section: NavSection) => {
       if (section.ref.current) {
         observer.observe(section.ref.current);
       }
@@ -223,8 +339,23 @@ function App() {
     return () => observer.disconnect();
   }, [sections]);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const updateScrollState = () => {
+      setHasScrolled(window.scrollY > 16);
+    };
+
+    updateScrollState();
+    window.addEventListener('scroll', updateScrollState, { passive: true });
+
+    return () => window.removeEventListener('scroll', updateScrollState);
+  }, []);
+
   const handleFormChange = useCallback((field: string, value: string) => {
-    setFormState((prev) => ({ ...prev, [field]: value }));
+    setFormState((prev: ContactFormState) => ({ ...prev, [field]: value }));
   }, []);
 
   const handleContactSubmit = useCallback(
@@ -237,7 +368,7 @@ function App() {
         return;
       }
 
-      if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,}$/u.test(formState.email)) {
+  if (!/^[\w.-]+@([\w-]+\.)+[\w-]{2,}$/u.test(formState.email)) {
         setFormError('Please enter a valid business email.');
         return;
       }
@@ -265,6 +396,10 @@ function App() {
     setFormError(null);
   }, []);
 
+  const toggleFaq = useCallback((id: string) => {
+    setExpandedFaq((prev: string | null) => (prev === id ? null : id));
+  }, []);
+
   const openDocs = useCallback(() => {
     if (typeof window !== 'undefined') {
       window.open('https://docs.streamlink.app', '_blank', 'noreferrer');
@@ -272,10 +407,18 @@ function App() {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-slate-950 text-slate-100">
+    <>
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
+      <div className="relative min-h-screen bg-slate-950 text-slate-100">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(34,211,238,0.12),_transparent_55%)]" aria-hidden />
 
-      <header className="sticky top-0 z-40 border-b border-slate-800/60 bg-slate-950/85 backdrop-blur">
+      <header
+        className={`sticky top-0 z-40 border-b border-slate-800/60 bg-slate-950/85 backdrop-blur transition-shadow duration-300 ${
+          hasScrolled ? 'shadow-[0_20px_70px_rgba(15,23,42,0.65)]' : ''
+        }`}
+      >
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
           <div className="flex items-center gap-3">
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-500/15 text-cyan-400">
@@ -288,7 +431,7 @@ function App() {
           </div>
 
           <nav className="hidden items-center gap-6 md:flex" aria-label="Primary">
-            {sections.map((section) => (
+            {sections.map((section: NavSection) => (
               <button
                 key={section.id}
                 type="button"
@@ -325,7 +468,7 @@ function App() {
         </div>
 
         <nav className="flex items-center gap-2 overflow-x-auto border-t border-slate-900/70 px-6 py-3 md:hidden" aria-label="Mobile">
-          {sections.map((section) => (
+          {sections.map((section: NavSection) => (
             <button
               key={section.id}
               type="button"
@@ -342,7 +485,7 @@ function App() {
         </nav>
       </header>
 
-      <main className="relative">
+  <main className="relative" id="main-content">
         <section
           ref={overviewRef}
           data-section-id="overview"
@@ -377,6 +520,13 @@ function App() {
                   onClick={openDocs}
                 >
                   Browse product docs
+                </button>
+                <button
+                  type="button"
+                  className="inline-flex items-center justify-center rounded-full border border-transparent bg-slate-900/70 px-6 py-3 text-sm font-semibold text-slate-200 transition hover:border-cyan-400/60 hover:text-cyan-200 sm:border-slate-800"
+                  onClick={() => scrollToSection('stories')}
+                >
+                  Hear customer wins
                 </button>
               </div>
               <dl className="grid gap-6 sm:grid-cols-3">
@@ -426,6 +576,39 @@ function App() {
                 </ul>
               </div>
             </aside>
+          </div>
+        </section>
+
+        <section className="border-b border-slate-900/70 bg-slate-950/40">
+          <div className="mx-auto max-w-7xl px-6 py-14 lg:py-16">
+            <div className="flex flex-col items-center gap-4 text-center">
+              <span className="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-1 text-xs font-semibold uppercase tracking-wide text-cyan-200">
+                <ShieldCheck className="h-4 w-4" aria-hidden />
+                Trusted by creator-first teams
+              </span>
+              <h2 className="text-2xl font-semibold text-slate-100 sm:text-3xl">
+                Built into studios that run multi-platform lineups at scale.
+              </h2>
+              <p className="max-w-3xl text-sm leading-relaxed text-slate-300">
+                From esports broadcasts to lifestyle collectives, StreamLink keeps every stakeholder aligned with real-time data, automations, and commerce workflows.
+              </p>
+            </div>
+
+            <div className="relative mt-10 overflow-hidden rounded-3xl border border-slate-800/70 bg-slate-950/70 p-6">
+              <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-slate-950 to-transparent" aria-hidden />
+              <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-slate-950 to-transparent" aria-hidden />
+              <div className="flex animate-marquee gap-4 text-left">
+                {[...trustLogos, ...trustLogos].map((logo: TrustLogo, index) => (
+                  <div
+                    key={`${logo.name}-${index}`}
+                    className="flex min-w-[220px] flex-col gap-1 rounded-2xl border border-slate-800/70 bg-slate-900/70 px-4 py-3 shadow-[0_0_30px_rgba(15,23,42,0.35)]"
+                  >
+                    <span className="text-sm font-semibold text-slate-100">{logo.name}</span>
+                    <span className="text-xs text-slate-400">{logo.descriptor}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
@@ -618,6 +801,75 @@ function App() {
         </section>
 
         <section
+          ref={testimonialsRef}
+          data-section-id="stories"
+          className="border-b border-slate-900/70"
+        >
+          <div className="mx-auto max-w-7xl px-6 py-20 lg:py-24">
+            <div className="flex flex-col items-center gap-6 text-center">
+              <span className="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900/60 px-4 py-1 text-xs font-semibold uppercase tracking-wide text-slate-300">
+                <Sparkles className="h-4 w-4 text-cyan-300" aria-hidden />
+                Customer stories
+              </span>
+              <h2 className="text-3xl font-semibold text-slate-100 sm:text-4xl">Outcomes teams measure in weeks, not quarters.</h2>
+              <p className="max-w-3xl text-base leading-relaxed text-slate-300">
+                StreamLink blends insights, engagement, and commerce into a single operating system. Hear how production, growth, and analytics leads ship faster with fewer handoffs.
+              </p>
+            </div>
+
+            <div className="mt-12 grid gap-6 lg:grid-cols-3">
+              {testimonials.map((story: Testimonial) => (
+                <article
+                  key={story.id}
+                  className="group flex h-full flex-col justify-between gap-6 overflow-hidden rounded-3xl border border-slate-800/70 bg-slate-900/70 p-7 transition hover:border-cyan-400/50 hover:bg-slate-900/80"
+                >
+                  <p className="text-left text-sm leading-relaxed text-slate-300">
+                    <span className="mr-1 text-lg text-cyan-300">“</span>
+                    {story.quote}
+                    <span className="ml-1 text-lg text-cyan-300">”</span>
+                  </p>
+                  <div className="space-y-4 text-left">
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <p className="text-base font-semibold text-slate-100">{story.name}</p>
+                        <p className="text-xs text-slate-400">{story.role}</p>
+                      </div>
+                      <span className="inline-flex items-center rounded-full bg-cyan-500/10 px-3 py-1 text-xs font-semibold text-cyan-200">
+                        {story.metric}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-400">{story.result}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <div className="mt-12 flex flex-col items-center justify-center gap-4 rounded-3xl border border-cyan-400/30 bg-gradient-to-r from-slate-900/80 via-slate-900/40 to-slate-900/80 px-6 py-10 text-center md:flex-row md:text-left">
+              <div className="flex-1">
+                <h3 className="text-xl font-semibold text-slate-100">Want to replicate these results?</h3>
+                <p className="mt-2 text-sm text-slate-300">Walk through StreamLink with a specialist who has scaled programs for agencies, studios, and leagues.</p>
+              </div>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <button
+                  type="button"
+                  className="inline-flex items-center justify-center rounded-full bg-cyan-500 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-400"
+                  onClick={openContact}
+                >
+                  Talk with success team
+                </button>
+                <button
+                  type="button"
+                  className="inline-flex items-center justify-center rounded-full border border-slate-800 px-6 py-3 text-sm font-semibold text-slate-200 transition hover:border-cyan-400/60 hover:text-cyan-200"
+                  onClick={() => scrollToSection('faq')}
+                >
+                  See FAQs
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section
           ref={pricingRef}
           data-section-id="pricing"
           className="border-b border-slate-900/70"
@@ -678,6 +930,70 @@ function App() {
                 >
                   <div>
                     <h3 className="text-xl font-semibold text-slate-100">{plan.name}</h3>
+
+                <section
+                  ref={faqRef}
+                  data-section-id="faq"
+                  className="border-b border-slate-900/70 bg-slate-950/40"
+                >
+                  <div className="mx-auto max-w-5xl px-6 py-20 lg:py-24">
+                    <div className="text-center">
+                      <span className="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900/60 px-4 py-1 text-xs font-semibold uppercase tracking-wide text-slate-300">
+                        <Layers className="h-4 w-4 text-cyan-300" aria-hidden />
+                        FAQs
+                      </span>
+                      <h2 className="mt-4 text-3xl font-semibold text-slate-100 sm:text-4xl">Answers for program leads and operators.</h2>
+                      <p className="mt-3 text-base leading-relaxed text-slate-300">
+                        Can’t find what you need? Our success and solutions engineers are on standby to architect your rollout.
+                      </p>
+                    </div>
+
+                    <div className="mt-12 space-y-4">
+                      {faqs.map((faq: FAQ) => {
+                        const isOpen = expandedFaq === faq.id;
+                        return (
+                          <div
+                            key={faq.id}
+                            className={`overflow-hidden rounded-3xl border transition ${
+                              isOpen
+                                ? 'border-cyan-400/60 bg-slate-900/75'
+                                : 'border-slate-800/80 bg-slate-900/60 hover:border-cyan-400/30'
+                            }`}
+                          >
+                            <button
+                              type="button"
+                              className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
+                              onClick={() => toggleFaq(faq.id)}
+                              aria-expanded={isOpen}
+                              aria-controls={`faq-panel-${faq.id}`}
+                              id={`faq-trigger-${faq.id}`}
+                            >
+                              <span className="text-base font-semibold text-slate-100">{faq.question}</span>
+                              <span
+                                className={`flex h-8 w-8 items-center justify-center rounded-full bg-slate-900/80 text-sm font-semibold text-cyan-200 transition-transform duration-200 ${
+                                  isOpen ? 'rotate-45' : ''
+                                }`}
+                                aria-hidden
+                              >
+                                +
+                              </span>
+                            </button>
+                            {isOpen && (
+                              <div
+                                id={`faq-panel-${faq.id}`}
+                                role="region"
+                                aria-labelledby={`faq-trigger-${faq.id}`}
+                                className="border-t border-slate-800/70 px-6 py-4 text-sm leading-relaxed text-slate-300"
+                              >
+                                {faq.answer}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </section>
                     <p className="mt-1 text-sm text-slate-300">{plan.description}</p>
                   </div>
                   <p className="text-3xl font-bold text-cyan-300">{plan.price}</p>
@@ -842,7 +1158,26 @@ function App() {
           </div>
         </div>
       )}
+      {!isContactOpen && hasScrolled && (
+        <div className="fixed bottom-4 left-0 right-0 z-40 flex justify-center px-4 md:hidden">
+          <div className="flex w-full max-w-md items-center justify-between gap-3 rounded-3xl border border-cyan-400/50 bg-slate-950/95 px-4 py-3 shadow-lg shadow-cyan-500/10 backdrop-blur">
+            <div>
+              <p className="text-sm font-semibold text-slate-100">Need a tailored walkthrough?</p>
+              <p className="text-xs text-slate-400">Our success team replies within one business day.</p>
+            </div>
+            <button
+              type="button"
+              className="inline-flex items-center gap-1 rounded-full bg-cyan-500 px-4 py-2 text-xs font-semibold text-slate-950 transition hover:bg-cyan-400"
+              onClick={openContact}
+            >
+              Talk to us
+              <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
+    </>
   );
 }
 
