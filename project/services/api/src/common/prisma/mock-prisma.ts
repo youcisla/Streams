@@ -42,6 +42,42 @@ export interface User {
   avatarUrl?: string;
   createdAt: Date;
   updatedAt: Date;
+  streamerProfile?: { bio?: string | null; isPublic?: boolean | null } | null;
+  viewerProfile?: Record<string, unknown> | null;
+  linkedPlatformAccounts?: Array<{ platform: string; handle?: string; linkedAt?: Date | string }>;
+  liveStatuses?: Array<{ platform: string; isLive?: boolean | null; title?: string | null; startedAt?: Date | null }>;
+  statsSnapshots?: Array<{ platform: string; followers: number; views: number; likes: number }>;
+}
+
+export interface Reward {
+  id: string;
+  streamerId: string;
+  title?: string | null;
+  costPoints: number;
+  isActive?: boolean | null;
+}
+
+export interface PointsTransaction {
+  id?: string;
+  userId?: string;
+  streamerId?: string;
+  delta: number;
+  reason?: string;
+  metadata?: Record<string, unknown> | null;
+}
+
+export interface PollOption {
+  id: string;
+  label?: string;
+  votes?: number;
+}
+
+export interface Poll {
+  id: string;
+  streamerId: string;
+  status?: string;
+  endsAt?: Date | string | null;
+  options: PollOption[];
 }
 
 type MockArgs = Record<string, unknown>;
@@ -103,13 +139,13 @@ export class PrismaClient {
   contentItem = this.createMockModel();
   statsSnapshot = this.createMockModel();
   liveStatus = this.createMockModel();
-  reward = this.createMockModel();
-  pointsTransaction = this.createMockModel();
+  reward = this.createMockModel<Reward>();
+  pointsTransaction = this.createMockModel<PointsTransaction>();
   redemption = this.createMockModel();
   oAuthAccount = this.createMockModel();
   socialAuthMetric = this.createMockModel();
-  poll = this.createMockModel();
-  pollOption = this.createMockModel();
+  poll = this.createMockModel<Poll>();
+  pollOption = this.createMockModel<PollOption>();
   pollVote = this.createMockModel();
   miniGame = this.createMockModel();
   gameParticipation = this.createMockModel();

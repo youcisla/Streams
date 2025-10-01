@@ -46,7 +46,9 @@ export class UsersService {
       },
     });
 
-    return transactions.reduce((balance, transaction) => balance + transaction.delta, 0);
+    const typedTransactions = transactions as Array<{ delta: number }>;
+
+    return typedTransactions.reduce((balance, transaction) => balance + transaction.delta, 0);
   }
 
   async deleteAccount(userId: string) {

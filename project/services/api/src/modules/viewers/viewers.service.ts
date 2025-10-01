@@ -1,5 +1,16 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../common/prisma/prisma.service';
+
+type StreamerRecord = {
+  streamerProfile?: { isPublic?: boolean | null } | null;
+};
+
+type RewardRecord = {
+  streamerId: string;
+  costPoints: number;
+  isActive?: boolean | null;
+  title?: string | null;
+};
 
 @Injectable()
 export class ViewersService {
@@ -12,7 +23,9 @@ export class ViewersService {
       include: { streamerProfile: true },
     });
 
-    if (!streamer || !streamer.streamerProfile) {
+    const typedStreamer = streamer as (StreamerRecord & { id: string }) | null;
+
+    if (!typedStreamer || !typedStreamer.streamerProfile) {
       throw new NotFoundException('Streamer not found');
     }
 
@@ -93,13 +106,15 @@ export class ViewersService {
       include: { streamer: true },
     });
 
-    if (!reward || !reward.isActive) {
+    const typedReward = reward as unknown as (RewardRecord & { streamer?: { id: string } | null }) | null;
+
+    if (!typedReward || typedReward.isActive === false) {
       throw new NotFoundException('Reward not found or inactive');
     }
 
     // Check if user has enough points
-    const pointsBalance = await this.getPointsBalance(viewerId, reward.streamerId);
-    if (pointsBalance < reward.costPoints) {
+    const pointsBalance = await this.getPointsBalance(viewerId, typedReward.streamerId);
+    if (pointsBalance < typedReward.costPoints) {
       throw new BadRequestException('Insufficient points');
     }
 
@@ -110,7 +125,7 @@ export class ViewersService {
         data: {
           rewardId,
           viewerId,
-          streamerId: reward.streamerId,
+          streamerId: typedReward.streamerId,
         },
       });
 
@@ -118,9 +133,9 @@ export class ViewersService {
       await prisma.pointsTransaction.create({
         data: {
           userId: viewerId,
-          streamerId: reward.streamerId,
-          delta: -reward.costPoints,
-          reason: `Redeemed: ${reward.title}`,
+          streamerId: typedReward.streamerId,
+          delta: -typedReward.costPoints,
+          reason: `Redeemed: ${typedReward.title ?? 'Reward'}`,
           metadata: { redemptionId: redemption.id },
         },
       });
@@ -159,6 +174,8 @@ export class ViewersService {
       },
     });
 
-    return transactions.reduce((balance, transaction) => balance + transaction.delta, 0);
+    const typedTransactions = transactions as Array<{ delta: number }>;
+
+    return typedTransactions.reduce((balance, transaction) => balance + transaction.delta, 0);
   }
 }

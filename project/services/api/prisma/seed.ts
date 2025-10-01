@@ -291,9 +291,14 @@ async function main() {
   });
 
   // Create poll votes
+  const pollOptions = (poll.options ?? []) as Array<{ id: string }>;
+
   for (let i = 0; i < 20; i++) {
     const viewer = viewers[i];
-    const option = poll.options[i % poll.options.length];
+    if (!viewer || pollOptions.length === 0) {
+      continue;
+    }
+    const option = pollOptions[i % pollOptions.length];
     
     await prisma.pollVote.create({
       data: {
