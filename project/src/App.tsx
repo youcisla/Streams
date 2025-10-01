@@ -8,38 +8,77 @@ import {
   Layers,
   LineChart,
   Link2,
-  LucideIcon,
   Megaphone,
   MessageCircle,
   ShieldCheck,
   Sparkles,
   Store,
   Users2,
-  Zap
+  Zap,
 } from 'lucide-react';
-import {
-  type FormEvent,
-  type RefObject,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import React, { ChangeEvent, FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-type Feature = {
-  id: string;
-  title: string;
-  description: string;
-  icon: LucideIcon;
-  highlights: string[];
+
+// --- Shared Types ---
+type ContactFormState = {
+  name: string;
+  email: string;
+  company: string;
+  role: string;
+  message: string;
 };
 
-type JourneyStep = {
+type RoiInputs = {
+  creators: number;
+  monthlyRevenuePerCreator: number;
+  engagementLift: number;
+  hoursSavedPerCreator: number;
+};
+
+type RoiPreset = {
   id: string;
+  label: string;
+  description: string;
+  values: RoiInputs;
+};
+
+type RoiProjection = {
+  currentMonthly: number;
+  projectedMonthly: number;
+  incrementalMonthly: number;
+  incrementalAnnual: number;
+  hoursReturned: number;
+  suggestedPlan: string;
+};
+
+type AutomationCategory = 'retention' | 'monetization' | 'community' | 'operations';
+
+type AutomationPlaybook = {
+  id: string;
+  category: AutomationCategory;
   title: string;
-  subtitle: string;
-  duration: string;
+  outcome: string;
+  metric: string;
+  lift: string;
+  effort: string;
+};
+
+type PlaybookFilter = {
+  id: AutomationCategory | 'all';
+  label: string;
+  description: string;
+};
+
+type NavSection = {
+  id: string;
+  label: string;
+  icon?: React.ReactNode;
+  ref: React.MutableRefObject<HTMLDivElement | null>;
+};
+
+type TrustLogo = {
+  name: string;
+  descriptor: string;
 };
 
 type Testimonial = {
@@ -57,23 +96,13 @@ type FAQ = {
   answer: string;
 };
 
-type TrustLogo = {
-  name: string;
-  descriptor: string;
-};
 
-type NavSection = {
+type Feature = {
   id: string;
-  label: string;
-  ref: RefObject<HTMLDivElement | null>;
-};
-
-type ContactFormState = {
-  name: string;
-  email: string;
-  company: string;
-  role: string;
-  message: string;
+  title: string;
+  description: string;
+  icon: React.ComponentType<{ className?: string; 'aria-hidden'?: boolean }>;
+  highlights: string[];
 };
 
 const FeatureCard = ({ icon: Icon, title, description, highlights }: Feature) => (
@@ -86,7 +115,7 @@ const FeatureCard = ({ icon: Icon, title, description, highlights }: Feature) =>
     </div>
     <p className="mt-4 text-sm leading-relaxed text-slate-300">{description}</p>
     <ul className="mt-6 space-y-2 text-sm text-slate-300">
-      {highlights.map((item) => (
+      {highlights.map((item: string) => (
         <li key={item} className="flex items-center gap-2">
           <CheckCircle2 className="h-4 w-4 shrink-0 text-cyan-400" aria-hidden />
           <span>{item}</span>
@@ -96,6 +125,14 @@ const FeatureCard = ({ icon: Icon, title, description, highlights }: Feature) =>
     <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
   </article>
 );
+
+
+type JourneyStep = {
+  id: string;
+  title: string;
+  subtitle: string;
+  duration: string;
+};
 
 const JourneyStepCard = ({ title, subtitle, duration, id }: JourneyStep) => (
   <div
@@ -118,6 +155,8 @@ function App() {
   const pricingRef = useRef<HTMLDivElement | null>(null);
   const testimonialsRef = useRef<HTMLDivElement | null>(null);
   const faqRef = useRef<HTMLDivElement | null>(null);
+  const roiRef = useRef<HTMLDivElement | null>(null);
+  const playbooksRef = useRef<HTMLDivElement | null>(null);
 
   const [activeSection, setActiveSection] = useState('overview');
   const [hasScrolled, setHasScrolled] = useState(false);
@@ -133,6 +172,14 @@ function App() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [expandedFaq, setExpandedFaq] = useState<string | null>(null);
+  const [roiInputs, setRoiInputs] = useState<RoiInputs>({
+    creators: 8,
+    monthlyRevenuePerCreator: 3200,
+    engagementLift: 24,
+    hoursSavedPerCreator: 6,
+  });
+  const [activeRoiPreset, setActiveRoiPreset] = useState<string>('agency');
+  const [activePlaybookCategory, setActivePlaybookCategory] = useState<'all' | AutomationCategory>('all');
 
   const sections = useMemo<NavSection[]>(
     () => [
@@ -141,6 +188,8 @@ function App() {
       { id: 'journey', label: 'User Journey', ref: journeyRef },
       { id: 'marketplace', label: 'Platform Suite', ref: marketplaceRef },
       { id: 'stories', label: 'Stories', ref: testimonialsRef },
+      { id: 'roi', label: 'ROI Planner', ref: roiRef },
+      { id: 'playbooks', label: 'Playbooks', ref: playbooksRef },
       { id: 'pricing', label: 'Plans', ref: pricingRef },
       { id: 'faq', label: 'FAQ', ref: faqRef }
     ],
@@ -303,6 +352,195 @@ function App() {
     []
   );
 
+  const roiPresets = useMemo<RoiPreset[]>(
+    () => [
+      {
+        id: 'agency',
+        label: 'Agency pod',
+        description: '8 managed creators with weekly sponsor spots.',
+        values: {
+          creators: 8,
+          monthlyRevenuePerCreator: 3200,
+          engagementLift: 24,
+          hoursSavedPerCreator: 6,
+        },
+      },
+      {
+        id: 'studio',
+        label: 'Studio lineup',
+        description: '18 creators across live and VOD formats.',
+        values: {
+          creators: 18,
+          monthlyRevenuePerCreator: 4100,
+          engagementLift: 31,
+          hoursSavedPerCreator: 9,
+        },
+      },
+      {
+        id: 'enterprise',
+        label: 'Global network',
+        description: '40+ personalities with dedicated ops teams.',
+        values: {
+          creators: 42,
+          monthlyRevenuePerCreator: 5200,
+          engagementLift: 18,
+          hoursSavedPerCreator: 11,
+        },
+      },
+    ],
+    []
+  );
+
+  const currencyFormatter = useMemo(
+    () =>
+      new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        maximumFractionDigits: 0,
+      }),
+    []
+  );
+
+  const numberFormatter = useMemo(
+    () =>
+      new Intl.NumberFormat('en-US', {
+        maximumFractionDigits: 0,
+      }),
+    []
+  );
+
+  const roiProjection = useMemo<RoiProjection>(() => {
+    const currentMonthly = roiInputs.creators * roiInputs.monthlyRevenuePerCreator;
+    const projectedMonthly =
+      currentMonthly * (1 + Math.max(0, roiInputs.engagementLift) / 100);
+    const incrementalMonthly = Math.max(projectedMonthly - currentMonthly, 0);
+    const incrementalAnnual = incrementalMonthly * 12;
+    const hoursReturned = roiInputs.creators * roiInputs.hoursSavedPerCreator;
+
+    let suggestedPlan = 'Creator Collective';
+    if (roiInputs.creators > 15 && roiInputs.creators <= 30) {
+      suggestedPlan = 'Studio Growth';
+    } else if (roiInputs.creators > 30) {
+      suggestedPlan = 'Enterprise Alliance';
+    }
+
+    return {
+      currentMonthly,
+      projectedMonthly,
+      incrementalMonthly,
+      incrementalAnnual,
+      hoursReturned,
+      suggestedPlan,
+    };
+  }, [roiInputs]);
+
+  const automationPlaybooks = useMemo<AutomationPlaybook[]>(
+    () => [
+      {
+        id: 'loyalty-lap',
+        category: 'retention',
+        title: 'Loyalty Lap',
+        outcome: 'Reward top viewers with dynamic point multipliers before major drops.',
+        metric: 'Repeat viewers +28%',
+        lift: 'Engagement lift +18%',
+        effort: 'Low',
+      },
+      {
+        id: 'sponsor-surge',
+        category: 'monetization',
+        title: 'Sponsor Surge Scheduler',
+        outcome: 'Auto-sequence sponsor shoutouts and track conversion per channel.',
+        metric: 'CPM uplift +22%',
+        lift: 'Revenue lift +31%',
+        effort: 'Medium',
+      },
+      {
+        id: 'hype-pings',
+        category: 'community',
+        title: 'Hype Pings',
+        outcome: 'Trigger Discord and email nudges when VIPs go live simultaneously.',
+        metric: 'Live concurrence +19%',
+        lift: 'Chat velocity +35%',
+        effort: 'Low',
+      },
+      {
+        id: 'merch-matrix',
+        category: 'monetization',
+        title: 'Merch Matrix',
+        outcome: 'Bundle merch and digital perks with timed scarcity tiers.',
+        metric: 'AOV increase +27%',
+        lift: 'Sell-through +33%',
+        effort: 'Medium',
+      },
+      {
+        id: 'sentiment-scout',
+        category: 'operations',
+        title: 'Sentiment Scout',
+        outcome: 'Summarize sentiment across chat, polls, and socials into a daily brief.',
+        metric: 'Escalations -42%',
+        lift: 'Response time -61%',
+        effort: 'Low',
+      },
+      {
+        id: 'vip-loop',
+        category: 'retention',
+        title: 'VIP Feedback Loop',
+        outcome: 'Collect structured feedback from superfans after major campaigns.',
+        metric: 'Net promoter +16',
+        lift: 'Retention +24%',
+        effort: 'Medium',
+      },
+      {
+        id: 'talent-handoff',
+        category: 'operations',
+        title: 'Talent Handoff Builder',
+        outcome: 'Automate task assignments between producers, editors, and talent managers.',
+        metric: 'Production time -29%',
+        lift: 'On-time launches +37%',
+        effort: 'High',
+      },
+      {
+        id: 'creator-passport',
+        category: 'community',
+        title: 'Creator Passport',
+        outcome: 'Give viewers unified rewards across Twitch, YouTube, and Kick participation.',
+        metric: 'Cross-platform participation +32%',
+        lift: 'Lifetime value +21%',
+        effort: 'Medium',
+      },
+    ],
+    []
+  );
+
+  const playbookFilters = useMemo<PlaybookFilter[]>(
+    () => [
+      { id: 'all', label: 'All', description: 'Show every automation recipe.' },
+      { id: 'retention', label: 'Retention', description: 'Keep superfans engaged and active.' },
+      { id: 'monetization', label: 'Monetization', description: 'Increase revenue velocity across storefronts.' },
+      { id: 'community', label: 'Community', description: 'Grow loyal audiences across every channel.' },
+      { id: 'operations', label: 'Operations', description: 'Coordinate teams and workflows without bottlenecks.' },
+    ],
+    []
+  );
+
+  const filteredPlaybooks = useMemo(() => {
+    if (activePlaybookCategory === 'all') {
+      return automationPlaybooks;
+    }
+    return automationPlaybooks.filter((playbook: AutomationPlaybook) => playbook.category === activePlaybookCategory);
+  }, [activePlaybookCategory, automationPlaybooks]);
+
+  const activeRoiPresetLabel = useMemo(() => {
+    if (activeRoiPreset === 'custom') {
+      return 'Custom scenario';
+    }
+    return roiPresets.find((preset) => preset.id === activeRoiPreset)?.label ?? 'Custom scenario';
+  }, [activeRoiPreset, roiPresets]);
+
+  const activePlaybookDescription = useMemo(() => {
+    return playbookFilters.find((filter: PlaybookFilter) => filter.id === activePlaybookCategory)?.description ?? '';
+  }, [activePlaybookCategory, playbookFilters]);
+
   const scrollToSection = useCallback(
     (id: string) => {
       const target = sections.find((section: NavSection) => section.id === id)?.ref.current;
@@ -398,6 +636,20 @@ function App() {
 
   const toggleFaq = useCallback((id: string) => {
     setExpandedFaq((prev: string | null) => (prev === id ? null : id));
+  }, []);
+
+  const handleRoiChange = useCallback((field: keyof RoiInputs, value: number) => {
+    setActiveRoiPreset('custom');
+    setRoiInputs((prev: RoiInputs) => ({ ...prev, [field]: value }));
+  }, []);
+
+  const applyRoiPreset = useCallback((preset: RoiPreset) => {
+    setActiveRoiPreset(preset.id);
+    setRoiInputs(preset.values);
+  }, []);
+
+  const handlePlaybookFilter = useCallback((category: 'all' | AutomationCategory) => {
+    setActivePlaybookCategory(category);
   }, []);
 
   const openDocs = useCallback(() => {
@@ -870,9 +1122,214 @@ function App() {
         </section>
 
         <section
+          ref={roiRef}
+          data-section-id="roi"
+          className="border-b border-slate-900/70 bg-slate-950/40"
+        >
+          <div className="mx-auto max-w-7xl px-6 py-20 lg:py-24">
+            <div className="flex flex-col items-center gap-6 text-center">
+              <span className="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-1 text-xs font-semibold uppercase tracking-wide text-cyan-200">
+                <BarChart3 className="h-4 w-4" aria-hidden />
+                ROI Planner
+              </span>
+              <h2 className="text-3xl font-semibold text-slate-100 sm:text-4xl">Estimate your studio’s upside with StreamLink.</h2>
+              <p className="max-w-3xl text-base leading-relaxed text-slate-300">
+                Use live numbers from your roster or explore presets to project the impact of StreamLink on revenue, engagement, and team capacity.
+              </p>
+            </div>
+
+            <div className="mt-12 grid gap-8 lg:grid-cols-[420px_minmax(0,_1fr)]">
+              <div className="space-y-6 rounded-3xl border border-slate-800 bg-slate-900/70 p-8">
+                <div className="grid gap-3 sm:grid-cols-3">
+                  {roiPresets.map((preset: RoiPreset) => (
+                    <button
+                      key={preset.id}
+                      type="button"
+                      onClick={() => applyRoiPreset(preset)}
+                      className={`rounded-2xl border px-4 py-3 text-left transition ${
+                        activeRoiPreset === preset.id
+                          ? 'border-cyan-400/80 bg-cyan-500/10 text-cyan-200 shadow-[0_0_20px_rgba(34,211,238,0.25)]'
+                          : 'border-slate-800 bg-slate-900/60 text-slate-200 hover:border-cyan-400/60 hover:text-cyan-100'
+                      }`}
+                    >
+                      <span className="text-sm font-semibold">{preset.label}</span>
+                      <p className="mt-1 text-xs text-slate-400">{preset.description}</p>
+                    </button>
+                  ))}
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <label className="flex flex-col gap-2 text-xs font-semibold uppercase tracking-wide text-slate-300">
+                    Creators managed
+                    <input
+                      type="number"
+                      min={1}
+                      max={100}
+                      value={roiInputs.creators}
+                      onChange={(event: ChangeEvent<HTMLInputElement>) => handleRoiChange('creators', Number.isNaN(event.target.valueAsNumber) ? 0 : event.target.valueAsNumber)}
+                      className="rounded-lg border border-slate-800 bg-slate-900/70 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-cyan-400/70 focus:bg-slate-900"
+                    />
+                  </label>
+                  <label className="flex flex-col gap-2 text-xs font-semibold uppercase tracking-wide text-slate-300">
+                    Avg monthly revenue per creator
+                    <input
+                      type="number"
+                      min={0}
+                      max={100000}
+                      value={roiInputs.monthlyRevenuePerCreator}
+                      onChange={(event: ChangeEvent<HTMLInputElement>) => handleRoiChange('monthlyRevenuePerCreator', Number.isNaN(event.target.valueAsNumber) ? 0 : event.target.valueAsNumber)}
+                      className="rounded-lg border border-slate-800 bg-slate-900/70 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-cyan-400/70 focus:bg-slate-900"
+                    />
+                  </label>
+                  <label className="flex flex-col gap-2 text-xs font-semibold uppercase tracking-wide text-slate-300">
+                    Engagement lift (%)
+                    <input
+                      type="number"
+                      min={0}
+                      max={200}
+                      value={roiInputs.engagementLift}
+                      onChange={(event: ChangeEvent<HTMLInputElement>) => handleRoiChange('engagementLift', Number.isNaN(event.target.valueAsNumber) ? 0 : event.target.valueAsNumber)}
+                      className="rounded-lg border border-slate-800 bg-slate-900/70 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-cyan-400/70 focus:bg-slate-900"
+                    />
+                  </label>
+                  <label className="flex flex-col gap-2 text-xs font-semibold uppercase tracking-wide text-slate-300">
+                    Hours saved per creator/month
+                    <input
+                      type="number"
+                      min={0}
+                      max={120}
+                      value={roiInputs.hoursSavedPerCreator}
+                      onChange={(event: ChangeEvent<HTMLInputElement>) => handleRoiChange('hoursSavedPerCreator', Number.isNaN(event.target.valueAsNumber) ? 0 : event.target.valueAsNumber)}
+                      className="rounded-lg border border-slate-800 bg-slate-900/70 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-cyan-400/70 focus:bg-slate-900"
+                    />
+                  </label>
+                </div>
+
+                <div className="rounded-2xl border border-slate-800 bg-slate-900/60 px-4 py-3 text-xs text-slate-400">
+                  Active preset: <span className="font-semibold text-cyan-300">{activeRoiPresetLabel}</span>
+                </div>
+              </div>
+
+              <div className="space-y-8 rounded-3xl border border-cyan-400/30 bg-gradient-to-r from-slate-900/80 via-slate-900/40 to-slate-900/80 p-8">
+                <div>
+                  <h3 className="text-xl font-semibold text-slate-100">Projected outcomes</h3>
+                  <p className="mt-2 text-sm text-slate-300">
+                    StreamLink blends engagement lift, automation, and reclaimed hours to unlock measurable revenue growth.
+                  </p>
+                </div>
+                <ul className="space-y-3 text-sm text-slate-300">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-cyan-300" aria-hidden />
+                    <span>
+                      Current monthly revenue: <span className="font-semibold text-cyan-300">{currencyFormatter.format(roiProjection.currentMonthly)}</span>
+                    </span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-cyan-300" aria-hidden />
+                    <span>
+                      Projected monthly revenue: <span className="font-semibold text-cyan-300">{currencyFormatter.format(roiProjection.projectedMonthly)}</span>
+                    </span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-cyan-300" aria-hidden />
+                    <span>
+                      Incremental annual upside: <span className="font-semibold text-cyan-300">{currencyFormatter.format(roiProjection.incrementalAnnual)}</span>
+                    </span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-cyan-300" aria-hidden />
+                    <span>
+                      Hours returned to the team: <span className="font-semibold text-cyan-300">{numberFormatter.format(roiProjection.hoursReturned)}</span> per year
+                    </span>
+                  </li>
+                </ul>
+                <div className="rounded-2xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-4 text-sm text-slate-100">
+                  <p className="font-semibold text-cyan-200">Recommended plan: {roiProjection.suggestedPlan}</p>
+                  <p className="mt-2 text-xs text-slate-300">
+                    Share this projection with finance and operations leaders to align on rollout scope.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section
+          ref={playbooksRef}
+          data-section-id="playbooks"
+          className="border-b border-slate-900/70"
+        >
+          <div className="mx-auto max-w-7xl px-6 py-20 lg:py-24">
+            <div className="flex flex-col items-center gap-6 text-center">
+              <span className="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-1 text-xs font-semibold uppercase tracking-wide text-cyan-200">
+                <Sparkles className="h-4 w-4" aria-hidden />
+                Automation Playbooks
+              </span>
+              <h2 className="text-3xl font-semibold text-slate-100 sm:text-4xl">Operational recipes to launch in a single sprint.</h2>
+              <p className="max-w-3xl text-base leading-relaxed text-slate-300">
+                Filter our best-practice automations to orchestrate engagement loops, monetization pushes, and backstage workflows that keep every creator on schedule.
+              </p>
+            </div>
+
+            <div className="mt-10 flex flex-wrap justify-center gap-3">
+              {playbookFilters.map((filter: PlaybookFilter) => (
+                <button
+                  key={filter.id}
+                  type="button"
+                  onClick={() => handlePlaybookFilter(filter.id)}
+                  className={`rounded-full border px-4 py-2 text-xs font-semibold transition ${
+                    activePlaybookCategory === filter.id
+                      ? 'border-cyan-400/80 bg-cyan-500/10 text-cyan-200'
+                      : 'border-slate-800 bg-slate-900/70 text-slate-200 hover:border-cyan-400/60 hover:text-cyan-100'
+                  }`}
+                >
+                  {filter.label}
+                </button>
+              ))}
+            </div>
+
+            <p className="mt-4 text-center text-sm text-slate-400">{activePlaybookDescription}</p>
+
+            <div className="mt-10 grid gap-6 lg:grid-cols-3">
+              {filteredPlaybooks.map((playbook: AutomationPlaybook) => (
+                <article
+                  key={playbook.id}
+                  className="flex h-full flex-col justify-between gap-4 rounded-3xl border border-slate-800 bg-slate-900/70 p-6 transition hover:border-cyan-400/40 hover:bg-slate-900/80"
+                >
+                  <div className="space-y-3">
+                    <span className="inline-flex items-center rounded-full bg-cyan-500/10 px-3 py-1 text-xs font-semibold text-cyan-200">
+                      {playbook.category.charAt(0).toUpperCase() + playbook.category.slice(1)}
+                    </span>
+                    <h3 className="text-lg font-semibold text-slate-100">{playbook.title}</h3>
+                    <p className="text-sm text-slate-300">{playbook.outcome}</p>
+                  </div>
+                  <div className="grid gap-3 text-xs text-slate-400 sm:grid-cols-3">
+                    <div className="rounded-xl border border-slate-800/80 bg-slate-900/70 px-3 py-2">
+                      <p className="font-semibold text-cyan-200">Impact</p>
+                      <p className="mt-1 text-slate-300">{playbook.metric}</p>
+                    </div>
+                    <div className="rounded-xl border border-slate-800/80 bg-slate-900/70 px-3 py-2">
+                      <p className="font-semibold text-cyan-200">Signal</p>
+                      <p className="mt-1 text-slate-300">{playbook.lift}</p>
+                    </div>
+                    <div className="rounded-xl border border-slate-800/80 bg-slate-900/70 px-3 py-2">
+                      <p className="font-semibold text-cyan-200">Effort</p>
+                      <p className="mt-1 text-slate-300">{playbook.effort}</p>
+                    </div>
+                  </div>
+                  <p className="text-xs text-slate-400">
+                    Pair this playbook with StreamLink alerts and CRM syncs so every team knows when to move.
+                  </p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section
           ref={pricingRef}
           data-section-id="pricing"
-          className="border-b border-slate-900/70"
+          className="border-b border-slate-900/70 bg-slate-950/40"
         >
           <div className="mx-auto max-w-7xl px-6 py-20 lg:py-24">
             <div className="text-center">
@@ -882,7 +1339,7 @@ function App() {
               </span>
               <h2 className="mt-4 text-3xl font-semibold text-slate-100 sm:text-4xl">Pick the plan that matches your studio footprint.</h2>
               <p className="mt-3 text-base leading-relaxed text-slate-300">
-                Every plan includes dedicated onboarding, platform integrations, and premium support. Upgrade or downgrade anytime as your roster evolves.
+                Every plan includes dedicated onboarding, platform integrations, and premium support. Upgrade or change tiers as your roster evolves.
               </p>
             </div>
 
@@ -930,75 +1387,11 @@ function App() {
                 >
                   <div>
                     <h3 className="text-xl font-semibold text-slate-100">{plan.name}</h3>
-
-                <section
-                  ref={faqRef}
-                  data-section-id="faq"
-                  className="border-b border-slate-900/70 bg-slate-950/40"
-                >
-                  <div className="mx-auto max-w-5xl px-6 py-20 lg:py-24">
-                    <div className="text-center">
-                      <span className="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900/60 px-4 py-1 text-xs font-semibold uppercase tracking-wide text-slate-300">
-                        <Layers className="h-4 w-4 text-cyan-300" aria-hidden />
-                        FAQs
-                      </span>
-                      <h2 className="mt-4 text-3xl font-semibold text-slate-100 sm:text-4xl">Answers for program leads and operators.</h2>
-                      <p className="mt-3 text-base leading-relaxed text-slate-300">
-                        Can’t find what you need? Our success and solutions engineers are on standby to architect your rollout.
-                      </p>
-                    </div>
-
-                    <div className="mt-12 space-y-4">
-                      {faqs.map((faq: FAQ) => {
-                        const isOpen = expandedFaq === faq.id;
-                        return (
-                          <div
-                            key={faq.id}
-                            className={`overflow-hidden rounded-3xl border transition ${
-                              isOpen
-                                ? 'border-cyan-400/60 bg-slate-900/75'
-                                : 'border-slate-800/80 bg-slate-900/60 hover:border-cyan-400/30'
-                            }`}
-                          >
-                            <button
-                              type="button"
-                              className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
-                              onClick={() => toggleFaq(faq.id)}
-                              aria-expanded={isOpen}
-                              aria-controls={`faq-panel-${faq.id}`}
-                              id={`faq-trigger-${faq.id}`}
-                            >
-                              <span className="text-base font-semibold text-slate-100">{faq.question}</span>
-                              <span
-                                className={`flex h-8 w-8 items-center justify-center rounded-full bg-slate-900/80 text-sm font-semibold text-cyan-200 transition-transform duration-200 ${
-                                  isOpen ? 'rotate-45' : ''
-                                }`}
-                                aria-hidden
-                              >
-                                +
-                              </span>
-                            </button>
-                            {isOpen && (
-                              <div
-                                id={`faq-panel-${faq.id}`}
-                                role="region"
-                                aria-labelledby={`faq-trigger-${faq.id}`}
-                                className="border-t border-slate-800/70 px-6 py-4 text-sm leading-relaxed text-slate-300"
-                              >
-                                {faq.answer}
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </section>
                     <p className="mt-1 text-sm text-slate-300">{plan.description}</p>
                   </div>
                   <p className="text-3xl font-bold text-cyan-300">{plan.price}</p>
                   <ul className="space-y-3 text-sm text-slate-300">
-                    {plan.highlights.map((highlight) => (
+                    {plan.highlights.map((highlight: string) => (
                       <li key={highlight} className="flex items-start gap-2">
                         <CheckCircle2 className="mt-0.5 h-4 w-4 text-cyan-300" aria-hidden />
                         <span>{highlight}</span>
@@ -1018,6 +1411,70 @@ function App() {
                   </button>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        <section
+          ref={faqRef}
+          data-section-id="faq"
+          className="border-b border-slate-900/70 bg-slate-950/40"
+        >
+          <div className="mx-auto max-w-5xl px-6 py-20 lg:py-24">
+            <div className="text-center">
+              <span className="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900/60 px-4 py-1 text-xs font-semibold uppercase tracking-wide text-slate-300">
+                <Layers className="h-4 w-4 text-cyan-300" aria-hidden />
+                FAQs
+              </span>
+              <h2 className="mt-4 text-3xl font-semibold text-slate-100 sm:text-4xl">Answers for program leads and operators.</h2>
+              <p className="mt-3 text-base leading-relaxed text-slate-300">
+                Can’t find what you need? Our success and solutions engineers are on standby to architect your rollout.
+              </p>
+            </div>
+
+            <div className="mt-12 space-y-4">
+              {faqs.map((faq: FAQ) => {
+                const isOpen = expandedFaq === faq.id;
+                return (
+                  <div
+                    key={faq.id}
+                    className={`overflow-hidden rounded-3xl border transition ${
+                      isOpen
+                        ? 'border-cyan-400/60 bg-slate-900/75'
+                        : 'border-slate-800/80 bg-slate-900/60 hover:border-cyan-400/30'
+                    }`}
+                  >
+                    <button
+                      type="button"
+                      className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
+                      onClick={() => toggleFaq(faq.id)}
+                      aria-expanded={isOpen}
+                      aria-controls={`faq-panel-${faq.id}`}
+                      id={`faq-trigger-${faq.id}`}
+                    >
+                      <span className="text-base font-semibold text-slate-100">{faq.question}</span>
+                      <span
+                        className={`flex h-8 w-8 items-center justify-center rounded-full bg-slate-900/80 text-sm font-semibold text-cyan-200 transition-transform duration-200 ${
+                          isOpen ? 'rotate-45' : ''
+                        }`}
+                        aria-hidden
+                      >
+                        +
+                      </span>
+                    </button>
+                    {isOpen && (
+                      <div
+                        id={`faq-panel-${faq.id}`}
+                        role="region"
+                        aria-labelledby={`faq-trigger-${faq.id}`}
+                        className="border-t border-slate-800/70 px-6 py-4 text-sm leading-relaxed text-slate-300"
+                      >
+                        {faq.answer}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </section>
