@@ -28,23 +28,23 @@ importers:
         specifier: workspace:*
         version: link:packages/ui
       '@types/react':
-        specifier: 19.1.17
+        specifier: ~19.1.10
         version: 19.1.17
       '@types/react-dom':
         specifier: 19.1.11
         version: 19.1.11(@types/react@19.1.17)
       lucide-react:
         specifier: ^0.470.0
-        version: 0.470.0(react@19.1.1)
+        version: 0.470.0(react@19.1.0)
       react:
-        specifier: 19.1.1
-        version: 19.1.1
+        specifier: 19.1.0
+        version: 19.1.0
       react-dom:
-        specifier: 19.1.1
-        version: 19.1.1(react@19.1.1)
+        specifier: 19.1.0
+        version: 19.1.0(react@19.1.0)
       react-icons:
         specifier: ^5.2.1
-        version: 5.5.0(react@19.1.1)
+        version: 5.5.0(react@19.1.0)
     devDependencies:
       '@types/node':
         specifier: ^20.0.0
@@ -4858,7 +4858,7 @@ packages:
   /@types/react-test-renderer@19.1.0:
     resolution: {integrity: sha512-XD0WZrHqjNrxA/MaR9O22w/RNidWR9YZmBdRGI7wcnWGrv/3dA8wKCJ8m63Sn+tLJhcjmuhOi629N66W6kgWzQ==}
     dependencies:
-      '@types/react': 19.1.15
+      '@types/react': 19.1.17
     dev: true
 
   /@types/react@19.1.15:
@@ -10377,12 +10377,12 @@ packages:
     dependencies:
       yallist: 3.1.1
 
-  /lucide-react@0.470.0(react@19.1.1):
+  /lucide-react@0.470.0(react@19.1.0):
     resolution: {integrity: sha512-tqYODeoB3qU5gxH33IbL7IcF05EYYzsZQJqdM9HGGHwmoJMPvVLPHO6Plu6HNAfntucZQ41taEw6aUpwOtaoXg==}
     peerDependencies:
       react: 19.1.0 || 19
     dependencies:
-      react: 19.1.1
+      react: 19.1.0
     dev: false
 
   /luxon@3.5.0:
@@ -11584,15 +11584,6 @@ packages:
       react: 19.1.0
       scheduler: 0.26.0
 
-  /react-dom@19.1.1(react@19.1.1):
-    resolution: {integrity: sha512-Dlq/5LAZgF0Gaz6yiqZCf6VCcZs1ghAJyrsu84Q/GT0gV+mCxbfmKNoGRKBYMJ8IEdGPqu49YWXD02GCknEDkw==}
-    peerDependencies:
-      react: 19.1.0 || 19
-    dependencies:
-      react: 19.1.1
-      scheduler: 0.26.0
-    dev: false
-
   /react-fast-compare@3.2.2:
     resolution: {integrity: sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ==}
 
@@ -11604,12 +11595,12 @@ packages:
     dependencies:
       react: 19.1.0
 
-  /react-icons@5.5.0(react@19.1.1):
+  /react-icons@5.5.0(react@19.1.0):
     resolution: {integrity: sha512-MEFcXdkP3dLo8uumGI5xN3lDFNsRtrjbOEKDLD7yv76v4wpnEq2Lt2qeHaQOr34I/wPN3s3+N08WkQ+CW37Xiw==}
     peerDependencies:
       react: 19.1.0 || 19
     dependencies:
-      react: 19.1.1
+      react: 19.1.0
     dev: false
 
   /react-is@16.13.1:
@@ -11935,11 +11926,6 @@ packages:
   /react@19.1.0:
     resolution: {integrity: sha512-FS+XFBNvn3GTAWq26joslQgWNoFu08F4kl0J4CgdNKADkdSGXQyTCnKteIAJy96Br6YbpEU1LSzV5dYtjMkMDg==}
     engines: {node: '>=0.10.0'}
-
-  /react@19.1.1:
-    resolution: {integrity: sha512-w8nqGImo45dmMIfljjMwOGtbmC/mk4CMYhWIicdSflH91J9TyCyczcPFXJzrZ/ZXcgGRFeP6BU0BEJTw6tZdfQ==}
-    engines: {node: '>=0.10.0'}
-    dev: false
 
   /readable-stream@3.6.2:
     resolution: {integrity: sha512-9u/sniCrY3D5WdsERHzHE4G2YCXqoG5FTHUiCC4SIbr6XcLZBY05ya9EKjYek9O5xOAwjGq+1JdGBAS7Q9ScoA==}
