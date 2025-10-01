@@ -4,6 +4,9 @@ import { Roles } from '../../common/decorators/roles.decorator';
 import { Role } from '../../prisma-client';
 import { InteractionsService } from './interactions.service';
 
+type JsonPrimitive = string | number | boolean | null;
+type JsonValue = JsonPrimitive | JsonValue[] | { [key: string]: JsonValue };
+
 @ApiTags('interactions')
 @ApiBearerAuth()
 @Controller('interactions')
@@ -51,7 +54,10 @@ export class InteractionsController {
   @Post('games')
   @ApiOperation({ summary: 'Create a mini game' })
   @ApiResponse({ status: 201, description: 'Game created successfully' })
-  createMiniGame(@Req() req, @Body() body: { type: 'TRIVIA' | 'PREDICTION' | 'QUIZ'; gameData: any; endsAt?: string }) {
+  createMiniGame(
+    @Req() req,
+    @Body() body: { type: 'TRIVIA' | 'PREDICTION' | 'QUIZ'; gameData: JsonValue; endsAt?: string },
+  ) {
     return this.interactionsService.createMiniGame(
       req.user.id,
       body.type,
@@ -70,7 +76,11 @@ export class InteractionsController {
   @Post('games/:gameId/participate')
   @ApiOperation({ summary: 'Participate in a mini game' })
   @ApiResponse({ status: 201, description: 'Participation recorded successfully' })
-  participateInGame(@Req() req, @Param('gameId') gameId: string, @Body() body: { answer: any }) {
+  participateInGame(
+    @Req() req,
+    @Param('gameId') gameId: string,
+    @Body() body: { answer: JsonValue },
+  ) {
     return this.interactionsService.participateInGame(req.user.id, gameId, body.answer);
   }
 }

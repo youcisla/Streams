@@ -1,8 +1,16 @@
-import { Body, Controller, Get, Post, Req, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Req, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
 import { Public } from '../../common/decorators/public.decorator';
 import { AuthService } from './auth.service';
+import { GoogleMobileAuthGuard } from './guards/google-mobile.guard';
+
+const fromBase64Url = (value: string) => {
+  const normalized = value.replace(/-/g, '+').replace(/_/g, '/');
+  const padded = normalized.padEnd(normalized.length + ((4 - (normalized.length % 4)) % 4), '=');
+  return Buffer.from(padded, 'base64').toString('utf8');
+};
 
 @ApiTags('auth')
 @Controller('auth')
@@ -53,11 +61,96 @@ export class AuthController {
   }
 
   @Public()
+  @Get('google/mobile')
+  @UseGuards(GoogleMobileAuthGuard)
+  @ApiOperation({ summary: 'Begin Google OAuth flow for mobile clients' })
+  async googleMobileAuth() {
+    // Guard handles redirect
+  }
+
+  @Public()
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   @ApiOperation({ summary: 'Google OAuth callback' })
-  async googleAuthRedirect(@Req() req) {
-    return this.authService.googleLogin(req.user);
+  async googleAuthRedirect(@Req() req, @Res() res: Response, @Query('state') state?: string) {
+    const authResult = await this.authService.googleLogin(req.user);
+
+    if (state) {
+      try {
+        const parsedState = JSON.parse(fromBase64Url(state));
+        if (parsedState?.redirectUri) {
+          const redirectUrl = new URL(parsedState.redirectUri);
+          const allowedProtocols = new Set(['streamlink:', 'exp:', 'http:', 'https:']);
+          if (!allowedProtocols.has(redirectUrl.protocol)) {
+            throw new Error(`Unsupported redirect protocol: ${redirectUrl.protocol}`);
+          }
+
+          redirectUrl.searchParams.set('provider', 'google');
+          redirectUrl.searchParams.set('token', authResult.access_token);
+          redirectUrl.searchParams.set('user', Buffer.from(JSON.stringify(authResult.user)).toString('base64'));
+          if (parsedState.analyticsId) {
+            redirectUrl.searchParams.set('analyticsId', String(parsedState.analyticsId));
+          }
+          return res.redirect(redirectUrl.toString());
+        }
+      } catch (error) {
+        console.warn('[AuthController] Failed to parse OAuth state payload', error);
+      }
+    }
+
+    return res.json(authResult);
+  }
+
+  @Public()
+  @Get(':provider/mobile')
+  @ApiOperation({ summary: 'Fallback handler for unsupported providers on mobile' })
+  async unsupportedProviderMobile(
+    @Param('provider') provider: string,
+    @Query('redirectUri') redirectUri: string | undefined,
+    @Res() res: Response,
+  ) {
+    const normalizedProvider = provider?.toLowerCase?.() ?? 'unknown';
+    await this.authService.recordSocialMetric({
+      provider: normalizedProvider,
+      action: 'error',
+      context: 'mobile',
+      metadata: { reason: 'provider_not_configured' },
+    });
+
+    if (redirectUri) {
+      try {
+        const redirectUrl = new URL(redirectUri);
+        const allowedProtocols = new Set(['streamlink:', 'exp:', 'http:', 'https:']);
+        if (allowedProtocols.has(redirectUrl.protocol)) {
+          redirectUrl.searchParams.set('provider', normalizedProvider);
+          redirectUrl.searchParams.set(
+            'error',
+            `${normalizedProvider.charAt(0).toUpperCase()}${normalizedProvider.slice(1)} authentication is not configured yet.`,
+          );
+          return res.redirect(redirectUrl.toString());
+        }
+      } catch (error) {
+        console.warn('[AuthController] Invalid redirect Uri for unsupported provider', error);
+      }
+    }
+
+    return res.status(400).json({ error: `Provider ${normalizedProvider} is not configured.` });
+  }
+
+  @Public()
+  @Post('social/metrics')
+  @ApiOperation({ summary: 'Record metrics for social auth interactions' })
+  async recordSocialMetric(
+    @Body()
+    body: {
+      provider: string;
+      action: 'tap' | 'success' | 'error' | 'cancel';
+      context?: string;
+      metadata?: Record<string, unknown>;
+    },
+  ) {
+    await this.authService.recordSocialMetric(body);
+    return { ok: true };
   }
 
   @Get('profile')

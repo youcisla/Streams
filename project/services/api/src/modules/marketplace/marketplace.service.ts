@@ -3,6 +3,16 @@ import { config } from '@streamlink/config';
 import Stripe from 'stripe';
 import { PrismaService } from '../../common/prisma/prisma.service';
 
+type ProductRecord = {
+  id: string;
+  streamerId: string;
+  currency: string;
+  price: number;
+  title: string;
+  description?: string | null;
+  isActive?: boolean;
+};
+
 @Injectable()
 export class MarketplaceService {
   private stripe: Stripe;
@@ -64,17 +74,16 @@ export class MarketplaceService {
 
   // Orders
   async createOrder(buyerId: string, productId: string) {
-    const product = await this.prisma.product.findUnique({
+    const product = (await this.prisma.product.findUnique({
       where: { id: productId },
-      include: { streamer: true },
-    });
+    })) as ProductRecord | null;
 
     if (!product || !product.isActive) {
       throw new NotFoundException('Product not found or inactive');
     }
 
     // Create Stripe checkout session
-    const session = await this.stripe.checkout.sessions.create({
+    const sessionParams: Stripe.Checkout.SessionCreateParams = {
       payment_method_types: ['card'],
       line_items: [
         {
@@ -97,7 +106,9 @@ export class MarketplaceService {
         streamerId: product.streamerId,
         buyerId,
       },
-    });
+    };
+
+    const session = await this.stripe.checkout.sessions.create(sessionParams);
 
     // Create order record
     const order = await this.prisma.order.create({
@@ -114,7 +125,7 @@ export class MarketplaceService {
 
     return {
       order,
-      checkoutUrl: session.url,
+      checkoutUrl: session.url ?? '',
     };
   }
 
@@ -147,9 +158,9 @@ export class MarketplaceService {
 
   async handleStripeWebhook(event: Stripe.Event) {
     switch (event.type) {
-      case 'checkout.session.completed':
+      case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session;
-        
+
         // Update order status
         await this.prisma.order.updateMany({
           where: { stripeSessionId: session.id },
@@ -158,18 +169,20 @@ export class MarketplaceService {
             completedAt: new Date(),
           },
         });
-        
+
         break;
-      
-      case 'checkout.session.expired':
+      }
+
+      case 'checkout.session.expired': {
         const expiredSession = event.data.object as Stripe.Checkout.Session;
-        
+
         await this.prisma.order.updateMany({
           where: { stripeSessionId: expiredSession.id },
           data: { status: 'FAILED' },
         });
-        
+
         break;
+      }
     }
   }
 }

@@ -1,6 +1,9 @@
-import { Controller, Post, Body, Headers } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Body, Controller, Headers, Post } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Public } from '../../common/decorators/public.decorator';
+
+type WebhookPayload = Record<string, unknown>;
+type WebhookHeaders = Record<string, string | string[] | undefined>;
 
 @ApiTags('webhooks')
 @Controller('webhooks')
@@ -10,9 +13,9 @@ export class WebhooksController {
   @Post('twitch')
   @ApiOperation({ summary: 'Twitch webhook endpoint' })
   @ApiResponse({ status: 200, description: 'Webhook processed successfully' })
-  twitchWebhook(@Body() body: any, @Headers() headers: any) {
+  twitchWebhook(@Body() body: WebhookPayload, @Headers() headers: WebhookHeaders) {
     // Handle Twitch webhooks (live status, follows, etc.)
-    console.log('Twitch webhook received:', body);
+    console.log('Twitch webhook received:', { body, headers });
     return { received: true };
   }
 
@@ -20,9 +23,9 @@ export class WebhooksController {
   @Post('youtube')
   @ApiOperation({ summary: 'YouTube webhook endpoint' })
   @ApiResponse({ status: 200, description: 'Webhook processed successfully' })
-  youtubeWebhook(@Body() body: any, @Headers() headers: any) {
+  youtubeWebhook(@Body() body: WebhookPayload, @Headers() headers: WebhookHeaders) {
     // Handle YouTube webhooks
-    console.log('YouTube webhook received:', body);
+    console.log('YouTube webhook received:', { body, headers });
     return { received: true };
   }
 
@@ -30,9 +33,9 @@ export class WebhooksController {
   @Post('kick')
   @ApiOperation({ summary: 'Kick webhook endpoint' })
   @ApiResponse({ status: 200, description: 'Webhook processed successfully' })
-  kickWebhook(@Body() body: any, @Headers() headers: any) {
+  kickWebhook(@Body() body: WebhookPayload, @Headers() headers: WebhookHeaders) {
     // Handle Kick webhooks
-    console.log('Kick webhook received:', body);
+    console.log('Kick webhook received:', { body, headers });
     return { received: true };
   }
 }

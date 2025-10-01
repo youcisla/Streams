@@ -38,18 +38,62 @@ export interface User {
   avatarUrl?: string;
   createdAt: Date;
   updatedAt: Date;
+  linkedPlatformAccounts: Array<{ platform: string; handle?: string; linkedAt?: string | Date }>;
+  statsSnapshots: Array<{ platform: string; followers: number; views: number; likes: number }>;
+  liveStatuses: Array<{ platform: string; isLive?: boolean | null }>;
+  streamerProfile?: { isPublic?: boolean | null } | null;
 }
+
+type MockArgs = Record<string, unknown>;
 
 export class PrismaClient {
   // Helper method to create mock CRUD operations for any model
-  private createMockModel<T = any>() {
+  private createMockModel<T = Record<string, unknown>>() {
     return {
-      findUnique: (args?: any) => Promise.resolve(null),
-      findMany: (args?: any) => Promise.resolve([]),
-      create: (args?: any) => Promise.resolve({} as T),
-      update: (args?: any) => Promise.resolve({} as T),
-      delete: (args?: any) => Promise.resolve({} as T),
-      upsert: (args?: any) => Promise.resolve({} as T),
+      findUnique: (_args?: MockArgs): Promise<T | null> => {
+        void _args;
+        return Promise.resolve(null);
+      },
+      findFirst: (_args?: MockArgs): Promise<T | null> => {
+        void _args;
+        return Promise.resolve(null);
+      },
+      findMany: (_args?: MockArgs): Promise<T[]> => {
+        void _args;
+        return Promise.resolve([]);
+      },
+      create: (_args?: MockArgs): Promise<T> => {
+        void _args;
+        return Promise.resolve({} as T);
+      },
+      update: (_args?: MockArgs): Promise<T> => {
+        void _args;
+        return Promise.resolve({} as T);
+      },
+      updateMany: (_args?: MockArgs): Promise<{ count: number }> => {
+        void _args;
+        return Promise.resolve({ count: 0 });
+      },
+      delete: (_args?: MockArgs): Promise<T> => {
+        void _args;
+        return Promise.resolve({} as T);
+      },
+      deleteMany: (_args?: MockArgs): Promise<{ count: number }> => {
+        void _args;
+        return Promise.resolve({ count: 0 });
+      },
+      upsert: (_args?: MockArgs): Promise<T> => {
+        void _args;
+        return Promise.resolve({} as T);
+      },
+      count: (_args?: MockArgs): Promise<number> => {
+        void _args;
+        return Promise.resolve(0);
+      },
+      aggregate: (_args?: MockArgs): Promise<{ [key: string]: unknown }> => {
+        void _args;
+        return Promise.resolve({});
+      },
     };
   }
 
@@ -63,10 +107,13 @@ export class PrismaClient {
   pointsTransaction = this.createMockModel();
   redemption = this.createMockModel();
   poll = this.createMockModel();
+  pollOption = this.createMockModel();
   pollVote = this.createMockModel();
   miniGame = this.createMockModel();
+  gameParticipation = this.createMockModel();
   product = this.createMockModel();
   order = this.createMockModel();
+  notificationSubscription = this.createMockModel();
 
   constructor() {
     console.warn('Using mock Prisma client - database operations will not work');
@@ -78,5 +125,9 @@ export class PrismaClient {
 
   async $disconnect() {
     console.warn('Mock Prisma client - $disconnect called');
+  }
+
+  async $transaction<T>(callback: (client: this) => Promise<T>): Promise<T> {
+    return callback(this);
   }
 }

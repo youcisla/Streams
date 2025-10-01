@@ -1,6 +1,6 @@
 import { Process, Processor } from '@nestjs/bull';
-import { Job } from 'bull';
 import { Logger } from '@nestjs/common';
+import { Job } from 'bull';
 import { PrismaService } from '../../../common/prisma/prisma.service';
 
 @Processor('live-status')
@@ -11,7 +11,7 @@ export class LiveStatusProcessor {
 
   @Process('check-all-streamers')
   async handleLiveStatusCheck(job: Job) {
-    this.logger.log('Processing live status check for all streamers');
+    this.logger.log(`Processing live status check for all streamers (job ${job.id ?? 'unknown'})`);
 
     try {
       // Get all streamers with linked platform accounts

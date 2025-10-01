@@ -1,12 +1,25 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../common/prisma/prisma.service';
+import { User } from '../../prisma-client';
+
+type StreamerProfileData = User & {
+  streamerProfile?: {
+    isPublic?: boolean | null;
+    bio?: string | null;
+    links?: Record<string, unknown> | null;
+  } | null;
+  linkedPlatformAccounts: Array<{ platform: string; handle: string; linkedAt?: string | Date }>;
+  contentItems: Array<Record<string, unknown>>;
+  statsSnapshots: Array<{ followers: number; views: number; likes: number }>;
+  liveStatuses: Array<{ platform: string }>;
+};
 
 @Injectable()
 export class StreamersService {
   constructor(private prisma: PrismaService) {}
 
   async getPublicProfile(streamerId: string) {
-    const user = await this.prisma.user.findUnique({
+    const user = (await this.prisma.user.findUnique({
       where: { id: streamerId },
       include: {
         streamerProfile: true,
@@ -29,7 +42,7 @@ export class StreamersService {
           where: { isLive: true },
         },
       },
-    });
+    })) as StreamerProfileData | null;
 
     if (!user || !user.streamerProfile?.isPublic) {
       throw new NotFoundException('Streamer profile not found or not public');
@@ -63,11 +76,11 @@ export class StreamersService {
     const [followers, totalViews, recentContent, pendingRedemptions] = await Promise.all([
       this.prisma.follow.count({
         where: { streamerId },
-      }),
+      }) as Promise<number>,
       this.prisma.statsSnapshot.aggregate({
         where: { streamerId },
         _sum: { views: true },
-      }),
+      }) as Promise<{ _sum?: { views?: number | null } }>,
       this.prisma.contentItem.count({
         where: {
           streamerId,
@@ -75,18 +88,18 @@ export class StreamersService {
             gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
           },
         },
-      }),
+      }) as Promise<number>,
       this.prisma.redemption.count({
         where: {
           streamerId,
           status: 'PENDING',
         },
-      }),
+      }) as Promise<number>,
     ]);
 
     return {
       followers,
-      totalViews: totalViews._sum.views || 0,
+      totalViews: totalViews._sum?.views ?? 0,
       recentContent,
       pendingRedemptions,
     };

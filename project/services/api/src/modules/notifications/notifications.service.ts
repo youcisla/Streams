@@ -71,7 +71,9 @@ export class NotificationsService {
 
     // In a real implementation, you would send push notifications here
     // using Expo SDK or email service
-    console.log(`Would send live notification to ${followers.length} followers`);
+    console.log(
+      `Would send live notification to ${followers.length} followers via ${platform} with title "${title}"`,
+    );
     
     return { notificationsSent: followers.length };
   }

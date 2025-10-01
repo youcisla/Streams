@@ -4,6 +4,15 @@ import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../common/prisma/prisma.service';
 import { User } from '../../prisma-client';
 
+interface GoogleOAuthProfile {
+  id: string;
+  email?: string;
+  displayName?: string;
+  picture?: string;
+  accessToken?: string;
+  refreshToken?: string;
+}
+
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
@@ -18,7 +27,8 @@ export class AuthService {
       throw new BadRequestException('Invalid user record');
     }
 
-    const { passwordHash, ...safeUser } = user;
+  const { passwordHash: _passwordHash, ...safeUser } = user;
+  void _passwordHash;
 
     const normalizedEmail =
       typeof safeUser.email === 'string' ? safeUser.email.trim() : safeUser.email ?? '';
@@ -90,11 +100,11 @@ export class AuthService {
     role: 'VIEWER' | 'STREAMER' | 'BOTH' = 'VIEWER',
     username?: string,
   ) {
-  const trimmedEmail = email.trim();
-  const normalizedEmail = trimmedEmail.toLowerCase();
-  const trimmedUsername = username?.trim();
-  const normalizedUsername = trimmedUsername?.toLowerCase();
-  const sanitizedDisplayName = displayName?.trim();
+    const trimmedEmail = email.trim();
+    const normalizedEmail = trimmedEmail.toLowerCase();
+    const trimmedUsername = username?.trim();
+    const normalizedUsername = trimmedUsername?.toLowerCase();
+    const sanitizedDisplayName = displayName?.trim();
 
     const existingUser = await this.prisma.user.findFirst({
       where: {
@@ -113,10 +123,10 @@ export class AuthService {
 
     const user = await this.prisma.user.create({
       data: {
-  email: normalizedEmail,
-  username: normalizedUsername,
+    email: normalizedEmail,
+    username: normalizedUsername,
         passwordHash: hashedPassword,
-  displayName: sanitizedDisplayName,
+    displayName: sanitizedDisplayName,
         role,
         // Create profile based on role
         ...(role === 'STREAMER' || role === 'BOTH'
@@ -147,19 +157,22 @@ export class AuthService {
     return this.login(this.sanitizeUser(user));
   }
 
-  async googleLogin(profile: any) {
+  async googleLogin(profile: GoogleOAuthProfile) {
+    const normalizedEmail = profile.email?.trim().toLowerCase();
+    if (!normalizedEmail) {
+      throw new BadRequestException('Google account is missing an email address');
+    }
+
     let user = await this.prisma.user.findUnique({
-      where: { email: profile.email },
+      where: { email: normalizedEmail },
     });
 
     if (!user) {
-      const generatedUsername = profile.email
-        ? profile.email.split('@')[0].toLowerCase().trim()
-        : undefined;
+      const generatedUsername = normalizedEmail.split('@')[0]?.toLowerCase().trim();
       const sanitizedDisplayName = profile.displayName?.trim();
       user = await this.prisma.user.create({
         data: {
-          email: profile.email?.trim().toLowerCase(),
+          email: normalizedEmail,
           username: generatedUsername,
           displayName: sanitizedDisplayName,
           avatarUrl: profile.picture,
@@ -198,5 +211,29 @@ export class AuthService {
     });
 
     return this.login(this.sanitizeUser(user));
+  }
+
+  async recordSocialMetric(event: {
+    provider: string;
+    action: 'tap' | 'success' | 'error' | 'cancel';
+    context?: string;
+    metadata?: Record<string, unknown>;
+  }) {
+    const provider = event.provider?.toLowerCase().trim() || 'unknown';
+    const action = event.action?.toLowerCase().trim() || 'tap';
+    const context = event.context?.trim();
+
+    try {
+      await this.prisma.socialAuthMetric.create({
+        data: {
+          provider,
+          action,
+          context,
+          metadata: event.metadata ? event.metadata : undefined,
+        },
+      });
+    } catch (error) {
+      this.logger.warn(`Failed to record social auth metric for provider ${provider}`, error as Error);
+    }
   }
 }

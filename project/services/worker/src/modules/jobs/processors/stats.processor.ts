@@ -1,6 +1,6 @@
 import { Process, Processor } from '@nestjs/bull';
-import { Job } from 'bull';
 import { Logger } from '@nestjs/common';
+import { Job } from 'bull';
 import { PrismaService } from '../../../common/prisma/prisma.service';
 
 @Processor('stats')
@@ -11,7 +11,7 @@ export class StatsProcessor {
 
   @Process('create-daily-snapshots')
   async handleStatsSnapshot(job: Job) {
-    this.logger.log('Creating daily stats snapshots');
+    this.logger.log(`Creating daily stats snapshots (job ${job.id ?? 'unknown'})`);
 
     try {
       const today = new Date();

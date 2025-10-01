@@ -1,9 +1,8 @@
 import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { PrismaClient } from './mock-prisma';
 
 // Force use of mock client due to network restrictions and configuration issues
 console.warn('API service using mock Prisma client due to network restrictions');
-const mockPrisma = require('./mock-prisma');
-const PrismaClient = mockPrisma.PrismaClient;
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {

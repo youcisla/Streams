@@ -1,5 +1,18 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../common/prisma/prisma.service';
+
+type JsonPrimitive = string | number | boolean | null;
+type JsonValue = JsonPrimitive | JsonValue[] | { [key: string]: JsonValue };
+
+type PollWithOptions = {
+  status?: 'OPEN' | 'CLOSED';
+  endsAt?: Date | string | null;
+  options: Array<{ id: string }>;
+};
+
+type MiniGameRecord = {
+  endsAt?: Date | string | null;
+};
 
 @Injectable()
 export class InteractionsService {
@@ -45,10 +58,10 @@ export class InteractionsService {
   }
 
   async votePoll(userId: string, pollId: string, optionId: string) {
-    const poll = await this.prisma.poll.findUnique({
+    const poll = (await this.prisma.poll.findUnique({
       where: { id: pollId },
       include: { options: true },
-    });
+    })) as (PollWithOptions | null);
 
     if (!poll) {
       throw new NotFoundException('Poll not found');
@@ -58,46 +71,45 @@ export class InteractionsService {
       throw new BadRequestException('Poll is closed');
     }
 
-    if (poll.endsAt && poll.endsAt < new Date()) {
+    const pollEndsAt = poll.endsAt ? new Date(poll.endsAt) : undefined;
+    if (pollEndsAt && pollEndsAt < new Date()) {
       throw new BadRequestException('Poll has ended');
     }
 
-    const option = poll.options.find(o => o.id === optionId);
+    const option = poll.options.find((o) => o.id === optionId);
     if (!option) {
       throw new NotFoundException('Poll option not found');
     }
 
-    return this.prisma.$transaction(async (prisma) => {
-      // Create vote
-      const vote = await prisma.pollVote.upsert({
-        where: {
-          pollId_userId: {
-            pollId,
-            userId,
-          },
-        },
-        update: {
-          optionId,
-        },
-        create: {
+    // Create vote
+    const vote = await this.prisma.pollVote.upsert({
+      where: {
+        pollId_userId: {
           pollId,
-          optionId,
           userId,
         },
-      });
-
-      // Update option vote count
-      await prisma.pollOption.update({
-        where: { id: optionId },
-        data: {
-          votes: {
-            increment: 1,
-          },
-        },
-      });
-
-      return vote;
+      },
+      update: {
+        optionId,
+      },
+      create: {
+        pollId,
+        optionId,
+        userId,
+      },
     });
+
+    // Update option vote count
+    await this.prisma.pollOption.update({
+      where: { id: optionId },
+      data: {
+        votes: {
+          increment: 1,
+        },
+      },
+    });
+
+    return vote;
   }
 
   async closePoll(streamerId: string, pollId: string) {
@@ -123,7 +135,12 @@ export class InteractionsService {
   }
 
   // Mini Games
-  async createMiniGame(streamerId: string, type: 'TRIVIA' | 'PREDICTION' | 'QUIZ', gameData: any, endsAt?: Date) {
+  async createMiniGame(
+    streamerId: string,
+    type: 'TRIVIA' | 'PREDICTION' | 'QUIZ',
+    gameData: JsonValue,
+    endsAt?: Date,
+  ) {
     return this.prisma.miniGame.create({
       data: {
         streamerId,
@@ -155,16 +172,17 @@ export class InteractionsService {
     });
   }
 
-  async participateInGame(userId: string, gameId: string, answer: any) {
-    const game = await this.prisma.miniGame.findUnique({
+  async participateInGame(userId: string, gameId: string, answer: JsonValue) {
+    const game = (await this.prisma.miniGame.findUnique({
       where: { id: gameId },
-    });
+    })) as (MiniGameRecord | null);
 
     if (!game) {
       throw new NotFoundException('Game not found');
     }
 
-    if (game.endsAt && game.endsAt < new Date()) {
+    const gameEndsAt = game.endsAt ? new Date(game.endsAt) : undefined;
+    if (gameEndsAt && gameEndsAt < new Date()) {
       throw new BadRequestException('Game has ended');
     }
 

@@ -59,7 +59,8 @@ const resolveApiBaseUrl = (): string => {
   return 'http://localhost:3001';
 };
 
-const API_BASE_URL = `${resolveApiBaseUrl()}${API_PATH}`;
+export const API_ORIGIN = resolveApiBaseUrl();
+const API_BASE_URL = `${API_ORIGIN}${API_PATH}`;
 
 class ApiService {
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
@@ -169,6 +170,34 @@ class ApiService {
       method: 'POST',
       body: JSON.stringify({ email, password, displayName, role, username }),
     });
+  }
+
+  getSocialAuthUrl(provider: string, redirectUri: string, analyticsId?: string) {
+    const normalizedProvider = provider.toLowerCase();
+    const url = new URL(`${API_ORIGIN}${API_PATH}/auth/${normalizedProvider}/mobile`);
+    url.searchParams.set('redirectUri', redirectUri);
+    if (analyticsId) {
+      url.searchParams.set('analyticsId', analyticsId);
+    }
+    return url.toString();
+  }
+
+  async trackSocialAuthMetric(event: {
+    provider: string;
+    action: 'tap' | 'success' | 'error' | 'cancel';
+    context?: string;
+    metadata?: Record<string, unknown>;
+  }) {
+    try {
+      await this.request('/auth/social/metrics', {
+        method: 'POST',
+        body: JSON.stringify(event),
+      });
+    } catch (error) {
+      if (typeof __DEV__ !== 'undefined' && __DEV__) {
+        console.warn('[Api] Failed to record social auth metric', error);
+      }
+    }
   }
 
   // Streamers

@@ -1,18 +1,12 @@
 import { Button, Card, Input, theme } from '@streamlink/ui';
 import { useRouter } from 'expo-router';
-import React, { useMemo, useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useState } from 'react';
+import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { SocialProviderKey } from '../../src/constants/socialProviders';
+import { useSocialAuth } from '../../src/hooks/useSocialAuth';
 import { api } from '../../src/services/api';
 import { useAuthStore } from '../../src/store/auth';
-
-type RoleOptionKey = 'VIEWER' | 'STREAMER' | 'BOTH';
-
-interface RoleOptionConfig {
-  key: RoleOptionKey;
-  label: string;
-  description: string;
-}
 
 const RegisterScreen = () => {
   const router = useRouter();
@@ -22,29 +16,15 @@ const RegisterScreen = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
-  const [role, setRole] = useState<RoleOptionKey>('VIEWER');
   const [isLoading, setIsLoading] = useState(false);
 
-  const roleOptions = useMemo<RoleOptionConfig[]>(
-    () => [
-      {
-        key: 'VIEWER',
-        label: 'Viewer',
-        description: 'Watch and engage with streams',
-      },
-      {
-        key: 'STREAMER',
-        label: 'Streamer',
-        description: 'Broadcast and monetize your content',
-      },
-      {
-        key: 'BOTH',
-        label: 'I do both',
-        description: 'Switch between watching and streaming',
-      },
-    ],
-    [],
-  );
+  const { providers: socialProviders, authenticate, processingProvider } = useSocialAuth({
+    context: 'register',
+    onSuccess: () => router.replace('/(tabs)'),
+    onError: (error) => {
+      Alert.alert('Sign-up failed', error.message);
+    },
+  });
 
   const handleRegister = async () => {
     const trimmedEmail = email.trim();
@@ -72,7 +52,6 @@ const RegisterScreen = () => {
         email: trimmedEmail,
         password,
         displayName: trimmedDisplayName,
-        role,
         username: trimmedUsername.toLowerCase(),
       });
       await login(response.user, response.access_token);
@@ -82,6 +61,14 @@ const RegisterScreen = () => {
       Alert.alert('Registration failed', message);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleSocialAuth = async (provider: SocialProviderKey) => {
+    try {
+      await authenticate(provider);
+    } catch {
+      // onError callback will surface feedback
     }
   };
 
@@ -152,21 +139,6 @@ const RegisterScreen = () => {
                 variant="outline"
               />
 
-              <View style={styles.roleSection}>
-                <Text style={styles.roleLabel}>I am joining as</Text>
-                <View style={styles.roleOptions}>
-                  {roleOptions.map((option) => (
-                    <RoleOption
-                      key={option.key}
-                      label={option.label}
-                      description={option.description}
-                      selected={role === option.key}
-                      onPress={() => setRole(option.key)}
-                    />
-                  ))}
-                </View>
-              </View>
-
               <Button
                 title="Create account"
                 onPress={handleRegister}
@@ -174,6 +146,47 @@ const RegisterScreen = () => {
                 style={styles.submitButton}
               />
             </Card>
+
+            <View style={styles.socialSection}>
+              <View style={styles.dividerRow}>
+                <View style={styles.dividerLine} />
+                <Text style={styles.dividerLabel}>Or sign up with</Text>
+                <View style={styles.dividerLine} />
+              </View>
+
+              <View style={styles.socialGrid}>
+                {socialProviders.map((provider) => {
+                  const isProcessing = processingProvider === provider.key;
+                  const isDisabled = processingProvider !== null && !isProcessing;
+                  return (
+                    <TouchableOpacity
+                      key={provider.key}
+                      style={[
+                        styles.socialButton,
+                        isProcessing && styles.socialButtonActive,
+                        isDisabled && styles.socialButtonDisabled,
+                      ]}
+                      onPress={() => handleSocialAuth(provider.key)}
+                      activeOpacity={0.85}
+                      disabled={processingProvider !== null}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Create account with ${provider.label}`}
+                    >
+                      <View style={styles.socialBadge}>
+                        {isProcessing ? (
+                          <ActivityIndicator color={theme.colors.primary} size="small" />
+                        ) : (
+                          <Text style={styles.socialBadgeText}>{provider.label.slice(0, 1)}</Text>
+                        )}
+                      </View>
+                      <Text style={styles.socialButtonText}>
+                        {isProcessing ? 'Connecting…' : provider.label}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </View>
 
             <View style={styles.footer}>
               <Text style={styles.footerText}>Already have an account?</Text>
@@ -190,29 +203,6 @@ const RegisterScreen = () => {
     </SafeAreaView>
   );
 };
-
-type RoleOptionProps = {
-  label: string;
-  description: string;
-  selected: boolean;
-  onPress: () => void;
-};
-
-const RoleOption = ({ label, description, selected, onPress }: RoleOptionProps) => (
-  <TouchableOpacity
-    onPress={onPress}
-    style={[styles.roleButton, selected && styles.selectedRole]}
-    accessibilityRole="button"
-    accessibilityState={{ selected }}
-    accessibilityLabel={`${label} role option`}
-    activeOpacity={0.85}
-  >
-    <Text style={[styles.roleButtonLabel, selected && styles.selectedRoleText]}>{label}</Text>
-    <Text style={[styles.roleButtonDescription, selected && styles.selectedRoleDescription]}>
-      {description}
-    </Text>
-  </TouchableOpacity>
-);
 
 const styles = StyleSheet.create({
   container: {
@@ -251,45 +241,66 @@ const styles = StyleSheet.create({
     gap: theme.spacing.lg,
     width: '100%',
   },
-  roleSection: {
-    gap: theme.spacing.sm,
-  },
-  roleLabel: {
-    ...theme.typography.bodySmall,
-    color: theme.colors.textSecondary,
-  },
-  roleOptions: {
-    gap: theme.spacing.sm,
-  },
-  roleButton: {
+  socialSection: {
     width: '100%',
-    borderWidth: 1,
+    gap: theme.spacing.md,
+  },
+  dividerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.sm,
+  },
+  dividerLine: {
+    flex: 1,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: theme.colors.border,
+  },
+  dividerLabel: {
+    ...theme.typography.caption,
+    color: theme.colors.textSecondary,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
+  socialGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: theme.spacing.sm,
+  },
+  socialButton: {
+    flexGrow: 1,
+    minWidth: '48%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.sm,
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
     borderRadius: theme.borderRadius.lg,
+    borderWidth: 1,
     borderColor: theme.colors.border,
     backgroundColor: theme.colors.surface,
-    paddingVertical: theme.spacing.md,
-    paddingHorizontal: theme.spacing.lg,
-    justifyContent: 'center',
-    gap: theme.spacing.xs,
   },
-  selectedRole: {
+  socialButtonActive: {
     borderColor: theme.colors.primary,
-    backgroundColor: theme.colors.surfaceElevated,
-    ...theme.shadows.small,
   },
-  roleButtonLabel: {
+  socialButtonDisabled: {
+    opacity: 0.65,
+  },
+  socialBadge: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: theme.colors.surfaceElevated,
+  },
+  socialBadgeText: {
     ...theme.typography.button,
     color: theme.colors.textPrimary,
   },
-  roleButtonDescription: {
-    ...theme.typography.caption,
-    color: theme.colors.textMuted,
-  },
-  selectedRoleText: {
+  socialButtonText: {
+    ...theme.typography.body,
     color: theme.colors.textPrimary,
-  },
-  selectedRoleDescription: {
-    color: theme.colors.textSecondary,
+    flexShrink: 1,
   },
   submitButton: {
     marginTop: theme.spacing.sm,

@@ -1,6 +1,6 @@
 import { Process, Processor } from '@nestjs/bull';
-import { Job } from 'bull';
 import { Logger } from '@nestjs/common';
+import { Job } from 'bull';
 import { PrismaService } from '../../../common/prisma/prisma.service';
 
 @Processor('content-sync')
@@ -11,7 +11,7 @@ export class ContentSyncProcessor {
 
   @Process('sync-all-content')
   async handleContentSync(job: Job) {
-    this.logger.log('Processing content sync for all streamers');
+    this.logger.log(`Processing content sync for all streamers (job ${job.id ?? 'unknown'})`);
 
     try {
       // Get all streamers with linked platform accounts

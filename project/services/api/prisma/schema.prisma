@@ -72,6 +72,18 @@ model OAuthAccount {
   @@map("oauth_accounts")
 }
 
+model SocialAuthMetric {
+  id        String   @id @default(cuid())
+  provider  String
+  action    String
+  context   String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@index([provider, action, createdAt])
+  @@map("social_auth_metrics")
+}
+
 model LinkedPlatformAccount {
   id               String   @id @default(cuid())
   userId           String
