@@ -40,7 +40,7 @@ export const useInfiniteTrendingStreams = (options: UseTrendingStreamsOptions = 
         platforms,
       }),
     initialPageParam: undefined as string | undefined,
-    getNextPageParam: (lastPage) => (lastPage.meta.hasMore ? lastPage.meta.nextCursor : undefined),
+  getNextPageParam: (lastPage) => (lastPage?.meta?.hasMore ? lastPage.meta.nextCursor : undefined),
     select: (data) => data,
     staleTime: 15 * 1000,
     refetchOnWindowFocus: false,

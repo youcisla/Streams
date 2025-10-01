@@ -1,5 +1,11 @@
 import { Platform, ViewStyle } from 'react-native';
 
+const pixelFontFamily =
+  Platform.select({
+    web: '"Press Start 2P", "PressStart2P", monospace',
+    default: 'PressStart2P_400Regular'
+  }) ?? 'PressStart2P_400Regular';
+
 export const colors = {
   // Dark theme base with improved contrast
   background: '#05060A',
@@ -85,32 +91,40 @@ export const fonts = {
   bold: {
     fontFamily: 'System',
     fontWeight: '700' as const
+  },
+  pixel: {
+    fontFamily: pixelFontFamily,
+    fontWeight: '400' as const
   }
 };
 
 export const typography = {
   h1: {
-    ...fonts.bold,
-    fontSize: 32,
-    lineHeight: 40,
+    ...fonts.pixel,
+    fontSize: 28,
+    lineHeight: 34,
+    letterSpacing: 2,
     color: colors.textPrimary
   },
   h2: {
-    ...fonts.bold,
-    fontSize: 28,
-    lineHeight: 36,
+    ...fonts.pixel,
+    fontSize: 24,
+    lineHeight: 32,
+    letterSpacing: 1.6,
     color: colors.textPrimary
   },
   h3: {
-    ...fonts.semiBold,
-    fontSize: 24,
-    lineHeight: 32,
+    ...fonts.pixel,
+    fontSize: 18,
+    lineHeight: 26,
+    letterSpacing: 1.2,
     color: colors.textPrimary
   },
   h4: {
-    ...fonts.semiBold,
-    fontSize: 20,
-    lineHeight: 28,
+    ...fonts.pixel,
+    fontSize: 16,
+    lineHeight: 22,
+    letterSpacing: 1,
     color: colors.textPrimary
   },
   body: {
@@ -132,10 +146,20 @@ export const typography = {
     color: colors.textMuted
   },
   button: {
-    ...fonts.semiBold,
-    fontSize: 16,
-    lineHeight: 24,
-    color: colors.textPrimary
+    ...fonts.pixel,
+    fontSize: 14,
+    lineHeight: 22,
+    letterSpacing: 1.5,
+    color: colors.textPrimary,
+    textTransform: 'uppercase' as const
+  },
+  badge: {
+    ...fonts.pixel,
+    fontSize: 10,
+    lineHeight: 14,
+    letterSpacing: 1.3,
+    color: colors.textPrimary,
+    textTransform: 'uppercase' as const
   }
 };
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import { StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
 import { theme } from '../theme';
 
 export interface BadgeProps {
@@ -81,13 +81,15 @@ const styles = StyleSheet.create({
   
   // Text
   text: {
-    ...theme.fonts.semiBold,
-    color: theme.colors.textPrimary
+    ...theme.typography.badge,
+    textAlign: 'center'
   },
   smallText: {
-    fontSize: 10
+    fontSize: 9,
+    lineHeight: 12
   },
   mediumText: {
-    fontSize: 12
+    fontSize: 11,
+    lineHeight: 14
   }
 });

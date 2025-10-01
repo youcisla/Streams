@@ -15,6 +15,7 @@
     "clean": "if exist .expo rmdir /s /q .expo"
   },
   "dependencies": {
+    "@expo-google-fonts/press-start-2p": "^0.2.3",
     "@expo/metro-runtime": "~6.1.2",
     "@expo/vector-icons": "^15.0.2",
   "@radix-ui/react-compose-refs": "^1.1.2",

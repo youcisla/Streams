@@ -64,3 +64,13 @@ For now, I've removed these asset references from `app.json` so the app can run 
   }
 }
 ```
+
+## Typography Assets
+
+- The pixel/blocky typeface is provided by the [`@expo-google-fonts/press-start-2p`](https://fonts.google.com/specimen/Press+Start+2P) package (SIL Open Font License 1.1). Install dependencies after pulling changes with:
+
+```bash
+pnpm install
+```
+
+- No manual font files are required—Expo bundles the font at build time. For non-Expo platforms, be sure to include the same font family (e.g., via Google Fonts or `@fontsource/press-start-2p`).

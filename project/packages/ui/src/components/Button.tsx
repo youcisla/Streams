@@ -1,13 +1,13 @@
 import React, { ReactNode } from 'react';
 import {
-  ActivityIndicator,
-  StyleProp,
-  StyleSheet,
-  Text,
-  TextStyle,
-  TouchableOpacity,
-  View,
-  ViewStyle
+    ActivityIndicator,
+    StyleProp,
+    StyleSheet,
+    Text,
+    TextStyle,
+    TouchableOpacity,
+    View,
+    ViewStyle
 } from 'react-native';
 import { theme } from '../theme';
 
@@ -149,13 +149,16 @@ const styles = StyleSheet.create({
   
   // Size text
   smallText: {
-    fontSize: 14
+    fontSize: 12,
+    lineHeight: 18
   },
   mediumText: {
-    fontSize: 16
+    fontSize: 14,
+    lineHeight: 20
   },
   largeText: {
-    fontSize: 18
+    fontSize: 16,
+    lineHeight: 22
   },
   
   // Disabled states

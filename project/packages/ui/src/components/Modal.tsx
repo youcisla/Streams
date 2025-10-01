@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
+  Platform,
   Modal as RNModal,
-  View,
   StyleSheet,
-  TouchableOpacity,
   TouchableWithoutFeedback,
+  View,
   ViewStyle
 } from 'react-native';
 import { theme } from '../theme';
@@ -18,6 +18,21 @@ export interface ModalProps {
   style?: ViewStyle;
 }
 
+type FocusableElement = {
+  blur?: () => void;
+};
+
+const getActiveElement = (): FocusableElement | null => {
+  if (typeof globalThis === 'undefined') {
+    return null;
+  }
+
+  const globalWithDocument = globalThis as { document?: { activeElement?: unknown } };
+  const activeElement = globalWithDocument.document?.activeElement as FocusableElement | undefined;
+
+  return activeElement ?? null;
+};
+
 export const Modal: React.FC<ModalProps> = ({
   visible,
   onClose,
@@ -26,6 +41,20 @@ export const Modal: React.FC<ModalProps> = ({
   dismissOnBackdrop = true,
   style
 }) => {
+  const wasVisibleRef = useRef(visible);
+
+  useEffect(() => {
+    if (Platform.OS === 'web' && wasVisibleRef.current && !visible) {
+      const activeElement = getActiveElement();
+
+      if (activeElement?.blur) {
+        activeElement.blur();
+      }
+    }
+
+    wasVisibleRef.current = visible;
+  }, [visible]);
+
   return (
     <RNModal
       visible={visible}

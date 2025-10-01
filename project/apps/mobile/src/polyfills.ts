@@ -1,9 +1,18 @@
 import { LogBox, Platform } from 'react-native';
 
 if (Platform.OS === 'web') {
-  LogBox.ignoreLogs([
-    'props.pointerEvents is deprecated. Use style.pointerEvents'
-  ]);
+	const POINTER_EVENTS_WARNING = 'props.pointerEvents is deprecated. Use style.pointerEvents';
+
+	LogBox.ignoreLogs([POINTER_EVENTS_WARNING]);
+
+	const originalWarn = console.warn;
+	console.warn = (...args: unknown[]) => {
+		if (typeof args[0] === 'string' && args[0].includes(POINTER_EVENTS_WARNING)) {
+			return;
+		}
+
+		originalWarn(...args);
+	};
 }
 
 type PolyfillField = {
