@@ -3,12 +3,12 @@ import { Badge, Button, Card, EmptyState, theme } from '@streamlink/ui';
 import { useQuery } from '@tanstack/react-query';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-    ActivityIndicator,
-    FlatList,
-    Pressable,
-    StyleSheet,
-    Text,
-    View,
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TrendingStreamCard } from '../../src/components/streams/TrendingStreamCard';
@@ -140,19 +140,25 @@ export default function HomeScreen() {
       requests.push(refetchStats());
     }
 
-    requests.push(refetchTrending());
+    if (hydrated) {
+      requests.push(refetchTrending());
+    }
     return Promise.all(requests);
-  }, [isStreamer, isViewer, refetchFollowing, refetchStats, refetchTrending]);
+  }, [hydrated, isStreamer, isViewer, refetchFollowing, refetchStats, refetchTrending]);
 
   const onRefresh = useCallback(() => {
     void handleRefresh();
   }, [handleRefresh]);
 
   const handleLoadMore = useCallback(() => {
+    if (!hydrated) {
+      return;
+    }
+
     if (hasNextPage && !isFetchingNextPage) {
       void fetchNextPage();
     }
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+  }, [fetchNextPage, hasNextPage, hydrated, isFetchingNextPage]);
 
   const handleSelectPlatform = useCallback((value: PlatformFilter) => {
     updateFilters({ platform: value, category: 'ALL' });
@@ -163,7 +169,7 @@ export default function HomeScreen() {
   }, [updateFilters]);
 
   const isTrendingLoading = !hydrated || trendingLoading;
-  const isRefreshing = trendingRefetching || followingLoading || statsLoading;
+  const isRefreshing = !hydrated || trendingRefetching || followingLoading || statsLoading;
 
   const handleResetFilters = useCallback(() => {
     resetFilters();

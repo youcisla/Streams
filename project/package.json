@@ -3,6 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "description": "StreamLink - Universal companion app for streamers and viewers",
+  "type": "module",
   "workspaces": [
     "apps/*",
     "packages/*",
