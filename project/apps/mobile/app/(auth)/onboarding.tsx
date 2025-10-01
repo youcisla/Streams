@@ -1,4 +1,4 @@
-import { Button, theme } from '@streamlink/ui';
+import { Button, Icon, theme, type IconName } from '@streamlink/ui';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -21,18 +21,18 @@ export default function OnboardingScreen() {
         </View>
 
         <View style={styles.features}>
-          <FeatureItem 
-            icon="🎮"
+          <FeatureItem
+            icon="game"
             title="Multi-Platform"
             description="Connect Twitch, YouTube, Kick, and more"
           />
-          <FeatureItem 
-            icon="⭐"
+          <FeatureItem
+            icon="sparkle"
             title="Rewards System"
             description="Earn and redeem points across all platforms"
           />
-          <FeatureItem 
-            icon="📊"
+          <FeatureItem
+            icon="analytics"
             title="Analytics"
             description="Track your growth and engagement"
           />
@@ -56,14 +56,13 @@ export default function OnboardingScreen() {
     </SafeAreaView>
   );
 }
-
-const FeatureItem = ({ icon, title, description }: { 
-  icon: string; 
-  title: string; 
-  description: string; 
+const FeatureItem = ({ icon, title, description }: {
+  icon: IconName;
+  title: string;
+  description: string;
 }) => (
   <View style={styles.featureItem}>
-    <Text style={styles.featureIcon}>{icon}</Text>
+  <Icon name={icon} size="lg" color={theme.colors.primary} style={styles.featureIcon} />
     <View style={styles.featureText}>
       <Text style={styles.featureTitle}>{title}</Text>
       <Text style={styles.featureDescription}>{description}</Text>
@@ -112,7 +111,6 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.lg,
   },
   featureIcon: {
-    fontSize: 24,
     marginRight: theme.spacing.md,
   },
   featureText: {

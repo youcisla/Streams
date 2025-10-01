@@ -9,7 +9,7 @@
     "sdkVersion": "54.0.0",
     "splash": {
       "resizeMode": "contain",
-      "backgroundColor": "#000000"
+      "backgroundColor": "#05060A"
     },
     "assetBundlePatterns": [
       "**/*"

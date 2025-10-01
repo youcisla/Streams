@@ -1,7 +1,7 @@
-import { NestFactory } from '@nestjs/core';
 import { Logger } from '@nestjs/common';
-import { AppModule } from './app.module';
+import { NestFactory } from '@nestjs/core';
 import { config } from '@streamlink/config';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -9,7 +9,7 @@ async function bootstrap() {
 
   await app.listen(config.worker.port);
   
-  logger.log(`🔧 Worker service running on port ${config.worker.port}`);
+  logger.log(`[worker] Service running on port ${config.worker.port}`);
   logger.log('Scheduled jobs initialized');
 }
 

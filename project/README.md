@@ -139,6 +139,16 @@ The mobile app is built with React Native and Expo, featuring:
 4. **Rewards**: Points balance and redemption history
 5. **Profile**: User settings and account management
 
+## 🎨 Iconography
+
+StreamLink leans into a playful, pixel-forward brand language. The shared `Icon` component accepts a `variant` prop with three modes:
+
+- `auto` *(default)* — renders the Phosphor vector icon set, falling back to our curated pixelarticons glyphs if a vector name is unavailable.
+- `vector` — forces the Phosphor icon, emitting a warning when the glyph is missing instead of applying a fallback.
+- `pixel` — always renders the pixel SVG for a perfectly blocky aesthetic.
+
+For edge cases you can import `PixelIcon` directly from `project/src/ui`, which exposes the same icon names and sizing tokens as the shared UI package. Both components respect accessible labelling via the `label` prop; omit it for decorative usage so assistive tech stays quiet.
+
 ## 🔄 Background Jobs
 
 The worker service handles scheduled tasks:

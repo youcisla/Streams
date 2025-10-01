@@ -5,6 +5,7 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect } from 'react';
+import { Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useAuth } from '../src/hooks/useAuth';
 
@@ -19,6 +20,12 @@ const queryClient = new QueryClient({
 SplashScreen.preventAutoHideAsync().catch(() => {
   // Ignore errors here since SplashScreen might already be hidden
 });
+
+const headerTitleFontFamily =
+  Platform.select({
+    web: '"Press Start 2P", "PressStart2P", monospace',
+    default: 'PressStart2P_400Regular',
+  }) ?? 'PressStart2P_400Regular';
 
 export default function RootLayout() {
   const { initialize } = useAuth();
@@ -41,8 +48,15 @@ export default function RootLayout() {
   useEffect(() => {
     if (fontsError) {
       console.error('Failed to load pixel font:', fontsError);
+      SplashScreen.hideAsync().catch(() => {});
     }
   }, [fontsError]);
+
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync().catch(() => {});
+    }
+  }, [fontsLoaded]);
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
@@ -64,7 +78,7 @@ export default function RootLayout() {
             },
             headerTintColor: theme.colors.textPrimary,
             headerTitleStyle: {
-              fontFamily: 'PressStart2P_400Regular',
+              fontFamily: headerTitleFontFamily,
               fontSize: 14,
             },
             headerShadowVisible: false,

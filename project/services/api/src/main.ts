@@ -1,8 +1,8 @@
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe, Logger } from '@nestjs/common';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { AppModule } from './app.module';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { config } from '@streamlink/config';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -48,8 +48,8 @@ async function bootstrap() {
 
   await app.listen(config.api.port, config.api.host);
   
-  logger.log(`🚀 API server running on http://${config.api.host}:${config.api.port}`);
-  logger.log(`📚 Swagger docs available at http://${config.api.host}:${config.api.port}/api/docs`);
+  logger.log(`[launch] API server running on http://${config.api.host}:${config.api.port}`);
+  logger.log(`[docs] Swagger docs available at http://${config.api.host}:${config.api.port}/api/docs`);
 }
 
 bootstrap();

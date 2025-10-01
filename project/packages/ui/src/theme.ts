@@ -75,6 +75,13 @@ export const borderRadius = {
   full: 9999
 };
 
+export const iconSizes = {
+  xs: 12,
+  sm: 16,
+  md: 20,
+  lg: 24
+} as const;
+
 export const fonts = {
   regular: {
     fontFamily: 'System',
@@ -220,6 +227,7 @@ export const theme = {
   colors,
   spacing,
   borderRadius,
+  iconSizes,
   fonts,
   typography,
   shadows
