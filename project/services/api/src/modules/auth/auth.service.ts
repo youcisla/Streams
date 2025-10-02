@@ -127,7 +127,6 @@ export class AuthService {
     // Find the refresh token in database
     const storedToken = await this.prisma.refreshToken.findUnique({
       where: { token: refreshToken },
-      include: { user: true },
     });
 
     // Validate token exists and is not revoked
@@ -146,9 +145,12 @@ export class AuthService {
       data: { isRevoked: true },
     });
 
-    // Generate new tokens
-    const user = this.sanitizeUser(storedToken.user);
-    return this.login(user);
+    // Manually fetch the user
+    const user = await this.prisma.user.findUnique({
+      where: { id: storedToken.userId },
+    });
+    if (!user) throw new UnauthorizedException('User not found');
+    return this.login(this.sanitizeUser(user));
   }
 
   async revokeRefreshToken(token: string) {

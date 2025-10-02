@@ -1,20 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../../common/prisma/prisma.service';
-
-interface HealthCheck {
-  status: 'ok' | 'error';
-  timestamp: string;
-  uptime: number;
-  database: {
-    status: 'connected' | 'disconnected' | 'mock';
-    latency?: number;
-  };
-  memory: {
-    used: number;
-    total: number;
-    percentage: number;
-  };
-}
+import { HealthCheck } from './health.types';
 
 @Injectable()
 export class HealthService {
