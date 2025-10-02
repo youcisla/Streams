@@ -58,26 +58,36 @@ export interface Reward {
 }
 
 export interface PointsTransaction {
-  id?: string;
-  userId?: string;
-  streamerId?: string;
+  id: string;
+  viewerId: string;
+  streamerId: string;
   delta: number;
-  reason?: string;
-  metadata?: Record<string, unknown> | null;
+  type: string;
+  createdAt: Date;
+}
+
+export interface RefreshToken {
+  id: string;
+  userId: string;
+  token: string;
+  expiresAt: Date;
+  createdAt: Date;
+  isRevoked: boolean;
+}
+
+export interface Poll {
+  id: string;
+  streamerId: string;
+  question?: string | null;
+  status?: 'OPEN' | 'CLOSED' | null;
+  endsAt?: Date | string | null;
+  options: Array<{ id: string }>;
 }
 
 export interface PollOption {
   id: string;
   label?: string;
   votes?: number;
-}
-
-export interface Poll {
-  id: string;
-  streamerId: string;
-  status?: string;
-  endsAt?: Date | string | null;
-  options: PollOption[];
 }
 
 type MockArgs = Record<string, unknown>;
@@ -141,6 +151,7 @@ export class PrismaClient {
   liveStatus = this.createMockModel();
   reward = this.createMockModel<Reward>();
   pointsTransaction = this.createMockModel<PointsTransaction>();
+  refreshToken = this.createMockModel<RefreshToken>();
   redemption = this.createMockModel();
   oAuthAccount = this.createMockModel();
   socialAuthMetric = this.createMockModel();

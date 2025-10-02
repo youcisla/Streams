@@ -1,8 +1,10 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { config } from '@streamlink/config';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 import { PrismaService } from '../../common/prisma/prisma.service';
-import { User } from '../../prisma-client';
+import { Role, User } from '../../prisma-client';
 
 interface GoogleOAuthProfile {
   id: string;
@@ -80,8 +82,18 @@ export class AuthService {
     const sanitizedUser = this.sanitizeUser(user);
     const payload = { email: sanitizedUser.email, sub: sanitizedUser.id, role: sanitizedUser.role };
 
+    // Generate access token (short-lived)
+    const accessToken = this.jwtService.sign(payload, {
+      expiresIn: config.auth.jwtExpiration,
+    });
+
+    // Generate refresh token (long-lived)
+    const refreshToken = await this.generateRefreshToken(sanitizedUser.id);
+
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: accessToken,
+      refresh_token: refreshToken,
+      expires_in: 15 * 60, // 15 minutes in seconds
       user: {
         id: sanitizedUser.id,
         email: sanitizedUser.email,
@@ -93,11 +105,71 @@ export class AuthService {
     };
   }
 
+  private async generateRefreshToken(userId: string): Promise<string> {
+    // Generate a secure random token
+    const token = crypto.randomBytes(64).toString('hex');
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7); // 7 days from now
+
+    // Store in database
+    await this.prisma.refreshToken.create({
+      data: {
+        userId,
+        token,
+        expiresAt,
+      },
+    });
+
+    return token;
+  }
+
+  async refreshTokens(refreshToken: string) {
+    // Find the refresh token in database
+    const storedToken = await this.prisma.refreshToken.findUnique({
+      where: { token: refreshToken },
+      include: { user: true },
+    });
+
+    // Validate token exists and is not revoked
+    if (!storedToken || storedToken.isRevoked) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+
+    // Check if token is expired
+    if (new Date() > storedToken.expiresAt) {
+      throw new UnauthorizedException('Refresh token expired');
+    }
+
+    // Revoke the old token (rotation)
+    await this.prisma.refreshToken.update({
+      where: { id: storedToken.id },
+      data: { isRevoked: true },
+    });
+
+    // Generate new tokens
+    const user = this.sanitizeUser(storedToken.user);
+    return this.login(user);
+  }
+
+  async revokeRefreshToken(token: string) {
+    await this.prisma.refreshToken.updateMany({
+      where: { token },
+      data: { isRevoked: true },
+    });
+  }
+
+  async revokeAllUserTokens(userId: string) {
+    await this.prisma.refreshToken.updateMany({
+      where: { userId, isRevoked: false },
+      data: { isRevoked: true },
+    });
+  }
+
   async register(
     email: string,
     password: string,
     displayName?: string,
-    role: 'VIEWER' | 'STREAMER' | 'BOTH' = 'VIEWER',
+    role: Role = Role.VIEWER,
     username?: string,
   ) {
     const trimmedEmail = email.trim();
@@ -129,7 +201,7 @@ export class AuthService {
     displayName: sanitizedDisplayName,
         role,
         // Create profile based on role
-        ...(role === 'STREAMER' || role === 'BOTH'
+        ...(role === Role.STREAMER || role === Role.BOTH
           ? {
               streamerProfile: {
                 create: {
@@ -138,7 +210,7 @@ export class AuthService {
               },
             }
           : {}),
-        ...(role === 'VIEWER' || role === 'BOTH'
+        ...(role === Role.VIEWER || role === Role.BOTH
           ? {
               viewerProfile: {
                 create: {

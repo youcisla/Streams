@@ -1,10 +1,12 @@
 import { BullModule } from '@nestjs/bull';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 
+import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { PrismaModule } from './common/prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { HealthModule } from './modules/health/health.module';
 import { InteractionsModule } from './modules/interactions/interactions.module';
 import { MarketplaceModule } from './modules/marketplace/marketplace.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
@@ -33,6 +35,7 @@ import { config } from '@streamlink/config';
       },
     }),
     PrismaModule,
+    HealthModule,
     AuthModule,
     UsersModule,
     PlatformsModule,
@@ -45,4 +48,10 @@ import { config } from '@streamlink/config';
     WebhooksModule,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(LoggerMiddleware)
+      .forRoutes('*'); // Apply to all routes
+  }
+}

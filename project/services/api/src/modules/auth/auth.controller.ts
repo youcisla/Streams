@@ -4,6 +4,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { Public } from '../../common/decorators/public.decorator';
 import { AuthService } from './auth.service';
+import { LoginDto, RefreshTokenDto, RegisterDto } from './dto';
 import { GoogleMobileAuthGuard } from './guards/google-mobile.guard';
 
 const fromBase64Url = (value: string) => {
@@ -21,22 +22,13 @@ export class AuthController {
   @Post('register')
   @ApiOperation({ summary: 'Register a new user' })
   @ApiResponse({ status: 201, description: 'User registered successfully' })
-  async register(
-    @Body()
-    body: {
-      email: string;
-      password: string;
-      displayName?: string;
-      role?: 'VIEWER' | 'STREAMER' | 'BOTH';
-      username?: string;
-    },
-  ) {
+  async register(@Body() registerDto: RegisterDto) {
     return this.authService.register(
-      body.email,
-      body.password,
-      body.displayName,
-      body.role,
-      body.username,
+      registerDto.email,
+      registerDto.password,
+      registerDto.displayName,
+      registerDto.role,
+      registerDto.username,
     );
   }
 
@@ -44,12 +36,29 @@ export class AuthController {
   @Post('login')
   @ApiOperation({ summary: 'Login with email or username and password' })
   @ApiResponse({ status: 200, description: 'Login successful' })
-  async login(@Body() body: { loginId: string; password: string }) {
-    const user = await this.authService.validateUser(body.loginId, body.password);
+  async login(@Body() loginDto: LoginDto) {
+    const user = await this.authService.validateUser(loginDto.loginId, loginDto.password);
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
     return this.authService.login(user);
+  }
+
+  @Public()
+  @Post('refresh')
+  @ApiOperation({ summary: 'Refresh access token using refresh token' })
+  @ApiResponse({ status: 200, description: 'Token refreshed successfully' })
+  @ApiResponse({ status: 401, description: 'Invalid or expired refresh token' })
+  async refresh(@Body() refreshTokenDto: RefreshTokenDto) {
+    return this.authService.refreshTokens(refreshTokenDto.refreshToken);
+  }
+
+  @Post('logout')
+  @ApiOperation({ summary: 'Revoke all refresh tokens for the current user' })
+  @ApiResponse({ status: 200, description: 'Logged out successfully' })
+  async logout(@Req() req) {
+    await this.authService.revokeAllUserTokens(req.user.id);
+    return { message: 'Logged out successfully' };
   }
 
   @Public()
