@@ -1,0 +1,1302 @@
+{
+  "name": "StreamLink Automation Hub",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "start-node",
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 10
+            }
+          ]
+        }
+      },
+      "id": "cron-live-status",
+      "name": "Check Live Status (Every 10min)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 500]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "id": "cron-content-sync",
+      "name": "Sync Content (Hourly)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 700]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 0 * * *"
+            }
+          ]
+        }
+      },
+      "id": "cron-daily-stats",
+      "name": "Daily Stats Snapshot (Midnight)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 900]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook-twitch",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-twitch",
+      "name": "Twitch Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 1100],
+      "webhookId": "twitch-live-webhook"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook-youtube",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-youtube",
+      "name": "YouTube Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 1300],
+      "webhookId": "youtube-pubsubhubbub"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook-stripe",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-stripe",
+      "name": "Stripe Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 1500],
+      "webhookId": "stripe-payments"
+    },
+    {
+      "parameters": {
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "url": "http://localhost:3001/api/v1/platforms/live/:streamerId",
+        "method": "GET",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "platform",
+              "value": "={{ $json.platform }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "api-check-live",
+      "name": "Check Live Status API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [500, 500]
+    },
+    {
+      "parameters": {
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "url": "=http://localhost:3001/api/v1/platforms/content/{{ $json.streamerId }}",
+        "method": "GET",
+        "options": {}
+      },
+      "id": "api-sync-content",
+      "name": "Sync Platform Content",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [500, 700]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id, userId FROM streamer_profiles WHERE active = true",
+        "options": {}
+      },
+      "id": "db-get-streamers",
+      "name": "Get All Active Streamers",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [500, 300],
+      "credentials": {
+        "postgres": {
+          "id": "streamlink-db",
+          "name": "StreamLink PostgreSQL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO stats_snapshots (streamer_id, date, total_views, total_followers, total_likes, platform_stats, created_at) SELECT sp.id, CURRENT_DATE, COALESCE(SUM(ci.view_count), 0), COALESCE(COUNT(DISTINCT f.viewer_id), 0), COALESCE(SUM(ci.like_count), 0), jsonb_build_object(), NOW() FROM streamer_profiles sp LEFT JOIN content_items ci ON ci.streamer_id = sp.id LEFT JOIN follows f ON f.streamer_id = sp.id GROUP BY sp.id ON CONFLICT (streamer_id, date) DO UPDATE SET total_views = EXCLUDED.total_views, total_followers = EXCLUDED.total_followers, total_likes = EXCLUDED.total_likes",
+        "options": {}
+      },
+      "id": "db-create-stats",
+      "name": "Create Daily Stats",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [500, 900],
+      "credentials": {
+        "postgres": {
+          "id": "streamlink-db",
+          "name": "StreamLink PostgreSQL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.body.event }}",
+              "value2": "stream.online"
+            }
+          ]
+        }
+      },
+      "id": "if-stream-online",
+      "name": "If Stream Goes Live",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [500, 1100]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.body.type }}",
+              "value2": "payment_intent.succeeded"
+            }
+          ]
+        }
+      },
+      "id": "if-payment-success",
+      "name": "If Payment Successful",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [500, 1500]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT ns.token, ns.platform, u.display_name, f.streamer_id FROM notification_subscriptions ns JOIN follows f ON f.viewer_id = ns.user_id JOIN users u ON u.id = f.streamer_id WHERE f.streamer_id = '{{ $json.body.user_id }}' AND ns.enabled = true AND f.notifications_enabled = true",
+        "options": {}
+      },
+      "id": "db-get-followers",
+      "name": "Get Followers to Notify",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [750, 1100],
+      "credentials": {
+        "postgres": {
+          "id": "streamlink-db",
+          "name": "StreamLink PostgreSQL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://exp.host/--/api/v2/push/send",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "to",
+              "value": "={{ $json.token }}"
+            },
+            {
+              "name": "title",
+              "value": "🔴 {{ $json.display_name }} is now live!"
+            },
+            {
+              "name": "body",
+              "value": "Tap to watch now"
+            },
+            {
+              "name": "data",
+              "value": "={{ { \"streamerId\": $json.streamer_id, \"type\": \"live\" } }}"
+            }
+          ]
+        },
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 100,
+              "batchInterval": 1000
+            }
+          }
+        }
+      },
+      "id": "send-expo-push",
+      "name": "Send Expo Push Notification",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1000, 1100]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE orders SET status = 'COMPLETED', stripe_payment_intent_id = '{{ $json.body.data.object.id }}', updated_at = NOW() WHERE stripe_payment_intent_id = '{{ $json.body.data.object.id }}'",
+        "options": {}
+      },
+      "id": "db-update-order",
+      "name": "Update Order Status",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [750, 1500],
+      "credentials": {
+        "postgres": {
+          "id": "streamlink-db",
+          "name": "StreamLink PostgreSQL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.postmarkapp.com/email",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Postmark-Server-Token",
+              "value": "={{ $env.POSTMARK_API_KEY }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "From",
+              "value": "noreply@streamlink.app"
+            },
+            {
+              "name": "To",
+              "value": "={{ $json.buyer_email }}"
+            },
+            {
+              "name": "Subject",
+              "value": "Order Confirmation - StreamLink"
+            },
+            {
+              "name": "HtmlBody",
+              "value": "<h1>Thank you for your purchase!</h1><p>Your order has been confirmed.</p>"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "send-email-confirmation",
+      "name": "Send Email Confirmation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1000, 1500]
+    },
+    {
+      "parameters": {
+        "mode": "jsonToBinary",
+        "options": {}
+      },
+      "id": "analytics-data",
+      "name": "Prepare Analytics Data",
+      "type": "n8n-nodes-base.moveBinaryData",
+      "typeVersion": 1,
+      "position": [750, 900]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:3001/api/v1/streamers/dashboard",
+        "method": "GET",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "api-get-dashboard",
+      "name": "Get Dashboard Stats",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1000, 900]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT lpa.platform, lpa.platform_user_id, lpa.access_token, lpa.handle FROM linked_platform_accounts lpa WHERE lpa.user_id IN (SELECT user_id FROM streamer_profiles WHERE active = true)",
+        "options": {}
+      },
+      "id": "db-get-platform-accounts",
+      "name": "Get Platform Accounts",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [750, 500],
+      "credentials": {
+        "postgres": {
+          "id": "streamlink-db",
+          "name": "StreamLink PostgreSQL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.platform }}",
+              "value2": "TWITCH"
+            }
+          ]
+        }
+      },
+      "id": "switch-platform",
+      "name": "Route by Platform",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [1000, 500]
+    },
+    {
+      "parameters": {
+        "url": "https://api.twitch.tv/helix/streams",
+        "method": "GET",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $json.access_token }}"
+            },
+            {
+              "name": "Client-Id",
+              "value": "={{ $env.TWITCH_CLIENT_ID }}"
+            }
+          ]
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "user_id",
+              "value": "={{ $json.platform_user_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "api-twitch-streams",
+      "name": "Check Twitch Live Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1250, 450]
+    },
+    {
+      "parameters": {
+        "url": "https://www.googleapis.com/youtube/v3/search",
+        "method": "GET",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $json.access_token }}"
+            }
+          ]
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "part",
+              "value": "snippet"
+            },
+            {
+              "name": "channelId",
+              "value": "={{ $json.platform_user_id }}"
+            },
+            {
+              "name": "eventType",
+              "value": "live"
+            },
+            {
+              "name": "type",
+              "value": "video"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "api-youtube-live",
+      "name": "Check YouTube Live Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1250, 550]
+    },
+    {
+      "parameters": {
+        "url": "https://kick.com/api/v2/channels/={{ $json.handle }}",
+        "method": "GET",
+        "options": {}
+      },
+      "id": "api-kick-live",
+      "name": "Check Kick Live Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1250, 650]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO content_items (streamer_id, platform, type, platform_id, title, thumbnail_url, url, view_count, like_count, comment_count, published_at, created_at) VALUES ('{{ $json.streamer_id }}', '{{ $json.platform }}', '{{ $json.type }}', '{{ $json.platform_id }}', '{{ $json.title }}', '{{ $json.thumbnail_url }}', '{{ $json.url }}', {{ $json.view_count }}, {{ $json.like_count }}, {{ $json.comment_count }}, '{{ $json.published_at }}', NOW()) ON CONFLICT (platform, platform_id) DO UPDATE SET view_count = EXCLUDED.view_count, like_count = EXCLUDED.like_count, comment_count = EXCLUDED.comment_count, updated_at = NOW()",
+        "options": {}
+      },
+      "id": "db-upsert-content",
+      "name": "Upsert Content Items",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [750, 700],
+      "credentials": {
+        "postgres": {
+          "id": "streamlink-db",
+          "name": "StreamLink PostgreSQL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 5
+            }
+          ]
+        }
+      },
+      "id": "cron-check-polls",
+      "name": "Check Expired Polls (Every 5min)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 1700]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE polls SET status = 'CLOSED' WHERE ends_at < NOW() AND status = 'OPEN' RETURNING id, streamer_id, question",
+        "options": {}
+      },
+      "id": "db-close-polls",
+      "name": "Auto-Close Expired Polls",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [500, 1700],
+      "credentials": {
+        "postgres": {
+          "id": "streamlink-db",
+          "name": "StreamLink PostgreSQL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
+      "id": "cron-refresh-tokens",
+      "name": "Refresh Platform Tokens (Every 6h)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 1900]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id, user_id, platform, refresh_token FROM linked_platform_accounts WHERE refresh_token IS NOT NULL AND (token_expires_at IS NULL OR token_expires_at < NOW() + INTERVAL '1 day')",
+        "options": {}
+      },
+      "id": "db-get-expiring-tokens",
+      "name": "Get Expiring Tokens",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [500, 1900],
+      "credentials": {
+        "postgres": {
+          "id": "streamlink-db",
+          "name": "StreamLink PostgreSQL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.platform }}",
+              "value2": "TWITCH"
+            }
+          ]
+        }
+      },
+      "id": "switch-refresh-platform",
+      "name": "Route Refresh by Platform",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [750, 1900]
+    },
+    {
+      "parameters": {
+        "url": "https://id.twitch.tv/oauth2/token",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "grant_type",
+              "value": "refresh_token"
+            },
+            {
+              "name": "refresh_token",
+              "value": "={{ $json.refresh_token }}"
+            },
+            {
+              "name": "client_id",
+              "value": "={{ $env.TWITCH_CLIENT_ID }}"
+            },
+            {
+              "name": "client_secret",
+              "value": "={{ $env.TWITCH_CLIENT_SECRET }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "api-refresh-twitch",
+      "name": "Refresh Twitch Token",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1000, 1850]
+    },
+    {
+      "parameters": {
+        "url": "https://oauth2.googleapis.com/token",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "grant_type",
+              "value": "refresh_token"
+            },
+            {
+              "name": "refresh_token",
+              "value": "={{ $json.refresh_token }}"
+            },
+            {
+              "name": "client_id",
+              "value": "={{ $env.YOUTUBE_CLIENT_ID }}"
+            },
+            {
+              "name": "client_secret",
+              "value": "={{ $env.YOUTUBE_CLIENT_SECRET }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "api-refresh-youtube",
+      "name": "Refresh YouTube Token",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1000, 1950]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE linked_platform_accounts SET access_token = '{{ $json.access_token }}', refresh_token = COALESCE('{{ $json.refresh_token }}', refresh_token), token_expires_at = NOW() + INTERVAL '{{ $json.expires_in }} seconds', updated_at = NOW() WHERE id = '{{ $node[\"Get Expiring Tokens\"].json.id }}'",
+        "options": {}
+      },
+      "id": "db-update-tokens",
+      "name": "Update Refreshed Tokens",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [1250, 1900],
+      "credentials": {
+        "postgres": {
+          "id": "streamlink-db",
+          "name": "StreamLink PostgreSQL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 6 * * 1"
+            }
+          ]
+        }
+      },
+      "id": "cron-weekly-report",
+      "name": "Weekly Analytics Report (Monday 6am)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 2100]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT sp.id, u.email, u.display_name, COUNT(DISTINCT f.viewer_id) as followers, SUM(COALESCE(ci.view_count, 0)) as total_views, SUM(COALESCE(ci.like_count, 0)) as total_likes FROM streamer_profiles sp JOIN users u ON u.id = sp.user_id LEFT JOIN follows f ON f.streamer_id = sp.id LEFT JOIN content_items ci ON ci.streamer_id = sp.id WHERE ci.published_at >= NOW() - INTERVAL '7 days' GROUP BY sp.id, u.email, u.display_name",
+        "options": {}
+      },
+      "id": "db-weekly-stats",
+      "name": "Calculate Weekly Stats",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [500, 2100],
+      "credentials": {
+        "postgres": {
+          "id": "streamlink-db",
+          "name": "StreamLink PostgreSQL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.postmarkapp.com/email",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Postmark-Server-Token",
+              "value": "={{ $env.POSTMARK_API_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "From",
+              "value": "analytics@streamlink.app"
+            },
+            {
+              "name": "To",
+              "value": "={{ $json.email }}"
+            },
+            {
+              "name": "Subject",
+              "value": "📊 Your Weekly StreamLink Report"
+            },
+            {
+              "name": "HtmlBody",
+              "value": "=<h1>Hi {{ $json.display_name }}!</h1><p>Here's your weekly summary:</p><ul><li>👥 Followers: {{ $json.followers }}</li><li>👁️ Views: {{ $json.total_views }}</li><li>❤️ Likes: {{ $json.total_likes }}</li></ul><p>Keep up the great work!</p>"
+            }
+          ]
+        },
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 50
+            }
+          }
+        }
+      },
+      "id": "send-weekly-report",
+      "name": "Send Weekly Email Report",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [750, 2100]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook-user-signup",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-signup",
+      "name": "User Signup Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 2300],
+      "webhookId": "user-signup-trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://api.postmarkapp.com/email",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Postmark-Server-Token",
+              "value": "={{ $env.POSTMARK_API_KEY }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "From",
+              "value": "welcome@streamlink.app"
+            },
+            {
+              "name": "To",
+              "value": "={{ $json.body.email }}"
+            },
+            {
+              "name": "Subject",
+              "value": "Welcome to StreamLink! 🎉"
+            },
+            {
+              "name": "HtmlBody",
+              "value": "=<h1>Welcome {{ $json.body.displayName }}!</h1><p>Thanks for joining StreamLink, your universal companion for streaming.</p><p>Get started by:</p><ul><li>Linking your streaming platforms</li><li>Following your favorite creators</li><li>Earning points and rewards</li></ul><p>Let's go! 🚀</p>"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "send-welcome-email",
+      "name": "Send Welcome Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [500, 2300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO audit_logs (actor_user_id, action, target, metadata, created_at) VALUES ('{{ $json.body.userId }}', 'USER_SIGNUP', 'users', jsonb_build_object('email', '{{ $json.body.email }}', 'role', '{{ $json.body.role }}', 'source', 'api'), NOW())",
+        "options": {}
+      },
+      "id": "db-log-signup",
+      "name": "Log Signup Event",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [750, 2300],
+      "credentials": {
+        "postgres": {
+          "id": "streamlink-db",
+          "name": "StreamLink PostgreSQL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 2
+            }
+          ]
+        }
+      },
+      "id": "cron-cleanup",
+      "name": "Cleanup Old Data (Every 2h)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 2500]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM audit_logs WHERE created_at < NOW() - INTERVAL '90 days'; DELETE FROM stats_snapshots WHERE date < NOW() - INTERVAL '1 year'; VACUUM ANALYZE;",
+        "options": {}
+      },
+      "id": "db-cleanup",
+      "name": "Clean Old Records",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [500, 2500],
+      "credentials": {
+        "postgres": {
+          "id": "streamlink-db",
+          "name": "StreamLink PostgreSQL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook-redemption",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-redemption",
+      "name": "Reward Redemption Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 2700],
+      "webhookId": "reward-redemption"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT r.id, r.title, sp.user_id as streamer_user_id, u.email as viewer_email, u.display_name as viewer_name FROM redemptions red JOIN rewards r ON r.id = red.reward_id JOIN streamer_profiles sp ON sp.id = r.streamer_id JOIN users u ON u.id = red.viewer_id WHERE red.id = '{{ $json.body.redemptionId }}'",
+        "options": {}
+      },
+      "id": "db-get-redemption-details",
+      "name": "Get Redemption Details",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [500, 2700],
+      "credentials": {
+        "postgres": {
+          "id": "streamlink-db",
+          "name": "StreamLink PostgreSQL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.postmarkapp.com/email",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Postmark-Server-Token",
+              "value": "={{ $env.POSTMARK_API_KEY }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "From",
+              "value": "notifications@streamlink.app"
+            },
+            {
+              "name": "To",
+              "value": "={{ $json.viewer_email }}"
+            },
+            {
+              "name": "Subject",
+              "value": "Reward Redeemed Successfully! 🎁"
+            },
+            {
+              "name": "HtmlBody",
+              "value": "=<h1>Congratulations {{ $json.viewer_name }}!</h1><p>You've successfully redeemed: <strong>{{ $json.title }}</strong></p><p>Your streamer will process your reward shortly.</p>"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "send-redemption-email",
+      "name": "Send Redemption Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [750, 2700]
+    },
+    {
+      "parameters": {
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "url": "http://localhost:3001/api/v1/streamers/redemptions",
+        "method": "GET",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "status",
+              "value": "PENDING"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "api-notify-streamer",
+      "name": "Notify Streamer of Redemption",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1000, 2700]
+    }
+  ],
+  "connections": {
+    "cron-live-status": {
+      "main": [
+        [
+          {
+            "node": "db-get-streamers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "db-get-streamers": {
+      "main": [
+        [
+          {
+            "node": "db-get-platform-accounts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "db-get-platform-accounts": {
+      "main": [
+        [
+          {
+            "node": "switch-platform",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "switch-platform": {
+      "main": [
+        [
+          {
+            "node": "api-twitch-streams",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "api-youtube-live",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "api-kick-live",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "cron-content-sync": {
+      "main": [
+        [
+          {
+            "node": "api-sync-content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "api-sync-content": {
+      "main": [
+        [
+          {
+            "node": "db-upsert-content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "cron-daily-stats": {
+      "main": [
+        [
+          {
+            "node": "db-create-stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "db-create-stats": {
+      "main": [
+        [
+          {
+            "node": "analytics-data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "analytics-data": {
+      "main": [
+        [
+          {
+            "node": "api-get-dashboard",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "webhook-twitch": {
+      "main": [
+        [
+          {
+            "node": "if-stream-online",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "if-stream-online": {
+      "main": [
+        [
+          {
+            "node": "db-get-followers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "db-get-followers": {
+      "main": [
+        [
+          {
+            "node": "send-expo-push",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "webhook-stripe": {
+      "main": [
+        [
+          {
+            "node": "if-payment-success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "if-payment-success": {
+      "main": [
+        [
+          {
+            "node": "db-update-order",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "db-update-order": {
+      "main": [
+        [
+          {
+            "node": "send-email-confirmation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "cron-check-polls": {
+      "main": [
+        [
+          {
+            "node": "db-close-polls",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "cron-refresh-tokens": {
+      "main": [
+        [
+          {
+            "node": "db-get-expiring-tokens",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "db-get-expiring-tokens": {
+      "main": [
+        [
+          {
+            "node": "switch-refresh-platform",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "switch-refresh-platform": {
+      "main": [
+        [
+          {
+            "node": "api-refresh-twitch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "api-refresh-youtube",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "api-refresh-twitch": {
+      "main": [
+        [
+          {
+            "node": "db-update-tokens",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "api-refresh-youtube": {
+      "main": [
+        [
+          {
+            "node": "db-update-tokens",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "cron-weekly-report": {
+      "main": [
+        [
+          {
+            "node": "db-weekly-stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "db-weekly-stats": {
+      "main": [
+        [
+          {
+            "node": "send-weekly-report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "webhook-signup": {
+      "main": [
+        [
+          {
+            "node": "send-welcome-email",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "db-log-signup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "cron-cleanup": {
+      "main": [
+        [
+          {
+            "node": "db-cleanup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "webhook-redemption": {
+      "main": [
+        [
+          {
+            "node": "db-get-redemption-details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "db-get-redemption-details": {
+      "main": [
+        [
+          {
+            "node": "send-redemption-email",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "api-notify-streamer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 9,
+  "updatedAt": "2025-10-02T00:00:00.000Z",
+  "versionId": "1.0.0"
+}
