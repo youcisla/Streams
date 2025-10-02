@@ -1,130 +1,214 @@
-You are a senior software architect. Build a production-ready monorepo for an app called **StreamLink**, a universal companion app for streamers and viewers.  
-StreamLink is NOT a video streaming platform. Instead, it is a **middleware companion app** that connects with existing platforms (Twitch, YouTube, Kick, Instagram, TikTok, X) to centralize identity, stats, engagement, rewards, and light monetization.
+You are a **wise senior software architect and automation strategist**.  
+Your mission is to design a **production-ready monorepo** for an app called **StreamLink**: a **universal companion app** for streamers and viewers.  
 
-=== Product Objectives (MVP scope) ===
-1) Universal Identity
-   - User can be Viewer or Streamer (or both).
-   - Email + OAuth login (Google/Apple) for the app.
-   - “Linked Accounts” to Twitch/YouTube/Kick/Instagram/TikTok/X via official OAuth APIs (read-only scopes).
-2) Multi-Platform Aggregator
-   - Connect streamer accounts and fetch: followers, views, likes, comments, shares, latest videos/clips, live status.
-   - Consolidated dashboards: per platform + total aggregate.
-   - Daily snapshots for growth charts.
-3) Engagement & Loyalty
-   - Cross-platform points system (earned by watching, voting, participating in mini-games or streamer challenges).
-   - Streamer-configurable rewards (shoutout, priority question, Discord link, etc.).
-   - Rewards catalog, redemption system, points transactions log.
-4) Real-Time Interactions
-   - Polls and lightweight mini-games (trivia, predictions).
-   - Streamer creates → viewers participate → results aggregated.
-5) Simple Marketplace (optional for MVP, but scaffolded)
-   - Streamer products/services (coaching, VIP access). Stripe Checkout payments.
-   - Orders, receipts, Stripe webhooks.
-6) Notifications & Live Status
-   - Subscriptions to favorite streamers. Notifications when they go live on ANY linked platform.
-7) Public Universal Streamer Profile
-   - Public page showing linked platforms, global stats, and recent content.
-   - CTA “Watch on [platform]”.
+⚠️ StreamLink is NOT a streaming platform. It is a **middleware companion layer** that connects with existing platforms (Twitch, YouTube, Kick, Instagram, TikTok, X), consolidates identity and stats, enhances engagement and loyalty, enables lightweight monetization, and — most importantly — leverages **automation (n8n)** and **artificial intelligence (AI)** to minimize manual coding, maximize productivity, and craft a system of **elegant simplicity with powerful outcomes**.  
 
-=== Tech Stack ===
-- Monorepo: Turborepo (pnpm). Workspaces: apps/mobile, apps/admin(optional), packages/ui, packages/config, services/api, services/worker.
-- Mobile: React Native (Expo), TypeScript, React Query, Zustand (or Redux Toolkit), Expo Router. Dark theme + cyan/aqua accent. Shared UI kit in packages/ui.
-- API: Node.js + NestJS (TypeScript), Prisma ORM, PostgreSQL. Validation (Zod/DTO), OpenAPI/Swagger docs.
-- Worker: NestJS microservice or BullMQ/Redis for scheduled jobs (fetch metrics, live status, webhooks).
-- DB: PostgreSQL (Prisma schema below). Redis for jobs/rate limiting/cache.
-- Auth: Email login + OAuth (Google/Apple) via Lucia/Auth.js/NextAuth style. JWT short-lived + refresh + rotation.
-- Integrations: Official APIs/SDKs for Twitch Helix, YouTube Data, Kick API, Instagram Graph, TikTok Business, X API. Create adapters with retries + rate limiting.
-- Payments: Stripe Checkout + webhooks.
-- Notifications: Expo Push + Email (Postmark/Sendgrid).
-- Quality: ESLint, Prettier, Husky, Jest, Testing Library (mobile).
-- CI/CD: GitHub Actions (lint, test, build, migrations). docker-compose for dev (Postgres + Redis). Helm/k8s manifests scaffolded.
+Your guiding principles:
+- **Automate before you code**: delegate non-core logic to n8n workflows.  
+- **Augment with AI**: use AI for predictions, recommendations, moderation, and anomaly detection.  
+- **Design for mastery**: ensure the architecture is modular, scalable, and production-grade from day one.  
 
-=== Data Model (Prisma) ===
-- User(id, email, role: 'VIEWER'|'STREAMER'|'BOTH', displayName, avatarUrl, createdAt)
-- OAuthAccount(id, userId, provider, providerUserId, accessToken, refreshToken, expiresAt)
-- LinkedPlatformAccount(id, userId, platform, platformUserId, handle, tokens, scopes, linkedAt)
-- StreamerProfile(id, userId, bio, links, isPublic)
-- ViewerProfile(id, userId, preferences JSON)
-- Follow(id, viewerId, streamerId, createdAt, notificationsEnabled)
-- ContentItem(id, streamerId, platform, platformContentId, type: 'video'|'clip'|'live', title, url, thumbnail, publishedAt, statsCached JSON)
-- StatsSnapshot(id, streamerId, platform, date, followers, views, likes, comments, shares)
-- LiveStatus(id, streamerId, platform, isLive, startedAt, title, game, updatedAt)
-- Reward(id, streamerId, title, description, costPoints, isActive)
-- Redemption(id, rewardId, viewerId, status: 'PENDING'|'FULFILLED'|'REJECTED', createdAt, fulfilledAt)
-- PointsTransaction(id, userId, streamerId, delta, reason, metadata JSON, createdAt)
-- Poll(id, streamerId, question, status: 'OPEN'|'CLOSED', createdAt, endsAt)
-- PollOption(id, pollId, label, votes)
-- MiniGame(id, streamerId, type: 'TRIVIA'|'PREDICTION', state JSON, createdAt, endsAt)
-- Order(id, streamerId, buyerId, amount, currency, stripeSessionId, status, createdAt)
-- Product(id, streamerId, title, description, price, currency, isActive)
-- NotificationSubscription(id, userId, token, platform: 'expo'|'email', enabled)
-- AuditLog(id, actorUserId, action, target, metadata JSON, createdAt)
+---
 
-Include Prisma schema with FK/indexes + dev seeds (2 streamers, 50 viewers, sample content, 14 days snapshots).
+## === Product Objectives (MVP Scope + Automation/AI Layer) ===
 
-=== API (NestJS) ===
-- Auth: register, login, refresh, logout, password reset
-- Users: get/update profile, link/unlink OAuth
-- Platforms: link/unlink streamer accounts, list connections
-- Streamers: GET public profile, GET stats, CRUD rewards
-- Viewers: follow/unfollow, get following, points balance, redemptions
-- Interactions: polls CRUD/vote, mini-games CRUD/participate
-- Marketplace: products CRUD, create orders (Stripe Checkout), handle webhook
-- Notifications: subscribe/unsubscribe Expo/email tokens, get live status
-- Content: list streamer content by platform/type
+### 1) Universal Identity
+- User roles: Viewer, Streamer, or Both.
+- Authentication: Email + OAuth login (Google/Apple).
+- Linked Accounts: Twitch/YouTube/Kick/Instagram/TikTok/X via official OAuth APIs.
+- **Automation**: n8n handles token refresh, error retries, account linking flows, and sync orchestration.
 
-Swagger/OpenAPI docs. RBAC guards (viewer/streamer/admin).
+### 2) Multi-Platform Aggregator
+- Fetch platform data: followers, views, likes, comments, shares, latest clips, live status.
+- Dashboards: per platform + consolidated totals.
+- Growth analytics: daily snapshots, charts.
+- **AI**: anomaly detection for sudden spikes/drops, predictive growth modeling.
+- **Automation**: n8n scheduled jobs for API calls, retries, batching, caching into Redis/Postgres.
 
-=== Worker ===
-- Cron every 10 min: check live status
-- Cron hourly: sync latest content/stats
-- Cron daily: write StatsSnapshot
-- Webhooks: Stripe, platforms
-- Redis caching for live status + content
+### 3) Engagement & Loyalty
+- Cross-platform points earned by watching, voting, mini-games, challenges.
+- Streamer-configurable rewards (shoutouts, Discord links, VIP perks).
+- Catalog + redemption system + transactions log.
+- **AI**: suggest reward structures, highlight top fans, recommend engagement challenges.
+- **Automation**: n8n processes reward redemptions and updates ledgers asynchronously.
 
-=== Mobile App (Expo) ===
-Dark theme + cyan/aqua accent. Screens:
-1) Onboarding/Login (Viewer or Streamer, OAuth)
-2) Home Viewer: “Live Now” + “Upcoming”
-3) Live Interaction Viewer: chat placeholder, polls, mini-games, points balance, redeem button
-4) Rewards Viewer: list streamer rewards, redeem
-5) Viewer Profile: linked accounts, follows, notifications preferences
-6) Streamer Dashboard: metrics (followers total, views total, top fan), quick actions
-7) Public Streamer Profile: linked platform icons, totals, latest content, “Watch on [platform]”
-8) Streamer Marketplace: products CRUD, order with Stripe Checkout
-9) Optional Admin: moderation, audit log
+### 4) Real-Time Interactions
+- Polls, trivia, predictions.
+- Streamer creates → viewers participate → results aggregated.
+- **Automation**: n8n distributes notifications, tallies votes, handles moderation.
+- **AI**: detects inappropriate poll options, suggests engaging quiz questions.
 
-Follow best practices: state via React Query, reusable UI kit (Card, Button, Input, Badge, Tabs, Modal, ListItem, EmptyState), i18n, error/loading UX, toast notifications.
+### 5) Marketplace (Optional MVP, but scaffolded)
+- Streamer products/services (coaching, VIP access).
+- Stripe Checkout integration with receipts + webhooks.
+- **AI**: pricing recommendations, product description auto-generation.
+- **Automation**: n8n handles payment webhooks, order status updates, receipts.
 
-=== Security ===
-- Encrypt platform tokens at rest (libsodium).
-- Store minimal read-only scopes.
-- Structured logging, request tracing.
-- GDPR: “My Data” page with export/delete account.
+### 6) Notifications & Live Status
+- Subscribe to streamers, get notified when they go live on ANY platform.
+- **Automation**: n8n multi-channel notifications (Expo Push, Email, Discord).
+- **AI**: optimize notification timing to reduce fatigue & maximize engagement.
 
-=== DevEx / Scripts ===
-- `pnpm i && pnpm build` → build everything
-- `pnpm dev` → runs api, worker, mobile
-- `pnpm test` → tests
-- `docker-compose up -d` → Postgres + Redis
-- `prisma migrate dev`, `prisma studio`
-- `.env.example` with STRIPE_*, DATABASE_URL, REDIS_URL, OAUTH_* for platforms, EXPO_*, JWT_*
+### 7) Public Universal Streamer Profile
+- Public page showing linked platforms, stats, and recent content.
+- Call to Action: “Watch on [platform]”.
+- **Automation**: n8n keeps profiles synced nightly.
+- **AI**: auto-generate bio highlights or fan summaries.
 
-=== Deliverables ===
-- Full monorepo with commented code
-- README with setup instructions
-- Seeds for demo accounts (1 streamer, 3 viewers, rewards, product)
-- OpenAPI docs
-- Unit tests for core use cases (auth, points/reward, poll voting)
-- 3 e2e API tests
-- Mobile app theme faithful to dark/cyan design
+---
 
-Start by:
-1. Initialize Turborepo + workspaces
-2. Create Prisma schema + migrations
-3. Scaffold NestJS API with endpoints + Swagger
-4. Scaffold worker with jobs
-5. Create Expo app with screens + navigation + themes
-6. Add seeds, README, .env.example, docker-compose, GitHub Actions
+## === Tech Stack (with Automation & AI) ===
+- **Monorepo**: Turborepo + pnpm. Workspaces: `apps/mobile`, `apps/admin`, `packages/ui`, `packages/config`, `services/api`, `services/worker`, `automation/n8n`.
+- **Mobile App**: React Native (Expo), TypeScript, React Query, Zustand/Redux Toolkit, Expo Router.  
+  Shared UI Kit, dark theme with cyan/aqua accents.
+- **API**: Node.js + NestJS (TypeScript), Prisma ORM, PostgreSQL. Validation with Zod/DTO. Swagger/OpenAPI docs.
+- **Worker**: NestJS microservice + BullMQ/Redis. Delegates non-critical jobs to n8n workflows.
+- **Automation (n8n)**:  
+  - OAuth refresh + token rotation.  
+  - Scheduled syncs for content/stats.  
+  - Notification orchestration.  
+  - Stripe/webhook handling.  
+  - CRM/email workflows.  
+- **AI Services**:  
+  - Growth anomaly detection.  
+  - Smart moderation (flag toxic/spam).  
+  - Reward & engagement recommendations.  
+  - Viewer churn prediction & top-fan detection.  
+- **DB**: PostgreSQL + Redis (rate limiting, caching).  
+- **Auth**: Email login + OAuth via Lucia/Auth.js/NextAuth style. JWT short-lived + refresh + rotation.  
+- **Payments**: Stripe Checkout + webhooks (via n8n).  
+- **Notifications**: Expo Push, Email (Postmark/Sendgrid), Discord. Routed by n8n.  
+- **CI/CD**: GitHub Actions (lint, test, build, migrations). docker-compose for dev. Helm/Kubernetes manifests scaffolded.  
 
-Final output: immediately runnable locally with the commands above.
+---
+
+## === Data Model (Prisma ORM) ===
+Maintain original richness:  
+
+```prisma
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  role           String   // VIEWER | STREAMER | BOTH
+  displayName    String?
+  avatarUrl      String?
+  createdAt      DateTime @default(now())
+  OAuthAccounts  OAuthAccount[]
+  LinkedAccounts LinkedPlatformAccount[]
+  StreamerProfile StreamerProfile?
+  ViewerProfile  ViewerProfile?
+  Follows        Follow[]
+  Points         PointsTransaction[]
+}
+
+model OAuthAccount {
+  id            String   @id @default(cuid())
+  userId        String
+  provider      String
+  providerUserId String
+  accessToken   String
+  refreshToken  String
+  expiresAt     DateTime?
+  user          User     @relation(fields: [userId], references: [id])
+}
+
+// … (keep all entities: LinkedPlatformAccount, StatsSnapshot, LiveStatus, Reward, Redemption, Poll, PollOption, MiniGame, Order, Product, NotificationSubscription, AuditLog, etc.)
+```
+
+Include all FKs, indexes, and seed data: 2 streamers, 50 viewers, 14 days of stats, sample rewards/products.
+
+---
+
+## === API (NestJS) ===
+
+Endpoints:
+
+* **Auth**: register, login, refresh, logout, password reset.
+* **Users**: get/update profile, link/unlink OAuth.
+* **Platforms**: link/unlink streamer accounts, list connections.
+* **Streamers**: GET profile, GET stats, CRUD rewards.
+* **Viewers**: follow/unfollow, get following, points balance, redemptions.
+* **Interactions**: polls CRUD/vote, mini-games CRUD/participate.
+* **Marketplace**: products CRUD, create orders (Stripe Checkout), handle webhook.
+* **Notifications**: subscribe/unsubscribe, get live status.
+* **Content**: list streamer content by platform/type.
+
+Guards: RBAC (viewer/streamer/admin).
+Swagger/OpenAPI docs with versioning.
+
+---
+
+## === Worker & Automation ===
+
+* **Worker (NestJS)**:
+
+  * Cron: every 10 min check live status.
+  * Cron: hourly sync stats/content.
+  * Cron: daily snapshots.
+  * Stripe webhooks.
+* **n8n Orchestration**:
+
+  * Replace redundant crons with visual workflows.
+  * Automatically retry failed jobs.
+  * Multi-platform notification routing.
+  * OAuth token refresh pipelines.
+
+---
+
+## === Mobile App (Expo) ===
+
+Dark + cyan/aqua design. Screens:
+
+1. Onboarding/Login.
+2. Home Viewer: “Live Now” + “Upcoming”.
+3. Live Interaction: chat placeholder, polls, mini-games, redeem points.
+4. Rewards: list & redeem streamer rewards.
+5. Viewer Profile: accounts, follows, notifications prefs.
+6. Streamer Dashboard: metrics, quick actions, top fans.
+7. Public Streamer Profile.
+8. Streamer Marketplace.
+9. Optional Admin.
+
+Best practices: React Query for state, reusable components (Card, Button, Input, Tabs, Modal), i18n, error/loading UX, toast notifications.
+
+---
+
+## === Security ===
+
+* Encrypt tokens at rest (libsodium).
+* Store minimal read-only scopes.
+* Structured logging, request tracing.
+* GDPR compliance: “My Data” (export/delete).
+
+---
+
+## === DevEx / Scripts ===
+
+* `pnpm i && pnpm build` → build everything.
+* `pnpm dev` → runs api, worker, mobile, automation/n8n.
+* `pnpm test` → unit/e2e tests.
+* `docker-compose up -d` → Postgres + Redis + n8n.
+* `prisma migrate dev`, `prisma studio`.
+* `.env.example` with STRIPE_*, DATABASE_URL, REDIS_URL, OAUTH_*, EXPO_*, JWT_*.
+
+---
+
+## === Deliverables ===
+
+* Full monorepo with **documented code + n8n workflows**.
+* Seeds for demo accounts.
+* Swagger/OpenAPI docs.
+* Unit tests for auth, rewards, polls.
+* 3 e2e API tests.
+* Mobile app with dark/cyan theme.
+* README with setup instructions.
+* Immediately runnable locally.
+
+---
+
+## === Final Goal ===
+
+Deliver a **production-grade, AI-augmented, automation-driven masterpiece**:
+A system where **manual coding is minimized, automation is maximized, AI amplifies engagement and insights, and StreamLink runs as a universal companion for the global streaming ecosystem**.
+
+---

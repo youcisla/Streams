@@ -1,13 +1,23 @@
 {
-  "name": "StreamLink Automation Hub",
+  "name": "StreamLink Unified Intelligence Flow",
   "nodes": [
     {
-      "parameters": {},
-      "id": "start-node",
-      "name": "Start",
-      "type": "n8n-nodes-base.start",
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 5
+            }
+          ]
+        }
+      },
+      "id": "master-orchestrator",
+      "name": "🎯 Master Orchestrator (Every 5min)",
+      "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1,
-      "position": [250, 300]
+      "position": [250, 300],
+      "notes": "PHASE 1: ENTRY POINT - Single trigger that orchestrates entire pipeline"
     },
     {
       "parameters": {
