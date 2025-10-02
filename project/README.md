@@ -55,16 +55,29 @@ streamlink-monorepo/
    pnpm install
    ```
 
-2. **Start local services**:
+2. **Start local services** (Redis and PostgreSQL):
    ```bash
    docker-compose up -d
    ```
+   
+   **Note**: If you don't have Docker installed or prefer not to use Redis:
+   - The app will continue to work without Redis, but with limited queue processing functionality
+   - Background jobs and scheduled tasks will be disabled
+   - You can skip this step for basic development, but Redis is recommended for full functionality
 
 3. **Set up environment variables**:
    ```bash
    cp .env.example .env
    # Edit .env with your configuration
    ```
+   
+   **Redis Configuration** (optional but recommended):
+   - `REDIS_URL`: Redis connection URL (default: `redis://localhost:6379`)
+   - `REDIS_MAX_RETRIES`: Maximum retry attempts (default: 20)
+   - `REDIS_ENABLE_OFFLINE_QUEUE`: Keep jobs queued when offline (default: true)
+   - `REDIS_CONNECT_TIMEOUT`: Connection timeout in ms (default: 10000)
+   
+   If Redis is unavailable, the services will log a warning and continue with limited functionality.
 
 4. **Run database migrations and seed**:
    ```bash
@@ -226,6 +239,48 @@ For support and questions:
 - Check the [API documentation](http://localhost:3001/api/docs)
 - Review the database schema in `services/api/prisma/schema.prisma`
 - Examine the mobile app structure in `apps/mobile/`
+
+## 🔧 Troubleshooting
+
+### Redis Connection Errors
+
+If you see errors like `MaxRetriesPerRequestError: Reached the max retries per request limit`:
+
+1. **Check if Redis is running**:
+   ```bash
+   docker ps | grep redis
+   ```
+
+2. **Start Redis via Docker Compose**:
+   ```bash
+   docker-compose up -d redis
+   ```
+
+3. **Verify Redis connection**:
+   ```bash
+   docker exec -it streamlink-redis redis-cli ping
+   ```
+   Should return `PONG`
+
+4. **Alternative: Run without Redis**:
+   - The app is designed to gracefully handle Redis unavailability
+   - Services will continue with limited queue processing
+   - Check logs for "Redis connection failed. Service will continue with limited functionality."
+
+### App Stops After a While
+
+If services stop unexpectedly:
+- Check Redis is running and accessible
+- Review environment variables in `.env`
+- Increase `REDIS_MAX_RETRIES` if experiencing connection issues
+- Check Docker logs: `docker-compose logs -f`
+
+### Database Connection Issues
+
+If you see Prisma connection errors:
+- Ensure PostgreSQL is running via Docker Compose
+- Verify `DATABASE_URL` in `.env` matches your setup
+- Run migrations: `pnpm db:migrate`
 
 ---
 

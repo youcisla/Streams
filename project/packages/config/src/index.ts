@@ -16,7 +16,18 @@ export const config = {
     port: parseInt(process.env.WORKER_PORT || '3002'),
     redis: {
       url: process.env.REDIS_URL || 'redis://localhost:6379',
-      maxRetriesPerRequest: 3
+      maxRetriesPerRequest: parseInt(process.env.REDIS_MAX_RETRIES || '20'),
+      enableOfflineQueue: process.env.REDIS_ENABLE_OFFLINE_QUEUE !== 'false',
+      connectTimeout: parseInt(process.env.REDIS_CONNECT_TIMEOUT || '10000'),
+      retryStrategy: (times: number) => {
+        if (times > 50) {
+          // Stop retrying after 50 attempts
+          console.error('Redis connection failed after 50 retries. Service will continue without queue processing.');
+          return null;
+        }
+        // Exponential backoff with max 5 seconds
+        return Math.min(times * 100, 5000);
+      }
     }
   },
   database: {

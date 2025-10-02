@@ -1,5 +1,5 @@
 import { BullModule } from '@nestjs/bull';
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Logger, MiddlewareConsumer, Module, NestModule, OnModuleInit } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 
@@ -29,10 +29,7 @@ import { config } from '@streamlink/config';
       limit: config.rateLimit.max,
     }]),
     BullModule.forRoot({
-      redis: {
-        host: 'localhost',
-        port: 6379,
-      },
+      redis: config.worker.redis,
     }),
     PrismaModule,
     HealthModule,
@@ -48,7 +45,27 @@ import { config } from '@streamlink/config';
     WebhooksModule,
   ],
 })
-export class AppModule implements NestModule {
+export class AppModule implements NestModule, OnModuleInit {
+  private readonly logger = new Logger(AppModule.name);
+
+  async onModuleInit() {
+    try {
+      // Test Redis connection
+      const Bull = require('bull');
+      const testQueue = new Bull('connection-test', {
+        redis: config.worker.redis,
+      });
+      
+      await testQueue.isReady();
+      this.logger.log('Redis connection established successfully');
+      await testQueue.close();
+    } catch (error) {
+      this.logger.warn('Redis connection failed. Queue processing may be limited.');
+      this.logger.warn(`Error: ${error.message}`);
+      this.logger.log('Service will continue with limited functionality.');
+    }
+  }
+
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(LoggerMiddleware)

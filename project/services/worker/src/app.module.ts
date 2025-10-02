@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
+import { BullModule } from '@nestjs/bull';
+import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
-import { BullModule } from '@nestjs/bull';
 
 import { PrismaModule } from './common/prisma/prisma.module';
 import { JobsModule } from './modules/jobs/jobs.module';
@@ -23,4 +23,24 @@ import { config } from '@streamlink/config';
     PlatformsModule,
   ],
 })
-export class AppModule {}
+export class AppModule implements OnModuleInit {
+  private readonly logger = new Logger(AppModule.name);
+
+  async onModuleInit() {
+    try {
+      // Test Redis connection
+      const Bull = require('bull');
+      const testQueue = new Bull('connection-test', {
+        redis: config.worker.redis,
+      });
+      
+      await testQueue.isReady();
+      this.logger.log('Redis connection established successfully');
+      await testQueue.close();
+    } catch (error) {
+      this.logger.warn('Redis connection failed. Queue processing may be limited.');
+      this.logger.warn(`Error: ${error.message}`);
+      this.logger.log('Service will continue with limited functionality.');
+    }
+  }
+}
