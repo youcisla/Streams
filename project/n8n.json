@@ -1,844 +1,1760 @@
 {
-  "name": "StreamLink Unified Intelligence Flow",
-  "nodes": [
-    {
-      "parameters": {
-        "rule": {
-          "interval": [{"field": "minutes", "minutesInterval": 5}]
-        }
-      },
-      "id": "master-orchestrator",
-      "name": "🎯 Master Orchestrator",
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1,
-      "position": [100, 500],
-      "notes": "PHASE 1: Single entry point - orchestrates entire pipeline every 5 minutes"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT sp.id as streamer_id, sp.user_id, lpa.platform, lpa.platform_user_id, lpa.access_token, lpa.handle, lpa.token_expires_at FROM streamer_profiles sp JOIN linked_platform_accounts lpa ON lpa.user_id = sp.user_id WHERE sp.active = true ORDER BY sp.id",
-        "options": {}
-      },
-      "id": "fetch-active-streamers",
-      "name": "📊 Fetch All Active Streamers",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2,
-      "position": [300, 500],
-      "credentials": {"postgres": {"id": "streamlink-db", "name": "StreamLink PostgreSQL"}},
-      "notes": "PHASE 1: Get all active streamers with their platform credentials"
-    },
-    {
-      "parameters": {
-        "mode": "combineBySql",
-        "query": "=SELECT *, '{{ $now.toISO() }}' as fetch_timestamp, CASE WHEN token_expires_at < '{{ $now.plus({hours: 24}).toISO() }}' THEN true ELSE false END as needs_refresh FROM input"
-      },
-      "id": "enrich-metadata",
-      "name": "🔧 Enrich with Metadata",
-      "type": "n8n-nodes-base.aggregate",
-      "typeVersion": 1,
-      "position": [500, 500],
-      "notes": "Add timestamps and token status to each record"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "boolean": [{"value1": "={{ $json.needs_refresh }}", "value2": true}]
-        }
-      },
-      "id": "check-token-refresh",
-      "name": "🔑 Token Refresh Needed?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [700, 500],
-      "notes": "Split flow: refresh tokens OR proceed to API calls"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "string": [{"value1": "={{ $json.platform }}", "value2": "TWITCH"}]
-        }
-      },
-      "id": "route-refresh-platform",
-      "name": "🔀 Route by Platform (Refresh)",
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 1,
-      "position": [900, 400],
-      "notes": "Route to appropriate OAuth refresh endpoint"
-    },
-    {
-      "parameters": {
-        "url": "https://id.twitch.tv/oauth2/token",
-        "method": "POST",
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {"name": "grant_type", "value": "refresh_token"},
-            {"name": "refresh_token", "value": "={{ $json.refresh_token }}"},
-            {"name": "client_id", "value": "={{ $env.TWITCH_CLIENT_ID }}"},
-            {"name": "client_secret", "value": "={{ $env.TWITCH_CLIENT_SECRET }}"}
-          ]
-        },
-        "options": {"timeout": 10000}
-      },
-      "id": "refresh-twitch-token",
-      "name": "🔄 Refresh Twitch Token",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
-      "position": [1100, 350]
-    },
-    {
-      "parameters": {
-        "url": "https://oauth2.googleapis.com/token",
-        "method": "POST",
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {"name": "grant_type", "value": "refresh_token"},
-            {"name": "refresh_token", "value": "={{ $json.refresh_token }}"},
-            {"name": "client_id", "value": "={{ $env.YOUTUBE_CLIENT_ID }}"},
-            {"name": "client_secret", "value": "={{ $env.YOUTUBE_CLIENT_SECRET }}"}
-          ]
-        },
-        "options": {"timeout": 10000}
-      },
-      "id": "refresh-youtube-token",
-      "name": "🔄 Refresh YouTube Token",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
-      "position": [1100, 450]
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "UPDATE linked_platform_accounts SET access_token = '{{ $json.access_token }}', refresh_token = COALESCE('{{ $json.refresh_token }}', refresh_token), token_expires_at = NOW() + INTERVAL '{{ $json.expires_in }} seconds', updated_at = NOW() WHERE user_id = '{{ $node[\"Fetch All Active Streamers\"].json.user_id }}' AND platform = '{{ $node[\"Fetch All Active Streamers\"].json.platform }}' RETURNING *",
-        "options": {}
-      },
-      "id": "update-refreshed-tokens",
-      "name": "💾 Update Tokens in DB",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2,
-      "position": [1300, 400],
-      "credentials": {"postgres": {"id": "streamlink-db", "name": "StreamLink PostgreSQL"}}
-    },
-    {
-      "parameters": {
-        "mode": "combine",
-        "combinationMode": "mergeByPosition",
-        "options": {}
-      },
-      "id": "merge-refreshed-data",
-      "name": "🔗 Merge Refreshed Tokens",
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 2,
-      "position": [1500, 500],
-      "notes": "Combine refreshed tokens back into main flow"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "string": [{"value1": "={{ $json.platform }}", "value2": "TWITCH"}]
-        }
-      },
-      "id": "route-platform-api",
-      "name": "🔀 Route by Platform (API)",
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 1,
-      "position": [1700, 500],
-      "notes": "PHASE 2: Route to appropriate platform API"
-    },
-    {
-      "parameters": {
-        "url": "https://api.twitch.tv/helix/streams",
-        "method": "GET",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {"name": "Authorization", "value": "=Bearer {{ $json.access_token }}"},
-            {"name": "Client-Id", "value": "={{ $env.TWITCH_CLIENT_ID }}"}
-          ]
-        },
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [{"name": "user_id", "value": "={{ $json.platform_user_id }}"}]
-        },
-        "options": {"timeout": 15000}
-      },
-      "id": "api-twitch-live",
-      "name": "📡 Twitch: Check Live + Content",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
-      "position": [1900, 400]
-    },
-    {
-      "parameters": {
-        "url": "https://www.googleapis.com/youtube/v3/search",
-        "method": "GET",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [{"name": "Authorization", "value": "=Bearer {{ $json.access_token }}"}]
-        },
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            {"name": "part", "value": "snippet"},
-            {"name": "channelId", "value": "={{ $json.platform_user_id }}"},
-            {"name": "eventType", "value": "live"},
-            {"name": "type", "value": "video"},
-            {"name": "maxResults", "value": "1"}
-          ]
-        },
-        "options": {"timeout": 15000}
-      },
-      "id": "api-youtube-live",
-      "name": "📡 YouTube: Check Live + Content",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
-      "position": [1900, 500]
-    },
-    {
-      "parameters": {
-        "url": "=https://kick.com/api/v2/channels/{{ $json.handle }}",
-        "method": "GET",
-        "options": {"timeout": 15000}
-      },
-      "id": "api-kick-live",
-      "name": "📡 Kick: Check Live + Content",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
-      "position": [1900, 600]
-    },
-    {
-      "parameters": {
-        "mode": "combine",
-        "combinationMode": "mergeByPosition",
-        "options": {}
-      },
-      "id": "merge-platform-data",
-      "name": "🔗 Merge All Platform Data",
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 2,
-      "position": [2100, 500],
-      "notes": "Combine responses from all platforms"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Normalize data from different platforms into unified format\nconst items = [];\n\nfor (const item of $input.all()) {\n  const platform = item.json.platform;\n  let normalized = {\n    streamer_id: item.json.streamer_id,\n    platform: platform,\n    platform_user_id: item.json.platform_user_id,\n    handle: item.json.handle,\n    is_live: false,\n    viewer_count: 0,\n    stream_title: null,\n    stream_thumbnail: null,\n    stream_url: null,\n    content_items: [],\n    raw_response: item.json\n  };\n\n  // Parse based on platform\n  if (platform === 'TWITCH' && item.json.data && item.json.data.length > 0) {\n    const stream = item.json.data[0];\n    normalized.is_live = true;\n    normalized.viewer_count = stream.viewer_count || 0;\n    normalized.stream_title = stream.title;\n    normalized.stream_thumbnail = stream.thumbnail_url;\n    normalized.stream_url = `https://twitch.tv/${item.json.handle}`;\n  } else if (platform === 'YOUTUBE' && item.json.items && item.json.items.length > 0) {\n    const video = item.json.items[0];\n    normalized.is_live = true;\n    normalized.stream_title = video.snippet.title;\n    normalized.stream_thumbnail = video.snippet.thumbnails.high.url;\n    normalized.stream_url = `https://youtube.com/watch?v=${video.id.videoId}`;\n  } else if (platform === 'KICK' && item.json.livestream) {\n    normalized.is_live = item.json.livestream.is_live || false;\n    normalized.viewer_count = item.json.livestream.viewer_count || 0;\n    normalized.stream_title = item.json.livestream.session_title;\n    normalized.stream_thumbnail = item.json.livestream.thumbnail.url;\n    normalized.stream_url = `https://kick.com/${item.json.handle}`;\n  }\n\n  items.push({ json: normalized });\n}\n\nreturn items;"
-      },
-      "id": "normalize-data",
-      "name": "🔄 Normalize Platform Data",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [2300, 500],
-      "notes": "PHASE 2: Transform all platforms into unified schema"
-    },
-    {
-      "parameters": {
-        "url": "https://api.openai.com/v1/chat/completions",
-        "method": "POST",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {"name": "Authorization", "value": "=Bearer {{ $env.OPENAI_API_KEY }}"},
-            {"name": "Content-Type", "value": "application/json"}
-          ]
-        },
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {"name": "model", "value": "gpt-3.5-turbo"},
-            {
-              "name": "messages",
-              "value": "=[{\"role\":\"system\",\"content\":\"Analyze stream metadata. Return JSON with: category (Gaming/IRL/Music/Creative/Sports), mood (Energetic/Chill/Competitive/Educational), target_audience (Casual/Hardcore/Family/Mature), content_rating (E/T/M), key_topics (array of 3-5 keywords), sentiment (positive/neutral/negative).\"},{\"role\":\"user\",\"content\":\"Title: {{ $json.stream_title }}\\nPlatform: {{ $json.platform }}\\nViewers: {{ $json.viewer_count }}\"}]"
+    "name": "StreamLink Core Automation Flow",
+    "nodes": [
+        {
+            "parameters": {
+                "rule": {
+                    "interval": [
+                        {
+                            "field": "minutes",
+                            "minutesInterval": 5
+                        }
+                    ]
+                }
             },
-            {"name": "temperature", "value": "0.3"},
-            {"name": "max_tokens", "value": "200"}
-          ]
+            "id": "master-orchestrator",
+            "name": "🎯 Master Orchestrator",
+            "type": "n8n-nodes-base.scheduleTrigger",
+            "typeVersion": 1,
+            "position": [
+                100,
+                500
+            ],
+            "notes": "PHASE 1: Single entry point - orchestrates entire pipeline every 5 minutes"
         },
-        "options": {"timeout": 20000}
-      },
-      "id": "ai-content-analysis",
-      "name": "🤖 AI: Content Classification",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
-      "position": [2500, 500],
-      "notes": "PHASE 3: AI analyzes content for categorization"
-    },
-    {
-      "parameters": {
-        "url": "https://api.openai.com/v1/embeddings",
-        "method": "POST",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {"name": "Authorization", "value": "=Bearer {{ $env.OPENAI_API_KEY }}"},
-            {"name": "Content-Type", "value": "application/json"}
-          ]
-        },
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {"name": "model", "value": "text-embedding-ada-002"},
-            {"name": "input", "value": "={{ $json.stream_title }} {{ $json.ai_category }} {{ $json.ai_topics }}"}
-          ]
-        },
-        "options": {"timeout": 20000}
-      },
-      "id": "ai-generate-embeddings",
-      "name": "🧠 AI: Generate Embeddings",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
-      "position": [2700, 500],
-      "notes": "PHASE 3: Create vector embeddings for similarity matching"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Merge AI insights back into stream data\nconst items = [];\n\nfor (let i = 0; i < $input.all().length; i++) {\n  const streamData = $node[\"Normalize Platform Data\"].json[i];\n  const aiAnalysis = JSON.parse($input.all()[i].json.choices[0].message.content);\n  const embedding = $input.all()[i].json.data[0].embedding;\n\n  items.push({\n    json: {\n      ...streamData,\n      ai_category: aiAnalysis.category,\n      ai_mood: aiAnalysis.mood,\n      ai_target_audience: aiAnalysis.target_audience,\n      ai_content_rating: aiAnalysis.content_rating,\n      ai_topics: aiAnalysis.key_topics,\n      ai_sentiment: aiAnalysis.sentiment,\n      embedding_vector: embedding,\n      enriched_at: new Date().toISOString()\n    }\n  });\n}\n\nreturn items;"
-      },
-      "id": "merge-ai-insights",
-      "name": "🔗 Merge AI Insights",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [2900, 500],
-      "notes": "Combine AI analysis with stream data"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "INSERT INTO content_items (streamer_id, platform, type, platform_id, title, thumbnail_url, url, view_count, is_live, ai_category, ai_mood, ai_topics, ai_sentiment, embedding_vector, published_at, created_at, updated_at) VALUES ('{{ $json.streamer_id }}', '{{ $json.platform }}', 'STREAM', '{{ $json.platform_user_id }}', '{{ $json.stream_title }}', '{{ $json.stream_thumbnail }}', '{{ $json.stream_url }}', {{ $json.viewer_count }}, {{ $json.is_live }}, '{{ $json.ai_category }}', '{{ $json.ai_mood }}', '{{ JSON.stringify($json.ai_topics) }}'::jsonb, '{{ $json.ai_sentiment }}', '{{ JSON.stringify($json.embedding_vector) }}'::vector, NOW(), NOW(), NOW()) ON CONFLICT (platform, platform_id) DO UPDATE SET view_count = EXCLUDED.view_count, is_live = EXCLUDED.is_live, ai_category = EXCLUDED.ai_category, ai_mood = EXCLUDED.ai_mood, ai_topics = EXCLUDED.ai_topics, embedding_vector = EXCLUDED.embedding_vector, updated_at = NOW() RETURNING *",
-        "options": {}
-      },
-      "id": "store-enriched-data",
-      "name": "💾 Store Enriched Stream Data",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2,
-      "position": [3100, 500],
-      "credentials": {"postgres": {"id": "streamlink-db", "name": "StreamLink PostgreSQL"}},
-      "notes": "PHASE 3: Persist AI-enriched data to database"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "boolean": [{"value1": "={{ $json.is_live }}", "value2": true}]
-        }
-      },
-      "id": "check-if-live",
-      "name": "🔴 Stream Just Went Live?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [3300, 500],
-      "notes": "PHASE 4: Trigger notifications for live streams"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT DISTINCT u.id as user_id, u.email, u.display_name, u.timezone, ns.token as push_token, ns.platform as push_platform, up.preferences FROM follows f JOIN users u ON u.id = f.viewer_id LEFT JOIN notification_subscriptions ns ON ns.user_id = u.id LEFT JOIN user_preferences up ON up.user_id = u.id WHERE f.streamer_id = '{{ $json.streamer_id }}' AND f.notifications_enabled = true AND (ns.enabled = true OR ns.enabled IS NULL)",
-        "options": {}
-      },
-      "id": "get-followers-to-notify",
-      "name": "👥 Get Followers with Preferences",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2,
-      "position": [3500, 400],
-      "credentials": {"postgres": {"id": "streamlink-db", "name": "StreamLink PostgreSQL"}},
-      "notes": "PHASE 4: Fetch users who want notifications"
-    },
-    {
-      "parameters": {
-        "url": "=http://ml-service:8000/predict/notification-timing",
-        "method": "POST",
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {"name": "user_id", "value": "={{ $json.user_id }}"},
-            {"name": "notification_type", "value": "stream_live"},
-            {"name": "stream_category", "value": "={{ $node[\"Store Enriched Stream Data\"].json.ai_category }}"},
-            {"name": "current_time", "value": "={{ $now.toISO() }}"},
-            {"name": "user_timezone", "value": "={{ $json.timezone }}"}
-          ]
-        },
-        "options": {"timeout": 5000}
-      },
-      "id": "ai-predict-engagement",
-      "name": "🤖 AI: Predict Best Send Time",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
-      "position": [3700, 400],
-      "notes": "PHASE 4: AI predicts optimal notification time per user"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT ci1.id, ci1.title, ci1.ai_category, ci1.embedding_vector, (1 - (ci1.embedding_vector <=> '{{ $node[\"Store Enriched Stream Data\"].json.embedding_vector }}'::vector)) as similarity FROM content_items ci1 WHERE ci1.streamer_id != '{{ $json.streamer_id }}' AND ci1.is_live = true ORDER BY similarity DESC LIMIT 5",
-        "options": {}
-      },
-      "id": "find-similar-streams",
-      "name": "🔍 AI: Find Similar Live Streams",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2,
-      "position": [3700, 500],
-      "credentials": {"postgres": {"id": "streamlink-db", "name": "StreamLink PostgreSQL"}},
-      "notes": "PHASE 4: Vector similarity search for recommendations"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Build personalized notification payload\nconst items = [];\n\nfor (let i = 0; i < $input.all().length; i++) {\n  const user = $node[\"Get Followers with Preferences\"].json[i];\n  const timing = $node[\"AI: Predict Best Send Time\"].json[i];\n  const streamData = $node[\"Store Enriched Stream Data\"].json;\n  const similarStreams = $node[\"AI: Find Similar Live Streams\"].json;\n\n  const shouldSendImmediately = timing.send_immediately && timing.predicted_open_rate > 0.25;\n\n  items.push({\n    json: {\n      user_id: user.user_id,\n      user_name: user.display_name,\n      user_email: user.email,\n      push_token: user.push_token,\n      push_platform: user.push_platform,\n      send_immediately: shouldSendImmediately,\n      optimal_send_time: timing.optimal_send_time,\n      predicted_open_rate: timing.predicted_open_rate,\n      notification_payload: {\n        title: `🔴 ${streamData.handle} is now live!`,\n        body: `${streamData.stream_title} • ${streamData.ai_category} • ${streamData.viewer_count} viewers`,\n        data: {\n          type: 'stream_live',\n          streamer_id: streamData.streamer_id,\n          stream_url: streamData.stream_url,\n          category: streamData.ai_category,\n          mood: streamData.ai_mood,\n          similar_streams: similarStreams.slice(0, 3).map(s => s.id)\n        }\n      },\n      email_payload: {\n        subject: `${streamData.handle} is streaming ${streamData.ai_category}!`,\n        html: `<h1>🔴 ${streamData.handle} just went live!</h1><p><strong>${streamData.stream_title}</strong></p><p>Category: ${streamData.ai_category} • Mood: ${streamData.ai_mood}</p><p><a href=\"${streamData.stream_url}\">Watch Now</a></p>${similarStreams.length > 0 ? '<h3>You might also like:</h3><ul>' + similarStreams.map(s => `<li>${s.title}</li>`).join('') + '</ul>' : ''}`\n      }\n    }\n  });\n}\n\nreturn items;"
-      },
-      "id": "build-notification-payload",
-      "name": "📦 Build Personalized Notifications",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [3900, 400],
-      "notes": "PHASE 5: Create personalized messages with AI recommendations"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "boolean": [{"value1": "={{ $json.send_immediately }}", "value2": true}]
-        }
-      },
-      "id": "should-send-now",
-      "name": "⏰ Send Now or Schedule?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [4100, 400],
-      "notes": "Split: immediate vs scheduled delivery"
-    },
-    {
-      "parameters": {
-        "url": "https://exp.host/--/api/v2/push/send",
-        "method": "POST",
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {"name": "to", "value": "={{ $json.push_token }}"},
-            {"name": "title", "value": "={{ $json.notification_payload.title }}"},
-            {"name": "body", "value": "={{ $json.notification_payload.body }}"},
-            {"name": "data", "value": "={{ $json.notification_payload.data }}"},
-            {"name": "sound", "value": "default"},
-            {"name": "badge", "value": "1"}
-          ]
-        },
-        "options": {
-          "batching": {"batch": {"batchSize": 100, "batchInterval": 1000}}
-        }
-      },
-      "id": "send-push-immediate",
-      "name": "📲 Send Push (Immediate)",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
-      "position": [4300, 300],
-      "notes": "PHASE 5: Deliver push notifications immediately"
-    },
-    {
-      "parameters": {
-        "url": "https://api.postmarkapp.com/email",
-        "method": "POST",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {"name": "X-Postmark-Server-Token", "value": "={{ $env.POSTMARK_API_KEY }}"},
-            {"name": "Content-Type", "value": "application/json"}
-          ]
-        },
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {"name": "From", "value": "notifications@streamlink.app"},
-            {"name": "To", "value": "={{ $json.user_email }}"},
-            {"name": "Subject", "value": "={{ $json.email_payload.subject }}"},
-            {"name": "HtmlBody", "value": "={{ $json.email_payload.html }}"}
-          ]
-        },
-        "options": {
-          "batching": {"batch": {"batchSize": 50}}
-        }
-      },
-      "id": "send-email-immediate",
-      "name": "📧 Send Email (Immediate)",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
-      "position": [4300, 400],
-      "notes": "PHASE 5: Deliver email notifications immediately"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "INSERT INTO notification_queue (user_id, type, payload, scheduled_for, status, created_at) VALUES ('{{ $json.user_id }}', 'stream_live', '{{ JSON.stringify($json.notification_payload) }}'::jsonb, '{{ $json.optimal_send_time }}'::timestamp, 'SCHEDULED', NOW())",
-        "options": {}
-      },
-      "id": "schedule-notification",
-      "name": "⏰ Schedule for Later",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2,
-      "position": [4300, 500],
-      "credentials": {"postgres": {"id": "streamlink-db", "name": "StreamLink PostgreSQL"}},
-      "notes": "PHASE 5: Queue notifications for optimal send time"
-    },
-    {
-      "parameters": {
-        "mode": "combine",
-        "combinationMode": "mergeByPosition",
-        "options": {}
-      },
-      "id": "merge-delivery-results",
-      "name": "🔗 Merge Delivery Results",
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 2,
-      "position": [4500, 400],
-      "notes": "Combine immediate and scheduled notifications"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "INSERT INTO notification_logs (user_id, notification_type, streamer_id, delivery_method, scheduled_time, sent_time, predicted_open_rate, status, created_at) VALUES ('{{ $json.user_id }}', 'stream_live', '{{ $node[\"Store Enriched Stream Data\"].json.streamer_id }}', '{{ $json.send_immediately ? \"immediate\" : \"scheduled\" }}', '{{ $json.optimal_send_time }}', '{{ $json.send_immediately ? $now.toISO() : null }}', {{ $json.predicted_open_rate }}, '{{ $json.send_immediately ? \"sent\" : \"scheduled\" }}', NOW())",
-        "options": {}
-      },
-      "id": "log-notification-delivery",
-      "name": "📝 Log Notification Metrics",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2,
-      "position": [4700, 400],
-      "credentials": {"postgres": {"id": "streamlink-db", "name": "StreamLink PostgreSQL"}},
-      "notes": "PHASE 6: Track delivery for analytics"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "WITH engagement_stats AS (SELECT nl.user_id, nl.notification_type, COUNT(*) as sent_count, SUM(CASE WHEN nl.opened_at IS NOT NULL THEN 1 ELSE 0 END) as opened_count, AVG(EXTRACT(EPOCH FROM (nl.opened_at - nl.sent_time))) as avg_open_time_seconds FROM notification_logs nl WHERE nl.sent_time > NOW() - INTERVAL '7 days' GROUP BY nl.user_id, nl.notification_type) UPDATE user_engagement_profiles uep SET notification_open_rate = es.opened_count::float / NULLIF(es.sent_count, 0), avg_engagement_time = es.avg_open_time_seconds, last_engagement_at = NOW(), updated_at = NOW() FROM engagement_stats es WHERE uep.user_id = es.user_id",
-        "options": {}
-      },
-      "id": "update-user-engagement",
-      "name": "📊 Update User Engagement Profiles",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2,
-      "position": [4900, 400],
-      "credentials": {"postgres": {"id": "streamlink-db", "name": "StreamLink PostgreSQL"}},
-      "notes": "PHASE 6: Feedback loop - update user behavior models"
-    },
-    {
-      "parameters": {
-        "url": "=http://ml-service:8000/train/engagement-model",
-        "method": "POST",
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {"name": "trigger", "value": "periodic_update"},
-            {"name": "data_window", "value": "7_days"},
-            {"name": "model_type", "value": "notification_timing"}
-          ]
-        },
-        "options": {"timeout": 30000}
-      },
-      "id": "trigger-ml-retraining",
-      "name": "🤖 Trigger ML Model Retraining",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
-      "position": [5100, 400],
-      "notes": "PHASE 6: Async trigger for model improvement"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "INSERT INTO pipeline_execution_logs (pipeline_name, execution_id, started_at, completed_at, total_streams_processed, total_notifications_sent, avg_ai_processing_time_ms, status, metadata) VALUES ('unified_intelligence_flow', '{{ $execution.id }}', '{{ $node[\"Master Orchestrator\"].json.started_at }}', NOW(), {{ $node[\"Store Enriched Stream Data\"].itemCount }}, {{ $node[\"Log Notification Metrics\"].itemCount }}, {{ $json.avg_processing_time }}, 'SUCCESS', '{{ JSON.stringify({version: \"2.0\", ai_enabled: true}) }}'::jsonb)",
-        "options": {}
-      },
-      "id": "log-pipeline-execution",
-      "name": "✅ Log Pipeline Execution",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2,
-      "position": [5300, 400],
-      "credentials": {"postgres": {"id": "streamlink-db", "name": "StreamLink PostgreSQL"}},
-      "notes": "PHASE 6: Final step - record entire pipeline execution"
-    },
-    {
-      "parameters": {
-        "httpMethod": "POST",
-        "path": "chat/message",
-        "responseMode": "lastNode",
-        "options": {}
-      },
-      "id": "webhook-chat",
-      "name": "💬 AI Chat Assistant Webhook",
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 1,
-      "position": [100, 800],
-      "webhookId": "ai-chat-assistant",
-      "notes": "PARALLEL FLOW: Conversational AI for user queries"
-    },
-    {
-      "parameters": {
-        "url": "https://api.openai.com/v1/chat/completions",
-        "method": "POST",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {"name": "Authorization", "value": "=Bearer {{ $env.OPENAI_API_KEY }}"},
-            {"name": "Content-Type", "value": "application/json"}
-          ]
-        },
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {"name": "model", "value": "gpt-4"},
-            {
-              "name": "messages",
-              "value": "=[{\"role\":\"system\",\"content\":\"You are StreamLink AI, a helpful assistant for the StreamLink streaming platform. Help users discover streams, answer questions about streamers, troubleshoot issues, and provide personalized recommendations. You can call functions to search the database. Be friendly, concise, and helpful.\"},{\"role\":\"user\",\"content\":\"{{ $json.body.message }}\"}]"
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "SELECT sp.id as streamer_id, sp.user_id, lpa.platform, lpa.platform_user_id, lpa.access_token, lpa.handle, lpa.token_expires_at FROM streamer_profiles sp JOIN linked_platform_accounts lpa ON lpa.user_id = sp.user_id WHERE sp.active = true ORDER BY sp.id",
+                "options": {}
             },
-            {
-              "name": "functions",
-              "value": "=[{\"name\":\"search_streams\",\"description\":\"Search for live or recent streams by keyword, category, or platform\",\"parameters\":{\"type\":\"object\",\"properties\":{\"query\":{\"type\":\"string\"},\"category\":{\"type\":\"string\"},\"is_live\":{\"type\":\"boolean\"},\"platform\":{\"type\":\"string\"}}}},{\"name\":\"get_streamer_info\",\"description\":\"Get detailed information about a specific streamer\",\"parameters\":{\"type\":\"object\",\"properties\":{\"streamer_id\":{\"type\":\"string\"}},\"required\":[\"streamer_id\"]}},{\"name\":\"get_recommendations\",\"description\":\"Get personalized stream recommendations for a user\",\"parameters\":{\"type\":\"object\",\"properties\":{\"user_id\":{\"type\":\"string\"}},\"required\":[\"user_id\"]}}]"
+            "id": "fetch-active-streamers",
+            "name": "📊 Fetch All Active Streamers",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2,
+            "position": [
+                300,
+                500
+            ],
+            "credentials": {
+                "postgres": {
+                    "id": "streamlink-db",
+                    "name": "StreamLink PostgreSQL"
+                }
             },
-            {"name": "temperature", "value": "0.7"}
-          ]
+            "notes": "PHASE 1: Get all active streamers with their platform credentials"
         },
-        "options": {"timeout": 30000}
-      },
-      "id": "ai-chat-completion",
-      "name": "🤖 GPT-4 Chat Response",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
-      "position": [300, 800],
-      "notes": "AI processes user query with function calling"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "boolean": [{"value1": "={{ $json.choices[0].message.function_call !== undefined }}", "value2": true}]
-        }
-      },
-      "id": "check-function-call",
-      "name": "🔧 Function Call Needed?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [500, 800],
-      "notes": "Check if AI wants to call a function"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "string": [{"value1": "={{ $json.choices[0].message.function_call.name }}", "value2": "search_streams"}]
-        }
-      },
-      "id": "route-function",
-      "name": "🔀 Route Function Call",
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 1,
-      "position": [700, 700],
-      "notes": "Route to appropriate database query"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "=SELECT ci.id, ci.title, ci.streamer_id, sp.handle, ci.platform, ci.ai_category, ci.viewer_count, ci.is_live, ci.stream_url FROM content_items ci JOIN streamer_profiles sp ON sp.id = ci.streamer_id WHERE (ci.title ILIKE '%{{ JSON.parse($json.choices[0].message.function_call.arguments).query }}%' OR ci.ai_category ILIKE '%{{ JSON.parse($json.choices[0].message.function_call.arguments).query }}%') AND ci.is_live = COALESCE({{ JSON.parse($json.choices[0].message.function_call.arguments).is_live }}, ci.is_live) ORDER BY ci.viewer_count DESC LIMIT 10",
-        "options": {}
-      },
-      "id": "function-search-streams",
-      "name": "🔍 Function: Search Streams",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2,
-      "position": [900, 650],
-      "credentials": {"postgres": {"id": "streamlink-db", "name": "StreamLink PostgreSQL"}}
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "=SELECT sp.id, sp.user_id, u.display_name, u.avatar_url, sp.bio, sp.social_links, COUNT(DISTINCT f.viewer_id) as follower_count, AVG(ci.viewer_count) as avg_viewers FROM streamer_profiles sp JOIN users u ON u.id = sp.user_id LEFT JOIN follows f ON f.streamer_id = sp.id LEFT JOIN content_items ci ON ci.streamer_id = sp.id WHERE sp.id = '{{ JSON.parse($json.choices[0].message.function_call.arguments).streamer_id }}' GROUP BY sp.id, u.display_name, u.avatar_url, sp.bio, sp.social_links",
-        "options": {}
-      },
-      "id": "function-get-streamer",
-      "name": "👤 Function: Get Streamer Info",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2,
-      "position": [900, 750],
-      "credentials": {"postgres": {"id": "streamlink-db", "name": "StreamLink PostgreSQL"}}
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "=WITH user_prefs AS (SELECT up.preferences->>'favorite_categories' as categories, up.preferences->>'favorite_platforms' as platforms FROM user_preferences up WHERE up.user_id = '{{ JSON.parse($json.choices[0].message.function_call.arguments).user_id }}') SELECT ci.id, ci.title, ci.streamer_id, sp.handle, ci.ai_category, ci.viewer_count, ci.stream_url, (1 - (ci.embedding_vector <=> (SELECT AVG(embedding_vector) FROM content_items WHERE streamer_id IN (SELECT streamer_id FROM follows WHERE viewer_id = '{{ JSON.parse($json.choices[0].message.function_call.arguments).user_id }}')))) as relevance_score FROM content_items ci JOIN streamer_profiles sp ON sp.id = ci.streamer_id WHERE ci.is_live = true ORDER BY relevance_score DESC LIMIT 10",
-        "options": {}
-      },
-      "id": "function-get-recommendations",
-      "name": "⭐ Function: Get Recommendations",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2,
-      "position": [900, 850],
-      "credentials": {"postgres": {"id": "streamlink-db", "name": "StreamLink PostgreSQL"}}
-    },
-    {
-      "parameters": {
-        "mode": "combine",
-        "combinationMode": "mergeByPosition",
-        "options": {}
-      },
-      "id": "merge-function-results",
-      "name": "🔗 Merge Function Results",
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 2,
-      "position": [1100, 750],
-      "notes": "Combine function execution results"
-    },
-    {
-      "parameters": {
-        "url": "https://api.openai.com/v1/chat/completions",
-        "method": "POST",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {"name": "Authorization", "value": "=Bearer {{ $env.OPENAI_API_KEY }}"},
-            {"name": "Content-Type", "value": "application/json"}
-          ]
-        },
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {"name": "model", "value": "gpt-4"},
-            {
-              "name": "messages",
-              "value": "=[{\"role\":\"system\",\"content\":\"You are StreamLink AI assistant.\"},{\"role\":\"user\",\"content\":\"{{ $node[\"AI Chat Assistant Webhook\"].json.body.message }}\"},{\"role\":\"assistant\",\"content\":null,\"function_call\":{{ JSON.stringify($node[\"GPT-4 Chat Response\"].json.choices[0].message.function_call) }}},{\"role\":\"function\",\"name\":\"{{ $node[\"GPT-4 Chat Response\"].json.choices[0].message.function_call.name }}\",\"content\":\"{{ JSON.stringify($json) }}\"}]"
+        {
+            "parameters": {
+                "mode": "combineBySql",
+                "query": "=SELECT *, '{{ $now.toISO() }}' as fetch_timestamp, CASE WHEN token_expires_at < '{{ $now.plus({hours: 24}).toISO() }}' THEN true ELSE false END as needs_refresh FROM input"
             },
-            {"name": "temperature", "value": "0.7"}
-          ]
+            "id": "enrich-metadata",
+            "name": "🔧 Enrich with Metadata",
+            "type": "n8n-nodes-base.aggregate",
+            "typeVersion": 1,
+            "position": [
+                500,
+                500
+            ],
+            "notes": "Add timestamps and token status to each record"
         },
-        "options": {"timeout": 30000}
-      },
-      "id": "ai-final-response",
-      "name": "🤖 GPT-4 Final Response",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
-      "position": [1300, 750],
-      "notes": "AI generates user-facing response with function data"
+        {
+            "parameters": {
+                "conditions": {
+                    "boolean": [
+                        {
+                            "value1": "={{ $json.needs_refresh }}",
+                            "value2": true
+                        }
+                    ]
+                }
+            },
+            "id": "check-token-refresh",
+            "name": "🔑 Token Refresh Needed?",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 1,
+            "position": [
+                700,
+                500
+            ],
+            "notes": "Split flow: refresh tokens OR proceed to API calls"
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "string": [
+                        {
+                            "value1": "={{ $json.platform }}",
+                            "operation": "equals",
+                            "value2": "TWITCH"
+                        },
+                        {
+                            "value1": "={{ $json.platform }}",
+                            "operation": "equals",
+                            "value2": "YOUTUBE"
+                        }
+                    ]
+                }
+            },
+            "id": "route-refresh-platform",
+            "name": "🔀 Route by Platform (Refresh)",
+            "type": "n8n-nodes-base.switch",
+            "typeVersion": 1,
+            "position": [
+                900,
+                400
+            ],
+            "notes": "Route to appropriate OAuth refresh endpoint"
+        },
+        {
+            "parameters": {
+                "url": "https://id.twitch.tv/oauth2/token",
+                "method": "POST",
+                "sendBody": true,
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "grant_type",
+                            "value": "refresh_token"
+                        },
+                        {
+                            "name": "refresh_token",
+                            "value": "={{ $json.refresh_token }}"
+                        },
+                        {
+                            "name": "client_id",
+                            "value": "={{ $env.TWITCH_CLIENT_ID }}"
+                        },
+                        {
+                            "name": "client_secret",
+                            "value": "={{ $env.TWITCH_CLIENT_SECRET }}"
+                        }
+                    ]
+                },
+                "options": {
+                    "timeout": 10000
+                }
+            },
+            "id": "refresh-twitch-token",
+            "name": "🔄 Refresh Twitch Token",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                1100,
+                350
+            ]
+        },
+        {
+            "parameters": {
+                "url": "https://oauth2.googleapis.com/token",
+                "method": "POST",
+                "sendBody": true,
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "grant_type",
+                            "value": "refresh_token"
+                        },
+                        {
+                            "name": "refresh_token",
+                            "value": "={{ $json.refresh_token }}"
+                        },
+                        {
+                            "name": "client_id",
+                            "value": "={{ $env.YOUTUBE_CLIENT_ID }}"
+                        },
+                        {
+                            "name": "client_secret",
+                            "value": "={{ $env.YOUTUBE_CLIENT_SECRET }}"
+                        }
+                    ]
+                },
+                "options": {
+                    "timeout": 10000
+                }
+            },
+            "id": "refresh-youtube-token",
+            "name": "🔄 Refresh YouTube Token",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                1100,
+                450
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "UPDATE linked_platform_accounts SET access_token = '{{ $json.access_token }}', refresh_token = COALESCE('{{ $json.refresh_token }}', refresh_token), token_expires_at = NOW() + INTERVAL '{{ $json.expires_in }} seconds', updated_at = NOW() WHERE user_id = '{{ $node[\"Fetch All Active Streamers\"].json.user_id }}' AND platform = '{{ $node[\"Fetch All Active Streamers\"].json.platform }}' RETURNING *",
+                "options": {}
+            },
+            "id": "update-refreshed-tokens",
+            "name": "💾 Update Tokens in DB",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2,
+            "position": [
+                1300,
+                400
+            ],
+            "credentials": {
+                "postgres": {
+                    "id": "streamlink-db",
+                    "name": "StreamLink PostgreSQL"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "mode": "combine",
+                "combinationMode": "mergeByPosition",
+                "options": {}
+            },
+            "id": "merge-refreshed-data",
+            "name": "🔗 Merge Refreshed Tokens",
+            "type": "n8n-nodes-base.merge",
+            "typeVersion": 2,
+            "position": [
+                1500,
+                500
+            ],
+            "notes": "Combine refreshed tokens back into main flow"
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "string": [
+                        {
+                            "value1": "={{ $json.platform }}",
+                            "operation": "equals",
+                            "value2": "TWITCH"
+                        },
+                        {
+                            "value1": "={{ $json.platform }}",
+                            "operation": "equals",
+                            "value2": "YOUTUBE"
+                        },
+                        {
+                            "value1": "={{ $json.platform }}",
+                            "operation": "equals",
+                            "value2": "KICK"
+                        }
+                    ]
+                }
+            },
+            "id": "route-platform-api",
+            "name": "🔀 Route by Platform (API)",
+            "type": "n8n-nodes-base.switch",
+            "typeVersion": 1,
+            "position": [
+                1700,
+                500
+            ],
+            "notes": "PHASE 2: Route to appropriate platform API"
+        },
+        {
+            "parameters": {
+                "url": "https://api.twitch.tv/helix/streams",
+                "method": "GET",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "=Bearer {{ $json.access_token }}"
+                        },
+                        {
+                            "name": "Client-Id",
+                            "value": "={{ $env.TWITCH_CLIENT_ID }}"
+                        }
+                    ]
+                },
+                "sendQuery": true,
+                "queryParameters": {
+                    "parameters": [
+                        {
+                            "name": "user_id",
+                            "value": "={{ $json.platform_user_id }}"
+                        }
+                    ]
+                },
+                "options": {
+                    "timeout": 15000
+                }
+            },
+            "id": "api-twitch-live",
+            "name": "📡 Twitch: Check Live + Content",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                1900,
+                400
+            ]
+        },
+        {
+            "parameters": {
+                "url": "https://www.googleapis.com/youtube/v3/search",
+                "method": "GET",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "=Bearer {{ $json.access_token }}"
+                        }
+                    ]
+                },
+                "sendQuery": true,
+                "queryParameters": {
+                    "parameters": [
+                        {
+                            "name": "part",
+                            "value": "snippet"
+                        },
+                        {
+                            "name": "channelId",
+                            "value": "={{ $json.platform_user_id }}"
+                        },
+                        {
+                            "name": "eventType",
+                            "value": "live"
+                        },
+                        {
+                            "name": "type",
+                            "value": "video"
+                        },
+                        {
+                            "name": "maxResults",
+                            "value": "1"
+                        }
+                    ]
+                },
+                "options": {
+                    "timeout": 15000
+                }
+            },
+            "id": "api-youtube-live",
+            "name": "📡 YouTube: Check Live + Content",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                1900,
+                500
+            ]
+        },
+        {
+            "parameters": {
+                "url": "=https://kick.com/api/v2/channels/{{ $json.handle }}",
+                "method": "GET",
+                "options": {
+                    "timeout": 15000
+                }
+            },
+            "id": "api-kick-live",
+            "name": "📡 Kick: Check Live + Content",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                1900,
+                600
+            ]
+        },
+        {
+            "parameters": {
+                "mode": "combine",
+                "combinationMode": "mergeByPosition",
+                "options": {}
+            },
+            "id": "merge-platform-data",
+            "name": "🔗 Merge All Platform Data",
+            "type": "n8n-nodes-base.merge",
+            "typeVersion": 2,
+            "position": [
+                2100,
+                500
+            ],
+            "notes": "Combine responses from all platforms"
+        },
+        {
+            "parameters": {
+                "jsCode": "// Normalize data from different platforms into unified format\nconst items = [];\n\nfor (const item of $input.all()) {\n  const platform = item.json.platform;\n  let normalized = {\n    streamer_id: item.json.streamer_id,\n    platform: platform,\n    platform_user_id: item.json.platform_user_id,\n    handle: item.json.handle,\n    is_live: false,\n    viewer_count: 0,\n    stream_title: null,\n    stream_thumbnail: null,\n    stream_url: null,\n    content_items: [],\n    raw_response: item.json\n  };\n\n  if (platform === 'TWITCH' && item.json.data && item.json.data.length > 0) {\n    const stream = item.json.data[0];\n    normalized.is_live = true;\n    normalized.viewer_count = stream.viewer_count || 0;\n    normalized.stream_title = stream.title;\n    normalized.stream_thumbnail = stream.thumbnail_url;\n    normalized.stream_url = `https://twitch.tv/${item.json.handle}`;\n  } else if (platform === 'YOUTUBE' && item.json.items && item.json.items.length > 0) {\n    const video = item.json.items[0];\n    normalized.is_live = true;\n    normalized.stream_title = video.snippet.title;\n    normalized.stream_thumbnail = video.snippet.thumbnails.high.url;\n    normalized.stream_url = `https://youtube.com/watch?v=${video.id.videoId}`;\n  } else if (platform === 'KICK' && item.json.livestream) {\n    normalized.is_live = item.json.livestream.is_live || false;\n    normalized.viewer_count = item.json.livestream.viewer_count || 0;\n    normalized.stream_title = item.json.livestream.session_title;\n    normalized.stream_thumbnail = item.json.livestream.thumbnail.url;\n    normalized.stream_url = `https://kick.com/${item.json.handle}`;\n  }\n\n  items.push({ json: normalized });\n}\n\nreturn items;"
+            },
+            "id": "normalize-data",
+            "name": "🔄 Normalize Platform Data",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                2300,
+                500
+            ],
+            "notes": "PHASE 2: Transform all platforms into unified schema"
+        },
+        {
+            "parameters": {
+                "url": "https://api.openai.com/v1/chat/completions",
+                "method": "POST",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "=Bearer {{ $env.OPENAI_API_KEY }}"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "model",
+                            "value": "gpt-3.5-turbo"
+                        },
+                        {
+                            "name": "messages",
+                            "value": "=[{\"role\":\"system\",\"content\":\"Analyze stream metadata. Return JSON with: category (Gaming/IRL/Music/Creative/Sports), mood (Energetic/Chill/Competitive/Educational), target_audience (Casual/Hardcore/Family/Mature), content_rating (E/T/M), key_topics (array of 3-5 keywords), sentiment (positive/neutral/negative).\"},{\"role\":\"user\",\"content\":\"Title: {{ $json.stream_title }}\\nPlatform: {{ $json.platform }}\\nViewers: {{ $json.viewer_count }}\"}]"
+                        },
+                        {
+                            "name": "temperature",
+                            "value": "0.3"
+                        },
+                        {
+                            "name": "max_tokens",
+                            "value": "200"
+                        }
+                    ]
+                },
+                "options": {
+                    "timeout": 20000
+                }
+            },
+            "id": "ai-content-analysis",
+            "name": "🤖 AI: Content Classification",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                2500,
+                500
+            ],
+            "notes": "PHASE 3: AI analyzes content for categorization"
+        },
+        {
+            "parameters": {
+                "url": "https://api.openai.com/v1/embeddings",
+                "method": "POST",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "=Bearer {{ $env.OPENAI_API_KEY }}"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "model",
+                            "value": "text-embedding-ada-002"
+                        },
+                        {
+                            "name": "input",
+                            "value": "={{ $json.stream_title }} {{ $json.ai_category }} {{ $json.ai_topics }}"
+                        }
+                    ]
+                },
+                "options": {
+                    "timeout": 20000
+                }
+            },
+            "id": "ai-generate-embeddings",
+            "name": "🧠 AI: Generate Embeddings",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                2700,
+                500
+            ],
+            "notes": "PHASE 3: Create vector embeddings for similarity matching"
+        },
+        {
+            "parameters": {
+                "jsCode": "// Merge AI insights back into stream data\nconst items = [];\n\nfor (let i = 0; i < $input.all().length; i++) {\n  const streamData = $node[\"Normalize Platform Data\"].json[i];\n  const aiAnalysis = JSON.parse($node[\"🤖 AI: Content Classification\"].json[i].choices[0].message.content);\n  const embedding = $input.all()[i].json.data[0].embedding;\n\n  items.push({\n    json: {\n      ...streamData,\n      ai_category: aiAnalysis.category,\n      ai_mood: aiAnalysis.mood,\n      ai_target_audience: aiAnalysis.target_audience,\n      ai_content_rating: aiAnalysis.content_rating,\n      ai_topics: aiAnalysis.key_topics,\n      ai_sentiment: aiAnalysis.sentiment,\n      embedding_vector: embedding,\n      enriched_at: new Date().toISOString()\n    }\n  });\n}\n\nreturn items;"
+            },
+            "id": "merge-ai-insights",
+            "name": "🔗 Merge AI Insights",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                2900,
+                500
+            ],
+            "notes": "Combine AI analysis with stream data"
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "INSERT INTO content_items (streamer_id, platform, type, platform_id, title, thumbnail_url, url, view_count, is_live, ai_category, ai_mood, ai_topics, ai_sentiment, embedding_vector, published_at, created_at, updated_at) VALUES ('{{ $json.streamer_id }}', '{{ $json.platform }}', 'STREAM', '{{ $json.platform_user_id }}', '{{ $json.stream_title }}', '{{ $json.stream_thumbnail }}', '{{ $json.stream_url }}', {{ $json.viewer_count }}, {{ $json.is_live }}, '{{ $json.ai_category }}', '{{ $json.ai_mood }}', '{{ JSON.stringify($json.ai_topics) }}'::jsonb, '{{ $json.ai_sentiment }}', '{{ JSON.stringify($json.embedding_vector) }}'::vector, NOW(), NOW(), NOW()) ON CONFLICT (platform, platform_id) DO UPDATE SET view_count = EXCLUDED.view_count, is_live = EXCLUDED.is_live, ai_category = EXCLUDED.ai_category, ai_mood = EXCLUDED.ai_mood, ai_topics = EXCLUDED.ai_topics, embedding_vector = EXCLUDED.embedding_vector, updated_at = NOW() RETURNING *",
+                "options": {}
+            },
+            "id": "store-enriched-data",
+            "name": "💾 Store Enriched Stream Data",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2,
+            "position": [
+                3100,
+                500
+            ],
+            "credentials": {
+                "postgres": {
+                    "id": "streamlink-db",
+                    "name": "StreamLink PostgreSQL"
+                }
+            },
+            "notes": "PHASE 3: Persist AI-enriched data to database"
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "boolean": [
+                        {
+                            "value1": "={{ $json.is_live }}",
+                            "value2": true
+                        }
+                    ]
+                }
+            },
+            "id": "check-if-live",
+            "name": "🔴 Stream Just Went Live?",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 1,
+            "position": [
+                3300,
+                500
+            ],
+            "notes": "PHASE 4: Trigger notifications for live streams"
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "SELECT DISTINCT u.id as user_id, u.email, u.display_name, u.timezone, ns.token as push_token, ns.platform as push_platform, up.preferences FROM follows f JOIN users u ON u.id = f.viewer_id LEFT JOIN notification_subscriptions ns ON ns.user_id = u.id LEFT JOIN user_preferences up ON up.user_id = u.id WHERE f.streamer_id = '{{ $json.streamer_id }}' AND f.notifications_enabled = true AND (ns.enabled = true OR ns.enabled IS NULL)",
+                "options": {}
+            },
+            "id": "get-followers-to-notify",
+            "name": "👥 Get Followers with Preferences",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2,
+            "position": [
+                3500,
+                400
+            ],
+            "credentials": {
+                "postgres": {
+                    "id": "streamlink-db",
+                    "name": "StreamLink PostgreSQL"
+                }
+            },
+            "notes": "PHASE 4: Fetch users who want notifications"
+        },
+        {
+            "parameters": {
+                "url": "=http://ml-service:8000/predict/notification-timing",
+                "method": "POST",
+                "sendBody": true,
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "user_id",
+                            "value": "={{ $json.user_id }}"
+                        },
+                        {
+                            "name": "notification_type",
+                            "value": "stream_live"
+                        },
+                        {
+                            "name": "stream_category",
+                            "value": "={{ $node[\"Store Enriched Stream Data\"].json.ai_category }}"
+                        },
+                        {
+                            "name": "current_time",
+                            "value": "={{ $now.toISO() }}"
+                        },
+                        {
+                            "name": "user_timezone",
+                            "value": "={{ $json.timezone }}"
+                        }
+                    ]
+                },
+                "options": {
+                    "timeout": 5000
+                }
+            },
+            "id": "ai-predict-engagement",
+            "name": "🤖 AI: Predict Best Send Time",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                3700,
+                400
+            ],
+            "notes": "PHASE 4: AI predicts optimal notification time per user"
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "SELECT ci1.id, ci1.title, ci1.ai_category, ci1.embedding_vector, (1 - (ci1.embedding_vector <=> '{{ $node[\"Store Enriched Stream Data\"].json.embedding_vector }}'::vector)) as similarity FROM content_items ci1 WHERE ci1.streamer_id != '{{ $json.streamer_id }}' AND ci1.is_live = true ORDER BY similarity DESC LIMIT 5",
+                "options": {}
+            },
+            "id": "find-similar-streams",
+            "name": "🔍 AI: Find Similar Live Streams",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2,
+            "position": [
+                3700,
+                500
+            ],
+            "credentials": {
+                "postgres": {
+                    "id": "streamlink-db",
+                    "name": "StreamLink PostgreSQL"
+                }
+            },
+            "notes": "PHASE 4: Vector similarity search for recommendations"
+        },
+        {
+            "parameters": {
+                "jsCode": "// Build personalized notification payload\nconst items = [];\n\nfor (let i = 0; i < $input.all().length; i++) {\n  const user = $node[\"👥 Get Followers with Preferences\"].json[i];\n  const timing = $node[\"🤖 AI: Predict Best Send Time\"].json[i];\n  const streamData = $node[\"💾 Store Enriched Stream Data\"].json;\n  const similarStreams = $node[\"🔍 AI: Find Similar Live Streams\"].json;\n\n  const shouldSendImmediately = timing.send_immediately && timing.predicted_open_rate > 0.25;\n\n  items.push({\n    json: {\n      user_id: user.user_id,\n      user_name: user.display_name,\n      user_email: user.email,\n      push_token: user.push_token,\n      push_platform: user.push_platform,\n      send_immediately: shouldSendImmediately,\n      optimal_send_time: timing.optimal_send_time,\n      predicted_open_rate: timing.predicted_open_rate,\n      notification_payload: {\n        title: `🔴 ${streamData.handle} is now live!`,\n        body: `${streamData.stream_title} • ${streamData.ai_category} • ${streamData.viewer_count} viewers`,\n        data: {\n          type: 'stream_live',\n          streamer_id: streamData.streamer_id,\n          stream_url: streamData.stream_url,\n          category: streamData.ai_category,\n          mood: streamData.ai_mood,\n          similar_streams: similarStreams.slice(0, 3).map(s => s.id)\n        }\n      },\n      email_payload: {\n        subject: `${streamData.handle} is streaming ${streamData.ai_category}!`,\n        html: `<h1>🔴 ${streamData.handle} just went live!</h1><p><strong>${streamData.stream_title}</strong></p><p>Category: ${streamData.ai_category} • Mood: ${streamData.ai_mood}</p><p><a href=\"${streamData.stream_url}\">Watch Now</a></p>${similarStreams.length > 0 ? '<h3>You might also like:</h3><ul>' + similarStreams.map(s => `<li>${s.title}</li>`).join('') + '</ul>' : ''}`\n      }\n    }\n  });\n}\n\nreturn items;"
+            },
+            "id": "build-notification-payload",
+            "name": "📦 Build Personalized Notifications",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                3900,
+                400
+            ],
+            "notes": "PHASE 5: Create personalized messages with AI recommendations"
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "boolean": [
+                        {
+                            "value1": "={{ $json.send_immediately }}",
+                            "value2": true
+                        }
+                    ]
+                }
+            },
+            "id": "should-send-now",
+            "name": "⏰ Send Now or Schedule?",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 1,
+            "position": [
+                4100,
+                400
+            ],
+            "notes": "Split: immediate vs scheduled delivery"
+        },
+        {
+            "parameters": {
+                "url": "https://exp.host/--/api/v2/push/send",
+                "method": "POST",
+                "sendBody": true,
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "to",
+                            "value": "={{ $json.push_token }}"
+                        },
+                        {
+                            "name": "title",
+                            "value": "={{ $json.notification_payload.title }}"
+                        },
+                        {
+                            "name": "body",
+                            "value": "={{ $json.notification_payload.body }}"
+                        },
+                        {
+                            "name": "data",
+                            "value": "={{ $json.notification_payload.data }}"
+                        },
+                        {
+                            "name": "sound",
+                            "value": "default"
+                        },
+                        {
+                            "name": "badge",
+                            "value": "1"
+                        }
+                    ]
+                },
+                "options": {
+                    "batching": {
+                        "batch": {
+                            "batchSize": 100,
+                            "batchInterval": 1000
+                        }
+                    }
+                }
+            },
+            "id": "send-push-immediate",
+            "name": "📲 Send Push (Immediate)",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                4300,
+                300
+            ],
+            "notes": "PHASE 5: Deliver push notifications immediately"
+        },
+        {
+            "parameters": {
+                "url": "https://api.postmarkapp.com/email",
+                "method": "POST",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "X-Postmark-Server-Token",
+                            "value": "={{ $env.POSTMARK_API_KEY }}"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "From",
+                            "value": "notifications@streamlink.app"
+                        },
+                        {
+                            "name": "To",
+                            "value": "={{ $json.user_email }}"
+                        },
+                        {
+                            "name": "Subject",
+                            "value": "={{ $json.email_payload.subject }}"
+                        },
+                        {
+                            "name": "HtmlBody",
+                            "value": "={{ $json.email_payload.html }}"
+                        }
+                    ]
+                },
+                "options": {
+                    "batching": {
+                        "batch": {
+                            "batchSize": 50
+                        }
+                    }
+                }
+            },
+            "id": "send-email-immediate",
+            "name": "📧 Send Email (Immediate)",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                4300,
+                400
+            ],
+            "notes": "PHASE 5: Deliver email notifications immediately"
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "INSERT INTO notification_queue (user_id, type, payload, scheduled_for, status, created_at) VALUES ('{{ $json.user_id }}', 'stream_live', '{{ JSON.stringify($json.notification_payload) }}'::jsonb, '{{ $json.optimal_send_time }}'::timestamp, 'SCHEDULED', NOW())",
+                "options": {}
+            },
+            "id": "schedule-notification",
+            "name": "⏰ Schedule for Later",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2,
+            "position": [
+                4300,
+                500
+            ],
+            "credentials": {
+                "postgres": {
+                    "id": "streamlink-db",
+                    "name": "StreamLink PostgreSQL"
+                }
+            },
+            "notes": "PHASE 5: Queue notifications for optimal send time"
+        },
+        {
+            "parameters": {
+                "mode": "combine",
+                "combinationMode": "mergeByPosition",
+                "options": {}
+            },
+            "id": "merge-delivery-results",
+            "name": "🔗 Merge Delivery Results",
+            "type": "n8n-nodes-base.merge",
+            "typeVersion": 2,
+            "position": [
+                4500,
+                400
+            ],
+            "notes": "Combine immediate and scheduled notifications"
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "INSERT INTO notification_logs (user_id, notification_type, streamer_id, delivery_method, scheduled_time, sent_time, predicted_open_rate, status, created_at) VALUES ('{{ $json.user_id }}', 'stream_live', '{{ $node[\"Store Enriched Stream Data\"].json.streamer_id }}', '{{ $json.send_immediately ? \"immediate\" : \"scheduled\" }}', '{{ $json.optimal_send_time }}', '{{ $json.send_immediately ? $now.toISO() : null }}', {{ $json.predicted_open_rate }}, '{{ $json.send_immediately ? \"sent\" : \"scheduled\" }}', NOW())",
+                "options": {}
+            },
+            "id": "log-notification-delivery",
+            "name": "📝 Log Notification Metrics",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2,
+            "position": [
+                4700,
+                400
+            ],
+            "credentials": {
+                "postgres": {
+                    "id": "streamlink-db",
+                    "name": "StreamLink PostgreSQL"
+                }
+            },
+            "notes": "PHASE 6: Track delivery for analytics"
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "WITH engagement_stats AS (SELECT nl.user_id, nl.notification_type, COUNT(*) as sent_count, SUM(CASE WHEN nl.opened_at IS NOT NULL THEN 1 ELSE 0 END) as opened_count, AVG(EXTRACT(EPOCH FROM (nl.opened_at - nl.sent_time))) as avg_open_time_seconds FROM notification_logs nl WHERE nl.sent_time > NOW() - INTERVAL '7 days' GROUP BY nl.user_id, nl.notification_type) UPDATE user_engagement_profiles uep SET notification_open_rate = es.opened_count::float / NULLIF(es.sent_count, 0), avg_engagement_time = es.avg_open_time_seconds, last_engagement_at = NOW(), updated_at = NOW() FROM engagement_stats es WHERE uep.user_id = es.user_id",
+                "options": {}
+            },
+            "id": "update-user-engagement",
+            "name": "📊 Update User Engagement Profiles",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2,
+            "position": [
+                4900,
+                400
+            ],
+            "credentials": {
+                "postgres": {
+                    "id": "streamlink-db",
+                    "name": "StreamLink PostgreSQL"
+                }
+            },
+            "notes": "PHASE 6: Feedback loop - update user behavior models"
+        },
+        {
+            "parameters": {
+                "url": "=http://ml-service:8000/train/engagement-model",
+                "method": "POST",
+                "sendBody": true,
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "trigger",
+                            "value": "periodic_update"
+                        },
+                        {
+                            "name": "data_window",
+                            "value": "7_days"
+                        },
+                        {
+                            "name": "model_type",
+                            "value": "notification_timing"
+                        }
+                    ]
+                },
+                "options": {
+                    "timeout": 30000
+                }
+            },
+            "id": "trigger-ml-retraining",
+            "name": "🤖 Trigger ML Model Retraining",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                5100,
+                400
+            ],
+            "notes": "PHASE 6: Async trigger for model improvement"
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "INSERT INTO pipeline_execution_logs (pipeline_name, execution_id, started_at, completed_at, total_streams_processed, total_notifications_sent, avg_ai_processing_time_ms, status, metadata) VALUES ('unified_intelligence_flow', '{{ $execution.id }}', '{{ $node[\"Master Orchestrator\"].json.started_at }}', NOW(), {{ $node[\"Log Notification Metrics\"].itemCount }}, {{ $node[\"Log Notification Metrics\"].itemCount }}, {{ $json.avg_processing_time }}, 'SUCCESS', '{{ JSON.stringify({\"version\": \"2.0\", \"ai_enabled\": true}) }}'::jsonb)",
+                "options": {}
+            },
+            "id": "log-pipeline-execution",
+            "name": "✅ Log Pipeline Execution",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2,
+            "position": [
+                5300,
+                400
+            ],
+            "credentials": {
+                "postgres": {
+                    "id": "streamlink-db",
+                    "name": "StreamLink PostgreSQL"
+                }
+            },
+            "notes": "PHASE 6: Final step - record entire pipeline execution"
+        },
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "chat/message",
+                "responseMode": "lastNode",
+                "options": {}
+            },
+            "id": "webhook-chat",
+            "name": "💬 AI Chat Assistant Webhook",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                100,
+                800
+            ],
+            "webhookId": "ai-chat-assistant",
+            "notes": "PARALLEL FLOW: Conversational AI for user queries"
+        },
+        {
+            "parameters": {
+                "url": "https://api.openai.com/v1/chat/completions",
+                "method": "POST",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "=Bearer {{ $env.OPENAI_API_KEY }}"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "model",
+                            "value": "gpt-4"
+                        },
+                        {
+                            "name": "messages",
+                            "value": "=[{\"role\":\"system\",\"content\":\"You are StreamLink AI, a helpful assistant for the StreamLink streaming platform. Help users discover streams, answer questions about streamers, troubleshoot issues, and provide personalized recommendations. You can call functions to search the database. Be friendly, concise, and helpful.\"},{\"role\":\"user\",\"content\":\"{{ $json.body.message }}\"}]"
+                        },
+                        {
+                            "name": "functions",
+                            "value": "=[{\"name\":\"search_streams\",\"description\":\"Search for live or recent streams by keyword, category, or platform\",\"parameters\":{\"type\":\"object\",\"properties\":{\"query\":{\"type\":\"string\"},\"category\":{\"type\":\"string\"},\"is_live\":{\"type\":\"boolean\"},\"platform\":{\"type\":\"string\"}}}},{\"name\":\"get_streamer_info\",\"description\":\"Get detailed information about a specific streamer\",\"parameters\":{\"type\":\"object\",\"properties\":{\"streamer_id\":{\"type\":\"string\"}},\"required\":[\"streamer_id\"]}},{\"name\":\"get_recommendations\",\"description\":\"Get personalized stream recommendations for a user\",\"parameters\":{\"type\":\"object\",\"properties\":{\"user_id\":{\"type\":\"string\"}},\"required\":[\"user_id\"]}}]"
+                        },
+                        {
+                            "name": "temperature",
+                            "value": "0.7"
+                        }
+                    ]
+                },
+                "options": {
+                    "timeout": 30000
+                }
+            },
+            "id": "ai-chat-completion",
+            "name": "🤖 GPT-4 Chat Response",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                300,
+                800
+            ],
+            "notes": "AI processes user query with function calling"
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "boolean": [
+                        {
+                            "value1": "={{ $json.choices[0].message.function_call !== undefined }}",
+                            "value2": true
+                        }
+                    ]
+                }
+            },
+            "id": "check-function-call",
+            "name": "🔧 Function Call Needed?",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 1,
+            "position": [
+                500,
+                800
+            ],
+            "notes": "Check if AI wants to call a function"
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "string": [
+                        {
+                            "value1": "={{ $json.choices[0].message.function_call.name }}",
+                            "value2": "search_streams"
+                        },
+                        {
+                            "value1": "={{ $json.choices[0].message.function_call.name }}",
+                            "value2": "get_streamer_info"
+                        },
+                        {
+                            "value1": "={{ $json.choices[0].message.function_call.name }}",
+                            "value2": "get_recommendations"
+                        }
+                    ]
+                }
+            },
+            "id": "route-function",
+            "name": "🔀 Route Function Call",
+            "type": "n8n-nodes-base.switch",
+            "typeVersion": 1,
+            "position": [
+                700,
+                700
+            ],
+            "notes": "Route to appropriate database query"
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "=SELECT ci.id, ci.title, ci.streamer_id, sp.handle, ci.platform, ci.ai_category, ci.viewer_count, ci.is_live, ci.stream_url FROM content_items ci JOIN streamer_profiles sp ON sp.id = ci.streamer_id WHERE (ci.title ILIKE '%{{ JSON.parse($json.choices[0].message.function_call.arguments).query }}%' OR ci.ai_category ILIKE '%{{ JSON.parse($json.choices[0].message.function_call.arguments).query }}%') AND ci.is_live = COALESCE({{ JSON.parse($json.choices[0].message.function_call.arguments).is_live }}, ci.is_live) ORDER BY ci.viewer_count DESC LIMIT 10",
+                "options": {}
+            },
+            "id": "function-search-streams",
+            "name": "🔍 Function: Search Streams",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2,
+            "position": [
+                900,
+                650
+            ],
+            "credentials": {
+                "postgres": {
+                    "id": "streamlink-db",
+                    "name": "StreamLink PostgreSQL"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "=SELECT sp.id, sp.user_id, u.display_name, u.avatar_url, sp.bio, sp.social_links, COUNT(DISTINCT f.viewer_id) as follower_count, AVG(ci.viewer_count) as avg_viewers FROM streamer_profiles sp JOIN users u ON u.id = sp.user_id LEFT JOIN follows f ON f.streamer_id = sp.id LEFT JOIN content_items ci ON ci.streamer_id = sp.id WHERE sp.id = '{{ JSON.parse($json.choices[0].message.function_call.arguments).streamer_id }}' GROUP BY sp.id, u.display_name, u.avatar_url, sp.bio, sp.social_links",
+                "options": {}
+            },
+            "id": "function-get-streamer",
+            "name": "👤 Function: Get Streamer Info",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2,
+            "position": [
+                900,
+                750
+            ],
+            "credentials": {
+                "postgres": {
+                    "id": "streamlink-db",
+                    "name": "StreamLink PostgreSQL"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "=WITH user_prefs AS (SELECT up.preferences->>'favorite_categories' as categories, up.preferences->>'favorite_platforms' as platforms FROM user_preferences up WHERE up.user_id = '{{ JSON.parse($json.choices[0].message.function_call.arguments).user_id }}') SELECT ci.id, ci.title, ci.streamer_id, sp.handle, ci.ai_category, ci.viewer_count, ci.stream_url, (1 - (ci.embedding_vector <=> (SELECT AVG(embedding_vector) FROM content_items WHERE streamer_id IN (SELECT streamer_id FROM follows WHERE viewer_id = '{{ JSON.parse($json.choices[0].message.function_call.arguments).user_id }}')))) as relevance_score FROM content_items ci JOIN streamer_profiles sp ON sp.id = ci.streamer_id WHERE ci.is_live = true ORDER BY relevance_score DESC LIMIT 10",
+                "options": {}
+            },
+            "id": "function-get-recommendations",
+            "name": "⭐ Function: Get Recommendations",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2,
+            "position": [
+                900,
+                850
+            ],
+            "credentials": {
+                "postgres": {
+                    "id": "streamlink-db",
+                    "name": "StreamLink PostgreSQL"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "mode": "combine",
+                "combinationMode": "mergeByPosition",
+                "options": {}
+            },
+            "id": "merge-function-results",
+            "name": "🔗 Merge Function Results",
+            "type": "n8n-nodes-base.merge",
+            "typeVersion": 2,
+            "position": [
+                1100,
+                750
+            ],
+            "notes": "Combine function execution results"
+        },
+        {
+            "parameters": {
+                "url": "https://api.openai.com/v1/chat/completions",
+                "method": "POST",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "=Bearer {{ $env.OPENAI_API_KEY }}"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "model",
+                            "value": "gpt-4"
+                        },
+                        {
+                            "name": "messages",
+                            "value": "=[{\"role\":\"system\",\"content\":\"You are StreamLink AI assistant.\"},{\"role\":\"user\",\"content\":\"{{ $node[\"AI Chat Assistant Webhook\"].json.body.message }}\"},{\"role\":\"assistant\",\"content\":null,\"function_call\":{{ JSON.stringify($node[\"🤖 GPT-4 Chat Response\"].json.choices[0].message.function_call) }}},{\"role\":\"function\",\"name\":\"{{ $node[\"🤖 GPT-4 Chat Response\"].json.choices[0].message.function_call.name }}\",\"content\":\"{{ JSON.stringify($json) }}\"}]"
+                        },
+                        {
+                            "name": "temperature",
+                            "value": "0.7"
+                        }
+                    ]
+                },
+                "options": {
+                    "timeout": 30000
+                }
+            },
+            "id": "ai-final-response",
+            "name": "🤖 GPT-4 Final Response",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                1300,
+                750
+            ],
+            "notes": "AI generates user-facing response with function data"
+        },
+        {
+            "parameters": {
+                "jsCode": "// Format chat response for mobile app\nconst aiResponse = $json.choices[0].message.content;\nconst conversationId = $node[\"AI Chat Assistant Webhook\"].json.body.conversation_id || $execution.id;\n\nreturn [{\n  json: {\n    conversation_id: conversationId,\n    message: aiResponse,\n    timestamp: new Date().toISOString(),\n    metadata: {\n      model: 'gpt-4',\n      function_used: $node[\"GPT-4 Chat Response\"].json.choices[0].message.function_call?.name || null,\n      tokens_used: $json.usage.total_tokens\n    }\n  }\n}];"
+            },
+            "id": "format-chat-response",
+            "name": "📦 Format Chat Response",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                1500,
+                750
+            ],
+            "notes": "Prepare response payload for mobile app"
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "INSERT INTO chat_logs (user_id, conversation_id, message, response, function_called, tokens_used, created_at) VALUES ('{{ $node[\"AI Chat Assistant Webhook\"].json.body.user_id }}', '{{ $json.conversation_id }}', '{{ $node[\"AI Chat Assistant Webhook\"].json.body.message }}', '{{ $json.message }}', '{{ $json.metadata.function_used }}', {{ $json.metadata.tokens_used }}, NOW())",
+                "options": {}
+            },
+            "id": "log-chat-interaction",
+            "name": "📝 Log Chat Interaction",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2,
+            "position": [
+                1700,
+                750
+            ],
+            "credentials": {
+                "postgres": {
+                    "id": "streamlink-db",
+                    "name": "StreamLink PostgreSQL"
+                }
+            },
+            "notes": "Track AI chat usage for analytics"
+        }
+    ],
+    "connections": {
+        "master-orchestrator": {
+            "main": [
+                [
+                    {
+                        "node": "fetch-active-streamers",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "fetch-active-streamers": {
+            "main": [
+                [
+                    {
+                        "node": "enrich-metadata",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "enrich-metadata": {
+            "main": [
+                [
+                    {
+                        "node": "check-token-refresh",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "check-token-refresh": {
+            "main": [
+                [
+                    {
+                        "node": "route-refresh-platform",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "route-platform-api",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "route-refresh-platform": {
+            "main": [
+                [
+                    {
+                        "node": "refresh-twitch-token",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "refresh-youtube-token",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "refresh-twitch-token": {
+            "main": [
+                [
+                    {
+                        "node": "update-refreshed-tokens",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "refresh-youtube-token": {
+            "main": [
+                [
+                    {
+                        "node": "update-refreshed-tokens",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "update-refreshed-tokens": {
+            "main": [
+                [
+                    {
+                        "node": "merge-refreshed-data",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "merge-refreshed-data": {
+            "main": [
+                [
+                    {
+                        "node": "route-platform-api",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "route-platform-api": {
+            "main": [
+                [
+                    {
+                        "node": "api-twitch-live",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "api-youtube-live",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "api-kick-live",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "api-twitch-live": {
+            "main": [
+                [
+                    {
+                        "node": "merge-platform-data",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "api-youtube-live": {
+            "main": [
+                [
+                    {
+                        "node": "merge-platform-data",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "api-kick-live": {
+            "main": [
+                [
+                    {
+                        "node": "merge-platform-data",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "merge-platform-data": {
+            "main": [
+                [
+                    {
+                        "node": "normalize-data",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "normalize-data": {
+            "main": [
+                [
+                    {
+                        "node": "ai-content-analysis",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "ai-content-analysis": {
+            "main": [
+                [
+                    {
+                        "node": "ai-generate-embeddings",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "ai-generate-embeddings": {
+            "main": [
+                [
+                    {
+                        "node": "merge-ai-insights",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "merge-ai-insights": {
+            "main": [
+                [
+                    {
+                        "node": "store-enriched-data",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "store-enriched-data": {
+            "main": [
+                [
+                    {
+                        "node": "check-if-live",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "check-if-live": {
+            "main": [
+                [
+                    {
+                        "node": "get-followers-to-notify",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "log-pipeline-execution",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "get-followers-to-notify": {
+            "main": [
+                [
+                    {
+                        "node": "ai-predict-engagement",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "find-similar-streams",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "ai-predict-engagement": {
+            "main": [
+                [
+                    {
+                        "node": "build-notification-payload",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "find-similar-streams": {
+            "main": [
+                [
+                    {
+                        "node": "build-notification-payload",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "build-notification-payload": {
+            "main": [
+                [
+                    {
+                        "node": "should-send-now",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "should-send-now": {
+            "main": [
+                [
+                    {
+                        "node": "send-push-immediate",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "send-email-immediate",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "schedule-notification",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "send-push-immediate": {
+            "main": [
+                [
+                    {
+                        "node": "merge-delivery-results",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "send-email-immediate": {
+            "main": [
+                [
+                    {
+                        "node": "merge-delivery-results",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "schedule-notification": {
+            "main": [
+                [
+                    {
+                        "node": "merge-delivery-results",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "merge-delivery-results": {
+            "main": [
+                [
+                    {
+                        "node": "log-notification-delivery",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "log-notification-delivery": {
+            "main": [
+                [
+                    {
+                        "node": "update-user-engagement",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "update-user-engagement": {
+            "main": [
+                [
+                    {
+                        "node": "trigger-ml-retraining",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "trigger-ml-retraining": {
+            "main": [
+                [
+                    {
+                        "node": "log-pipeline-execution",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "webhook-chat": {
+            "main": [
+                [
+                    {
+                        "node": "ai-chat-completion",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "ai-chat-completion": {
+            "main": [
+                [
+                    {
+                        "node": "check-function-call",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "check-function-call": {
+            "main": [
+                [
+                    {
+                        "node": "route-function",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "format-chat-response",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "route-function": {
+            "main": [
+                [
+                    {
+                        "node": "function-search-streams",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "function-get-streamer",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "function-get-recommendations",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "function-search-streams": {
+            "main": [
+                [
+                    {
+                        "node": "merge-function-results",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "function-get-streamer": {
+            "main": [
+                [
+                    {
+                        "node": "merge-function-results",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "function-get-recommendations": {
+            "main": [
+                [
+                    {
+                        "node": "merge-function-results",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "merge-function-results": {
+            "main": [
+                [
+                    {
+                        "node": "ai-final-response",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "ai-final-response": {
+            "main": [
+                [
+                    {
+                        "node": "format-chat-response",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "format-chat-response": {
+            "main": [
+                [
+                    {
+                        "node": "log-chat-interaction",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
     },
-    {
-      "parameters": {
-        "jsCode": "// Format chat response for mobile app\nconst aiResponse = $json.choices[0].message.content;\nconst conversationId = $node[\"AI Chat Assistant Webhook\"].json.body.conversation_id || $execution.id;\n\nreturn [{\n  json: {\n    conversation_id: conversationId,\n    message: aiResponse,\n    timestamp: new Date().toISOString(),\n    metadata: {\n      model: 'gpt-4',\n      function_used: $node[\"GPT-4 Chat Response\"].json.choices[0].message.function_call?.name || null,\n      tokens_used: $json.usage.total_tokens\n    }\n  }\n}];"
-      },
-      "id": "format-chat-response",
-      "name": "📦 Format Chat Response",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [1500, 750],
-      "notes": "Prepare response payload for mobile app"
+    "pinData": {},
+    "settings": {
+        "executionOrder": "v1",
+        "saveManualExecutions": true,
+        "callerPolicy": "workflowsFromSameOwner",
+        "errorWorkflow": ""
     },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "INSERT INTO chat_logs (user_id, conversation_id, message, response, function_called, tokens_used, created_at) VALUES ('{{ $node[\"AI Chat Assistant Webhook\"].json.body.user_id }}', '{{ $json.conversation_id }}', '{{ $node[\"AI Chat Assistant Webhook\"].json.body.message }}', '{{ $json.message }}', '{{ $json.metadata.function_used }}', {{ $json.metadata.tokens_used }}, NOW())",
-        "options": {}
-      },
-      "id": "log-chat-interaction",
-      "name": "📝 Log Chat Interaction",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2,
-      "position": [1700, 750],
-      "credentials": {"postgres": {"id": "streamlink-db", "name": "StreamLink PostgreSQL"}},
-      "notes": "Track AI chat usage for analytics"
-    }
-  ],
-  "connections": {
-    "master-orchestrator": {"main": [[{"node": "fetch-active-streamers", "type": "main", "index": 0}]]},
-    "fetch-active-streamers": {"main": [[{"node": "enrich-metadata", "type": "main", "index": 0}]]},
-    "enrich-metadata": {"main": [[{"node": "check-token-refresh", "type": "main", "index": 0}]]},
-    "check-token-refresh": {
-      "main": [
-        [{"node": "route-refresh-platform", "type": "main", "index": 0}],
-        [{"node": "route-platform-api", "type": "main", "index": 0}]
-      ]
-    },
-    "route-refresh-platform": {
-      "main": [
-        [{"node": "refresh-twitch-token", "type": "main", "index": 0}],
-        [{"node": "refresh-youtube-token", "type": "main", "index": 0}]
-      ]
-    },
-    "refresh-twitch-token": {"main": [[{"node": "update-refreshed-tokens", "type": "main", "index": 0}]]},
-    "refresh-youtube-token": {"main": [[{"node": "update-refreshed-tokens", "type": "main", "index": 0}]]},
-    "update-refreshed-tokens": {"main": [[{"node": "merge-refreshed-data", "type": "main", "index": 0}]]},
-    "merge-refreshed-data": {"main": [[{"node": "route-platform-api", "type": "main", "index": 0}]]},
-    "route-platform-api": {
-      "main": [
-        [{"node": "api-twitch-live", "type": "main", "index": 0}],
-        [{"node": "api-youtube-live", "type": "main", "index": 0}],
-        [{"node": "api-kick-live", "type": "main", "index": 0}]
-      ]
-    },
-    "api-twitch-live": {"main": [[{"node": "merge-platform-data", "type": "main", "index": 0}]]},
-    "api-youtube-live": {"main": [[{"node": "merge-platform-data", "type": "main", "index": 0}]]},
-    "api-kick-live": {"main": [[{"node": "merge-platform-data", "type": "main", "index": 0}]]},
-    "merge-platform-data": {"main": [[{"node": "normalize-data", "type": "main", "index": 0}]]},
-    "normalize-data": {"main": [[{"node": "ai-content-analysis", "type": "main", "index": 0}]]},
-    "ai-content-analysis": {"main": [[{"node": "ai-generate-embeddings", "type": "main", "index": 0}]]},
-    "ai-generate-embeddings": {"main": [[{"node": "merge-ai-insights", "type": "main", "index": 0}]]},
-    "merge-ai-insights": {"main": [[{"node": "store-enriched-data", "type": "main", "index": 0}]]},
-    "store-enriched-data": {"main": [[{"node": "check-if-live", "type": "main", "index": 0}]]},
-    "check-if-live": {
-      "main": [
-        [{"node": "get-followers-to-notify", "type": "main", "index": 0}],
-        [{"node": "log-pipeline-execution", "type": "main", "index": 0}]
-      ]
-    },
-    "get-followers-to-notify": {
-      "main": [[
-        {"node": "ai-predict-engagement", "type": "main", "index": 0},
-        {"node": "find-similar-streams", "type": "main", "index": 0}
-      ]]
-    },
-    "ai-predict-engagement": {"main": [[{"node": "build-notification-payload", "type": "main", "index": 0}]]},
-    "find-similar-streams": {"main": [[{"node": "build-notification-payload", "type": "main", "index": 0}]]},
-    "build-notification-payload": {"main": [[{"node": "should-send-now", "type": "main", "index": 0}]]},
-    "should-send-now": {
-      "main": [
-        [
-          {"node": "send-push-immediate", "type": "main", "index": 0},
-          {"node": "send-email-immediate", "type": "main", "index": 0}
-        ],
-        [{"node": "schedule-notification", "type": "main", "index": 0}]
-      ]
-    },
-    "send-push-immediate": {"main": [[{"node": "merge-delivery-results", "type": "main", "index": 0}]]},
-    "send-email-immediate": {"main": [[{"node": "merge-delivery-results", "type": "main", "index": 0}]]},
-    "schedule-notification": {"main": [[{"node": "merge-delivery-results", "type": "main", "index": 0}]]},
-    "merge-delivery-results": {"main": [[{"node": "log-notification-delivery", "type": "main", "index": 0}]]},
-    "log-notification-delivery": {"main": [[{"node": "update-user-engagement", "type": "main", "index": 0}]]},
-    "update-user-engagement": {"main": [[{"node": "trigger-ml-retraining", "type": "main", "index": 0}]]},
-    "trigger-ml-retraining": {"main": [[{"node": "log-pipeline-execution", "type": "main", "index": 0}]]},
-    "webhook-chat": {"main": [[{"node": "ai-chat-completion", "type": "main", "index": 0}]]},
-    "ai-chat-completion": {"main": [[{"node": "check-function-call", "type": "main", "index": 0}]]},
-    "check-function-call": {
-      "main": [
-        [{"node": "route-function", "type": "main", "index": 0}],
-        [{"node": "format-chat-response", "type": "main", "index": 0}]
-      ]
-    },
-    "route-function": {
-      "main": [
-        [{"node": "function-search-streams", "type": "main", "index": 0}],
-        [{"node": "function-get-streamer", "type": "main", "index": 0}],
-        [{"node": "function-get-recommendations", "type": "main", "index": 0}]
-      ]
-    },
-    "function-search-streams": {"main": [[{"node": "merge-function-results", "type": "main", "index": 0}]]},
-    "function-get-streamer": {"main": [[{"node": "merge-function-results", "type": "main", "index": 0}]]},
-    "function-get-recommendations": {"main": [[{"node": "merge-function-results", "type": "main", "index": 0}]]},
-    "merge-function-results": {"main": [[{"node": "ai-final-response", "type": "main", "index": 0}]]},
-    "ai-final-response": {"main": [[{"node": "format-chat-response", "type": "main", "index": 0}]]},
-    "format-chat-response": {"main": [[{"node": "log-chat-interaction", "type": "main", "index": 0}]]}
-  },
-  "pinData": {},
-  "settings": {
-    "executionOrder": "v1",
-    "saveManualExecutions": true,
-    "callerPolicy": "workflowsFromSameOwner",
-    "errorWorkflow": ""
-  },
-  "staticData": {},
-  "tags": [
-    {"id": "unified-flow", "name": "Unified Flow"},
-    {"id": "ai-powered", "name": "AI-Powered"},
-    {"id": "production", "name": "Production"}
-  ],
-  "triggerCount": 2,
-  "updatedAt": "2025-10-02T00:00:00.000Z",
-  "versionId": "2.0.0"
+    "staticData": {},
+    "tags": [
+        {
+            "id": "unified-flow",
+            "name": "Unified Flow"
+        },
+        {
+            "id": "ai-powered",
+            "name": "AI-Powered"
+        },
+        {
+            "id": "production",
+            "name": "Production"
+        }
+    ],
+    "triggerCount": 2,
+    "updatedAt": "2025-10-02T00:00:00.000Z",
+    "versionId": "2.0.0"
 }
